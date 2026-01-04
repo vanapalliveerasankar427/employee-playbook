@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exit & Reputation Plan | The Employee Playbook</title>
+
+  <!-- THEME PRELOAD (prevents flash + keeps toggle consistent) -->
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem('theme'); // "dark" | "light" | null
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const useDark = saved ? saved === 'dark' : prefersDark;
+        // Your CSS uses .dark-mode on body for variables, so we apply early to html as well
+        document.documentElement.classList.toggle('dark-mode', useDark);
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- ICONS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- FONTS -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+  <style>
+    /* ===========================
+       ROOT VARIABLES (Brand + Category Pills System)
+       Categories updated to match your pills reference (7 categories)
+    =========================== */
+    :root{
+      --primary-white:#FFFFFF;
+      --light-gray:#F8F9FA;
+      --medium-gray:#E9ECEF;
+      --dark-gray:#6C757D;
+      --text-dark:#212529;
+      --text-medium:#495057;
+
+      --accent-purple:#7B5FC4;
+      --accent-purple-dark:#5A4496;
+      --light-purple:#E6E0F5;
+      --lighter-purple:#F0EBFA;
+
+      --border-light: rgba(0, 0, 0, 0.08);
+      --nav-bg: rgba(255, 255, 255, 0.95);
+      --hero-bg: linear-gradient(135deg, #F9F6FF 0%, #F0EBFA 100%);
+      --premium-gradient: linear-gradient(135deg, #7B5FC4 0%, #5A4496 100%);
+
+      --success-green:#10b981;
+      --warning-orange:#f59e0b;
+      --danger-red:#ef4444;
+      --info-blue:#3b82f6;
+
+      /* ===========================
+         CATEGORY COLORS (Your 7)
+      =========================== */
+      --category-clarity: #7B5FC4;
+      --category-burnout: #f59e0b;
+      --category-manager: #10b981;
+      --category-politics: #3b82f6;
+      --category-hr: #6D28D9;
+      --category-confidence: #ef4444;
+      --category-career: #800020;
+
+      /* ===========================
+         PILL STYLES (Light mode)
+      =========================== */
+      --pill-clarity-bg: linear-gradient(135deg, rgba(123, 95, 196, 0.08), rgba(123, 95, 196, 0.04));
+      --pill-clarity-border: rgba(123, 95, 196, 0.2);
+      --pill-clarity-hover-bg: linear-gradient(135deg, rgba(123, 95, 196, 0.12), rgba(123, 95, 196, 0.08));
+      --pill-clarity-hover-border: rgba(123, 95, 196, 0.3);
+
+      --pill-burnout-bg: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(245, 158, 11, 0.04));
+      --pill-burnout-border: rgba(245, 158, 11, 0.2);
+      --pill-burnout-hover-bg: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.08));
+      --pill-burnout-hover-border: rgba(245, 158, 11, 0.3);
+
+      --pill-manager-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04));
+      --pill-manager-border: rgba(16, 185, 129, 0.2);
+      --pill-manager-hover-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.08));
+      --pill-manager-hover-border: rgba(16, 185, 129, 0.3);
+
+      --pill-politics-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04));
+      --pill-politics-border: rgba(59, 130, 246, 0.2);
+      --pill-politics-hover-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.08));
+      --pill-politics-hover-border: rgba(59, 130, 246, 0.3);
+
+      --pill-hr-bg: linear-gradient(135deg, rgba(109, 40, 217, 0.08), rgba(109, 40, 217, 0.04));
+      --pill-hr-border: rgba(109, 40, 217, 0.2);
+      --pill-hr-hover-bg: linear-gradient(135deg, rgba(109, 40, 217, 0.12), rgba(109, 40, 217, 0.08));
+      --pill-hr-hover-border: rgba(109, 40, 217, 0.3);
+
+      --pill-confidence-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.04));
+      --pill-confidence-border: rgba(239, 68, 68, 0.2);
+      --pill-confidence-hover-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(239, 68, 68, 0.08));
+      --pill-confidence-hover-border: rgba(239, 68, 68, 0.3);
+
+      --pill-career-bg: linear-gradient(135deg, rgba(128, 0, 32, 0.08), rgba(128, 0, 32, 0.04));
+      --pill-career-border: rgba(128, 0, 32, 0.2);
+      --pill-career-hover-bg: linear-gradient(135deg, rgba(128, 0, 32, 0.12), rgba(128, 0, 32, 0.08));
+      --pill-career-hover-border: rgba(128, 0, 32, 0.3);
+    }
+
+    /* ===========================
+       DARK MODE VARIABLES
+    =========================== */
+    .dark-mode{
+      --primary-white:#1a1a1a;
+      --light-gray:#2a2a2a;
+      --medium-gray:#3a3a3a;
+      --dark-gray:#888888;
+      --text-dark:#e0e0e0;
+      --text-medium:#b0b0b0;
+
+      --accent-purple:#9d86e9;
+      --accent-purple-dark:#7b5fc4;
+      --light-purple: rgba(123, 95, 196, 0.2);
+      --lighter-purple: rgba(123, 95, 196, 0.1);
+
+      --border-light: rgba(255, 255, 255, 0.08);
+      --nav-bg: rgba(30, 30, 30, 0.95);
+      --hero-bg: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+      --premium-gradient: linear-gradient(135deg, #9d86e9 0%, #7b5fc4 100%);
+
+      /* Dark mode category colors */
+      --category-clarity: #9d86e9;
+      --category-burnout: #fbbf24;
+      --category-manager: #34d399;
+      --category-politics: #60a5fa;
+      --category-hr: #8B5CF6;
+      --category-confidence: #f87171;
+      --category-career: #B03060;
+
+      /* Dark mode pill styles */
+      --pill-clarity-bg: linear-gradient(135deg, rgba(123, 95, 196, 0.15), rgba(123, 95, 196, 0.08));
+      --pill-clarity-border: rgba(157, 134, 233, 0.3);
+      --pill-clarity-hover-bg: linear-gradient(135deg, rgba(123, 95, 196, 0.2), rgba(123, 95, 196, 0.12));
+      --pill-clarity-hover-border: rgba(157, 134, 233, 0.4);
+
+      --pill-burnout-bg: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.08));
+      --pill-burnout-border: rgba(251, 191, 36, 0.3);
+      --pill-burnout-hover-bg: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.12));
+      --pill-burnout-hover-border: rgba(251, 191, 36, 0.4);
+
+      --pill-manager-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08));
+      --pill-manager-border: rgba(52, 211, 153, 0.3);
+      --pill-manager-hover-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.12));
+      --pill-manager-hover-border: rgba(52, 211, 153, 0.4);
+
+      --pill-politics-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+      --pill-politics-border: rgba(96, 165, 250, 0.3);
+      --pill-politics-hover-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.12));
+      --pill-politics-hover-border: rgba(96, 165, 250, 0.4);
+
+      --pill-hr-bg: linear-gradient(135deg, rgba(109, 40, 217, 0.15), rgba(109, 40, 217, 0.08));
+      --pill-hr-border: rgba(139, 92, 246, 0.3);
+      --pill-hr-hover-bg: linear-gradient(135deg, rgba(109, 40, 217, 0.2), rgba(109, 40, 217, 0.12));
+      --pill-hr-hover-border: rgba(139, 92, 246, 0.4);
+
+      --pill-confidence-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08));
+      --pill-confidence-border: rgba(248, 113, 113, 0.3);
+      --pill-confidence-hover-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.12));
+      --pill-confidence-hover-border: rgba(248, 113, 113, 0.4);
+
+      --pill-career-bg: linear-gradient(135deg, rgba(128, 0, 32, 0.15), rgba(128, 0, 32, 0.08));
+      --pill-career-border: rgba(176, 48, 96, 0.3);
+      --pill-career-hover-bg: linear-gradient(135deg, rgba(128, 0, 32, 0.2), rgba(128, 0, 32, 0.12));
+      --pill-career-hover-border: rgba(176, 48, 96, 0.4);
+    }
+
+    /* ===========================
+       GLOBAL
+    =========================== */
+    *{
+      margin:0; padding:0; box-sizing:border-box;
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    body{
+      background-color: var(--primary-white);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      min-height: 100vh;
+    }
+    body.loaded{ opacity: 1; }
+    .container{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ===========================
+       NAVIGATION
+    =========================== */
+    nav{
+      position: fixed;
+      top:0;
+      width:100%;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 1000;
+      border-bottom: 1px solid var(--border-light);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      height: 80px;
+    }
+    .nav-container{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      padding: 12px 0;
+      height: 100%;
+    }
+    .logo{
+      display:inline-flex;
+      align-items:center;
+      height: 100%;
+    }
+    .logo-img{
+      height:100px;
+      width:auto;
+      transform: translateX(20%);
+      padding: 14px 10px;
+      transition: all 0.3s ease;
+      display:block;
+      min-height:100px;
+    }
+    .logo-fallback{
+      display:none;
+      align-items:center;
+      justify-content:center;
+      height:48px;
+      padding: 0 14px;
+      border-radius: 10px;
+      background: var(--premium-gradient);
+      color:#fff;
+      font-weight:700;
+      letter-spacing: 0.8px;
+      font-size: 13px;
+      text-transform: uppercase;
+      transform: translateX(20%);
+    }
+    .nav-links{
+      display:flex;
+      gap:50px;
+    }
+    .nav-link{
+      color: var(--text-dark);
+      text-decoration:none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      font-size: 17px;
+    }
+    .nav-link:hover{ color: var(--accent-purple); }
+
+    .nav-link-container{ position: relative; display:inline-block; }
+    .new-tag{
+      position:absolute;
+      top:-12px;
+      right:-35px;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color:#000;
+      font-size:10px;
+      font-weight:600;
+      padding:2px 6px;
+      border-radius:4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      z-index:10;
+      white-space:nowrap;
+    }
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:24px;
+      transform: translateX(-20%);
+    }
+    .header-cta{
+      background: var(--accent-purple);
+      color:#fff;
+      padding: 8px 20px;
+      border-radius: 50px;
+      text-decoration:none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(123,95,196,0.3);
+    }
+    .header-cta:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(123,95,196,0.35);
+    }
+    .sign-in{
+      color: var(--text-dark);
+      text-decoration:none;
+      font-weight:500;
+      font-size:17px;
+    }
+    .sign-in:hover{ color: var(--accent-purple); }
+
+    .theme-toggle{
+      background:none;
+      border:none;
+      color: var(--text-dark);
+      cursor:pointer;
+      font-size:16px;
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: background-color 0.3s ease;
+    }
+    .theme-toggle:hover{ background-color: var(--light-gray); }
+
+    .mobile-toggle{
+      display:none;
+      background:none;
+      border:none;
+      color: var(--text-dark);
+      cursor:pointer;
+      font-size:24px;
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      align-items:center;
+      justify-content:center;
+      transition: background-color 0.3s ease;
+    }
+    .mobile-toggle:hover{ background-color: var(--light-gray); }
+
+    .mobile-sign-in, .mobile-sign-up { display:none; }
+
+    @media (max-width: 768px){
+      .nav-container{ justify-content:center; position:relative; }
+
+      .logo{
+        position:absolute;
+        left:50%;
+        transform: translateX(-50%);
+        display:flex;
+        align-items:center;
+        height:100%;
+      }
+      .logo-img{ height:125px; transform:none; padding: 12px 0; }
+      .logo-fallback{ transform:none; }
+
+      .mobile-toggle{
+        display:flex;
+        position:absolute;
+        left:20px;
+        align-items:center;
+      }
+      .nav-actions{
+        transform:none;
+        gap:16px;
+        position:absolute;
+        right:20px;
+        align-items:center;
+      }
+      .nav-actions .sign-in,
+      .nav-actions .header-cta{ display:none; }
+
+      .nav-links{
+        display:none;
+        position:absolute;
+        top:100%;
+        left:0;
+        width:100%;
+        background: var(--nav-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        flex-direction: column;
+        padding:20px;
+        border-top: 1px solid var(--border-light);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        gap:20px;
+      }
+      .nav-links.active{ display:flex; }
+
+      .nav-link-container{
+        display:flex;
+        align-items:center;
+        justify-content:flex-start;
+        width:100%;
+      }
+      .new-tag{ position:static; margin-left:8px; }
+
+      .mobile-sign-in{
+        display:block !important;
+        margin-top:10px;
+        padding:12px 20px;
+        background: var(--primary-white);
+        color: var(--accent-purple);
+        border-radius:10px;
+        text-align:center;
+        font-weight:700;
+        text-decoration:none;
+        border:2px solid var(--accent-purple);
+        transition: all 0.3s ease;
+      }
+      .mobile-sign-up{
+        display:block !important;
+        margin-top:10px;
+        padding:12px 20px;
+        background: var(--accent-purple);
+        color:#fff;
+        border-radius:10px;
+        text-align:center;
+        font-weight:700;
+        text-decoration:none;
+        border:2px solid var(--accent-purple);
+        transition: all 0.3s ease;
+      }
+    }
+
+    /* ===========================
+       HERO
+    =========================== */
+    .tool-hero-section{
+      width:100%;
+      background: var(--hero-bg);
+      padding: 20px 0 30px;
+      margin-top: 110px;
+      position: relative;
+      border-bottom: 1px solid var(--border-light);
+      overflow:hidden;
+    }
+    .tool-hero-section::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background: linear-gradient(135deg, rgba(250,245,255,0.85) 0%, rgba(245,240,255,0.6) 50%, rgba(255,255,255,0.25) 100%);
+      z-index:1;
+    }
+    .dark-mode .tool-hero-section::before{
+      background: linear-gradient(135deg, rgba(42,42,42,0.9) 0%, rgba(31,31,31,0.7) 50%, rgba(26,26,26,0.4) 100%);
+    }
+    .tool-hero-content{
+      position:relative;
+      z-index:2;
+      max-width:1100px;
+      margin:0 auto;
+      padding: 0 20px 10px;
+      animation: heroFadeUp 0.45s ease-out;
+    }
+    @keyframes heroFadeUp{
+      from{ opacity:0; transform: translateY(18px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    .breadcrumb{
+      font-size:10px;
+      text-transform: uppercase;
+      letter-spacing:1px;
+      color: var(--dark-gray);
+      margin-bottom:10px;
+      display:flex;
+      gap:6px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .breadcrumb a{
+      color: var(--text-medium);
+      text-decoration:none !important;
+      font-weight:600;
+      letter-spacing:0.6px;
+      transition: color 0.2s ease;
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+    }
+    .breadcrumb a:hover{ color: var(--accent-purple-dark); }
+    .breadcrumb i{ font-size:10px; opacity:0.7; }
+    .breadcrumb .current{ color: var(--text-dark); font-weight:600; }
+
+    .checklist-name{
+      font-size:14px;
+      font-weight:700;
+      color: var(--accent-purple);
+      text-transform: uppercase;
+      letter-spacing:1.8px;
+      margin: 18px 0 12px;
+      display:block;
+    }
+
+    .hero-main-heading{
+      font-size:46px;
+      font-weight:650;
+      color: var(--text-dark);
+      line-height:1.1;
+      margin-bottom:18px;
+      max-width: 1000px;
+    }
+    .hero-subheading{
+      font-size:16px;
+      color: var(--text-medium);
+      line-height:1.6;
+      max-width: 1000px;
+      margin-bottom: 16px;
+    }
+
+    /* ===========================
+       RELATED CATEGORIES
+    =========================== */
+    .related-row{
+      display:flex;
+      flex-direction: column;
+      align-items:flex-start;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .related-label{
+      font-size: 12px;
+      font-weight:600;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      color: var(--text-medium);
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .related-pills{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items:center;
+    }
+
+    .category-pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid transparent;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      height: 32px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration:none;
+    }
+    .dark-mode .category-pill{
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    .category-pill:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+    .dark-mode .category-pill:hover{
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    }
+    .category-icon{
+      font-size: 12px;
+      opacity: 0.9;
+      flex-shrink: 0;
+    }
+
+    .category-pill.clarity{
+      color: var(--category-clarity);
+      border-color: var(--pill-clarity-border);
+      background: var(--pill-clarity-bg);
+    }
+    .category-pill.clarity:hover{
+      background: var(--pill-clarity-hover-bg);
+      border-color: var(--pill-clarity-hover-border);
+    }
+
+    .category-pill.burnout{
+      color: var(--category-burnout);
+      border-color: var(--pill-burnout-border);
+      background: var(--pill-burnout-bg);
+    }
+    .category-pill.burnout:hover{
+      background: var(--pill-burnout-hover-bg);
+      border-color: var(--pill-burnout-hover-border);
+    }
+
+    .category-pill.manager{
+      color: var(--category-manager);
+      border-color: var(--pill-manager-border);
+      background: var(--pill-manager-bg);
+    }
+    .category-pill.manager:hover{
+      background: var(--pill-manager-hover-bg);
+      border-color: var(--pill-manager-hover-border);
+    }
+
+    .category-pill.politics{
+      color: var(--category-politics);
+      border-color: var(--pill-politics-border);
+      background: var(--pill-politics-bg);
+    }
+    .category-pill.politics:hover{
+      background: var(--pill-politics-hover-bg);
+      border-color: var(--pill-politics-hover-border);
+    }
+
+    .category-pill.hr{
+      color: var(--category-hr);
+      border-color: var(--pill-hr-border);
+      background: var(--pill-hr-bg);
+    }
+    .category-pill.hr:hover{
+      background: var(--pill-hr-hover-bg);
+      border-color: var(--pill-hr-hover-border);
+    }
+
+    .category-pill.confidence{
+      color: var(--category-confidence);
+      border-color: var(--pill-confidence-border);
+      background: var(--pill-confidence-bg);
+    }
+    .category-pill.confidence:hover{
+      background: var(--pill-confidence-hover-bg);
+      border-color: var(--pill-confidence-hover-border);
+    }
+
+    .category-pill.career{
+      color: var(--category-career);
+      border-color: var(--pill-career-border);
+      background: var(--pill-career-bg);
+    }
+    .category-pill.career:hover{
+      background: var(--pill-career-hover-bg);
+      border-color: var(--pill-career-hover-border);
+    }
+
+    .save-btn{
+      position:absolute;
+      top:16px;
+      right:24px;
+      z-index:5;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 12px;
+      font-size:12px;
+      font-weight:600;
+      border-radius:999px;
+      border: 1px solid rgba(123,95,196,0.6);
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--accent-purple-dark);
+      cursor:pointer;
+      transition: all 0.2s ease;
+    }
+    .save-btn:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(123,95,196,0.18);
+      background: #fff;
+    }
+    .dark-mode .save-btn{
+      background: rgba(20,20,20,0.9);
+      border-color: rgba(157,134,233,0.6);
+    }
+    .save-btn.saved{
+      background: var(--accent-purple);
+      color:#fff;
+      border-color: transparent;
+    }
+
+    /* ===========================
+       CONTEXT + HOW IT WORKS
+    =========================== */
+    .context-tips-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      width:100%;
+      max-width:1100px;
+      margin: 0 auto 18px;
+      padding: 24px 20px 10px;
+      margin-top: 6px;
+    }
+    .context-card, .tips-card{
+      background: var(--primary-white);
+      border: 1px solid var(--border-light);
+      border-radius:14px;
+      padding: 26px 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .section-title{
+      font-size:18px;
+      font-weight:700;
+      color: var(--text-dark);
+      margin-bottom:16px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .section-title i{ color: var(--accent-purple); }
+
+    .bullet-list{ list-style:none; margin:0; padding:0; }
+    .bullet-list li{
+      color: var(--text-medium);
+      line-height:1.65;
+      margin-bottom:12px;
+      padding-left: 26px;
+      position:relative;
+      font-size:14.5px;
+      font-weight:450;
+    }
+    .bullet-list li::before{
+      content:"•";
+      position:absolute;
+      left:10px;
+      color: var(--accent-purple);
+      font-size:18px;
+    }
+
+    /* ===========================
+       WORKSPACE
+    =========================== */
+    .workspace-wrap{
+      max-width:1100px;
+      margin: 0 auto;
+      padding: 0 20px 10px;
+    }
+
+    .workspace-header{
+      display:flex;
+      align-items:flex-end;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 18px 0 14px;
+    }
+    .workspace-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width: 0;
+    }
+    .workspace-title h2{
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--accent-purple-dark);
+      line-height: 1.2;
+    }
+    .workspace-title p{
+      font-size: 14px;
+      color: var(--text-medium);
+      font-weight: 450;
+      max-width: 820px;
+    }
+
+    /* Actions moved to bottom */
+    .workspace-actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .workspace-actions.bottom{
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-light);
+      justify-content: flex-end;
+    }
+    .dark-mode .workspace-actions.bottom{
+      border-top-color: rgba(255,255,255,0.10);
+    }
+
+    .btn{
+      border:none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn.primary{
+      background: var(--premium-gradient);
+      color:#fff;
+      box-shadow: 0 12px 26px rgba(123,95,196,0.22);
+    }
+    .btn.primary:hover{ transform: translateY(-1px); box-shadow: 0 16px 30px rgba(123,95,196,0.28); }
+    .btn.secondary{
+      background: var(--light-purple);
+      color: var(--accent-purple-dark);
+    }
+    .dark-mode .btn.secondary{
+      background: rgba(123,95,196,0.22);
+      color: var(--accent-purple);
+    }
+    .btn.secondary:hover{
+      transform: translateY(-1px);
+      background: rgba(123,95,196,0.18);
+    }
+    .btn:disabled{
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform:none !important;
+      box-shadow:none !important;
+    }
+
+    .modules-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 0;
+    }
+
+    .module-card{
+      background: var(--primary-white);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 16px 16px 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.05);
+      position: relative;
+      overflow:hidden;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 520px;
+    }
+    .dark-mode .module-card{
+      box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+    }
+    .module-card::before{
+      content:'';
+      position:absolute;
+      left:0; right:0; top:0;
+      height: 3px;
+      background: var(--premium-gradient);
+      opacity: 0.95;
+    }
+
+    .module-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .module-chip{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .module-num{
+      width: 30px;
+      height: 30px;
+      border-radius: 12px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 600;
+      font-size: 12px;
+      color:#fff;
+      background: var(--premium-gradient);
+      box-shadow: 0 12px 22px rgba(123,95,196,0.18);
+      flex-shrink: 0;
+    }
+    .module-title{
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .module-title h3{
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .module-title p{
+      font-size: 12.5px;
+      color: var(--text-medium);
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .module-helper{ display:none !important; }
+
+    textarea.module-input{
+      width: 100%;
+      resize: none;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      background: var(--light-gray);
+      padding: 12px 12px;
+      color: var(--text-dark);
+      font-size: 13.5px;
+      line-height: 1.55;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      font-weight: 450;
+      flex: 1;
+      min-height: 360px;
+      overflow: auto;
+    }
+    .dark-mode textarea.module-input{
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.10);
+    }
+    textarea.module-input:focus{
+      border-color: rgba(123,95,196,0.35);
+      box-shadow: 0 0 0 4px rgba(123,95,196,0.10);
+    }
+
+    .module-meta{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+      margin-top: -2px;
+    }
+    .meta-left{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .micro-pill{ display:none !important; }
+
+    .count{
+      font-size: 12px;
+      color: var(--dark-gray);
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    /* ===========================
+       GENERATED PACK
+    =========================== */
+    .pack-section{
+      max-width:1100px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+      display:none;
+    }
+    .pack-section.active{
+      display:block;
+      animation: slideIn 0.5s ease;
+    }
+    @keyframes slideIn{
+      from{ opacity:0; transform: translateY(20px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    .pack-header{
+      text-align:center;
+      margin: 18px 0 22px;
+    }
+    .pack-title{
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--accent-purple-dark);
+      margin-bottom: 6px;
+    }
+    .pack-subtitle{
+      color: var(--text-medium);
+      font-size: 14.5px;
+      font-weight: 450;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .pack-bar{
+      background: var(--primary-white);
+      border-radius: 16px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 14px 40px rgba(123,95,196,0.12);
+      border: 1px solid rgba(123,95,196,0.15);
+      display:flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .pack-metrics{
+      display:flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+    .metric-row{
+      display:flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .metric-title{
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-purple-dark);
+      letter-spacing: 0.2px;
+    }
+    .metric-score{
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent-purple);
+      white-space: nowrap;
+    }
+    .mini-progress{
+      height: 10px;
+      background: var(--light-gray);
+      border-radius: 6px;
+      overflow:hidden;
+    }
+    .dark-mode .mini-progress{
+      background: rgba(255,255,255,0.12);
+    }
+    .mini-fill{
+      height:100%;
+      width:0%;
+      border-radius: 6px;
+      transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: var(--premium-gradient);
+    }
+    .mini-fill.high{ background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .mini-fill.medium{ background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .mini-fill.low{ background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+
+    .pack-actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+      flex-shrink: 0;
+    }
+
+    .section-header{
+      font-size: 18px;
+      font-weight: 600;
+      margin: 18px 0 14px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--light-gray);
+    }
+    .section-header.purple{ color: var(--accent-purple-dark); }
+    .section-header.orange{ color: var(--warning-orange); }
+    .section-header.blue{ color: var(--accent-purple); }
+    .section-header.red{ color: var(--danger-red); }
+    .section-header.green{ color: var(--success-green); }
+
+    .pack-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .pack-card{
+      background: var(--primary-white);
+      border-radius: 14px;
+      padding: 18px;
+      border: 1px solid rgba(0,0,0,0.06);
+      position: relative;
+      overflow:hidden;
+      display:flex;
+      flex-direction: column;
+      height: 100%;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.06);
+    }
+    .dark-mode .pack-card{
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: 0 18px 34px rgba(0,0,0,0.32);
+    }
+    .pack-card::before{
+      content:'';
+      position:absolute;
+      top:0; left:0; right:0;
+      height:3px;
+      background: var(--premium-gradient);
+    }
+
+    .pc-ico{
+      font-size: 18px;
+      margin-bottom: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: var(--accent-purple);
+      background: var(--lighter-purple);
+    }
+    .pc-title{
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+    .pc-body{
+      color: var(--text-medium);
+      font-size: 13.5px;
+      line-height: 1.6;
+      font-weight: 450;
+      white-space: pre-wrap;
+      flex: 1;
+    }
+
+    .pack-output{
+      background: var(--primary-white);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.06);
+      margin-bottom: 12px;
+    }
+    .dark-mode .pack-output{
+      box-shadow: 0 18px 34px rgba(0,0,0,0.32);
+    }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12.8px;
+      color: var(--text-medium);
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    /* ===========================
+       MY PLAYBOOK FAB + SIDEBAR
+    =========================== */
+    .my-playbook-fab{
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1200;
+      background: var(--premium-gradient);
+      color:#fff;
+      padding: 10px 16px;
+      border-radius: 999px;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      cursor:pointer;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      transition: all 0.25s ease;
+    }
+    .my-playbook-fab:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.32);
+    }
+
+    .playbook-sidebar-overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1190;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity 0.25s ease;
+    }
+    .playbook-sidebar-overlay.open{ opacity:1; pointer-events:auto; }
+
+    .playbook-sidebar{
+      position: fixed;
+      top:0;
+      right: -380px;
+      width: 340px;
+      max-width: 90%;
+      height: 100%;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: -4px 0 20px rgba(0,0,0,0.25);
+      z-index: 1191;
+      display:flex;
+      flex-direction: column;
+      border-left: 1px solid var(--border-light);
+      transition: right 0.25s ease;
+    }
+    .dark-mode .playbook-sidebar{
+      background: rgba(18,18,18,0.96);
+      box-shadow: -4px 0 22px rgba(0,0,0,0.6);
+    }
+    .playbook-sidebar.open{ right:0; }
+
+    .playbook-sidebar-header{
+      padding: 20px 20px 14px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .playbook-sidebar-header-title-row{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      margin-bottom: 4px;
+    }
+    .playbook-sidebar-header h3{
+      font-size:18px;
+      font-weight:700;
+      color: var(--text-dark);
+    }
+    .playbook-sidebar-header p{
+      font-size: 13px;
+      color: var(--dark-gray);
+    }
+    .playbook-close-btn{
+      background:none;
+      border:none;
+      color: var(--dark-gray);
+      cursor:pointer;
+      font-size: 18px;
+      border-radius: 999px;
+      width: 28px;
+      height: 28px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: background-color 0.2s ease;
+    }
+    .playbook-close-btn:hover{ background: var(--light-gray); }
+
+    .playbook-sidebar-body{
+      padding: 14px 18px 20px;
+      padding-bottom: 50px;
+      overflow-y: auto;
+      flex:1;
+      display:flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .saved-items-empty{
+      font-size: 13px;
+      color: var(--dark-gray);
+      line-height: 1.6;
+    }
+    .saved-items-list{ list-style:none; margin:0; padding:0; }
+
+    .saved-item{
+      padding: 10px 10px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      background: var(--primary-white);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      margin-bottom: 10px;
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .saved-item-title-row{
+      display:flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .saved-item-title{
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    .saved-item-type{
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--accent-purple-dark);
+      font-weight: 600;
+    }
+    .saved-item-meta{
+      font-size: 12px;
+      color: var(--dark-gray);
+    }
+    .saved-item-link{
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--accent-purple);
+      text-decoration:none;
+      font-weight: 600;
+      display:inline-flex;
+      align-items:center;
+      gap: 4px;
+    }
+    .saved-item-link:hover{ text-decoration: underline; }
+
+    .playbook-quick-links{
+      margin-top: 185px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-light);
+    }
+    .quick-links-title{
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-medium);
+    }
+    .playbook-quick-links-list{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .quick-link-pill{
+      width: 58%;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(123,95,196,0.35);
+      background: linear-gradient(135deg, rgba(123,95,196,0.08), rgba(123,95,196,0.02));
+      text-decoration:none;
+      color: var(--accent-purple-dark);
+      font-size: 13px;
+      font-weight: 650;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .quick-link-pill:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+      background: linear-gradient(135deg, rgba(123,95,196,0.16), rgba(123,95,196,0.06));
+    }
+    .dark-mode .quick-link-pill{
+      border-color: rgba(157,134,233,0.55);
+      background: linear-gradient(135deg, rgba(123,95,196,0.26), rgba(123,95,196,0.12));
+    }
+
+    /* ===========================
+       FOOTER
+    =========================== */
+    footer{
+      background: var(--primary-white);
+      padding: 10px 0;
+      border-top: 1px solid var(--border-light);
+      margin-top: 30px;
+      text-align:center;
+      color: var(--text-medium);
+    }
+
+    /* ===========================
+       RESPONSIVE
+    =========================== */
+    @media (max-width: 1024px){
+      .context-tips-grid{ grid-template-columns: 1fr; gap: 24px; }
+      .modules-grid{ grid-template-columns: 1fr; }
+      .pack-grid{ grid-template-columns: repeat(2, 1fr); }
+      .pack-bar{ flex-direction: column; align-items: stretch; }
+      .pack-actions{ justify-content: flex-start; }
+      textarea.module-input{ min-height: 380px; }
+      .module-card{ min-height: 560px; }
+      .workspace-actions.bottom{ justify-content: flex-start; }
+    }
+    @media (max-width: 768px){
+      .tool-hero-section{ margin-top: 100px; }
+      .hero-main-heading{ font-size: 36px; }
+      .save-btn{ right: 18px; top: 10px; }
+      .my-playbook-fab{ bottom: 18px; right: 18px; }
+      .pack-grid{ grid-template-columns: 1fr; }
+
+      .category-pill{
+        font-size: 12px;
+        padding: 7px 14px;
+        height: 34px;
+      }
+      textarea.module-input{ min-height: 390px; }
+      .module-card{ min-height: 590px; }
+      .workspace-actions.bottom{ justify-content: flex-start; }
+    }
+    @media (max-width: 480px){
+      .hero-main-heading{ font-size: 32px; }
+      .checklist-name{ font-size: 13px; }
+      .workspace-actions.bottom{ justify-content: flex-start; }
+      .pack-actions{ justify-content: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ===========================
+     NAVIGATION
+=========================== -->
+<nav>
+  <div class="container nav-container">
+    <button class="mobile-toggle" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+
+    <a href="index.html" class="logo" aria-label="The Employee Playbook">
+      <img src="./assets/img/logo.png" alt="The Employee Playbook" class="logo-img" id="mainLogo">
+      <div class="logo-fallback" id="logoFallback">The Employee Playbook</div>
+    </a>
+
+    <div class="nav-links">
+      <a href="the-lens.html" class="nav-link">The Lens</a>
+      <a href="the-toolkit.html" class="nav-link">The Toolkit</a>
+      <div class="nav-link-container">
+        <a href="the-coach.html" class="nav-link">The Coach</a>
+        <span class="new-tag">NEW</span>
+      </div>
+      <a href="the-shift.html" class="nav-link">The Shift</a>
+      <a href="the-pricing.html" class="nav-link">The Pricing</a>
+      <a href="sign-in.html" class="mobile-sign-in">Sign In</a>
+      <a href="create-account.html" class="mobile-sign-up">Sign Up</a>
+    </div>
+
+    <div class="nav-actions">
+      <a href="create-account.html" class="header-cta">Sign up</a>
+      <a href="sign-in.html" class="sign-in">Sign in</a>
+      <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===========================
+     HERO
+=========================== -->
+<div class="tool-hero-section">
+  <button class="save-btn" id="saveBtn">
+    <i class="far fa-bookmark"></i>
+    <span>Save</span>
+  </button>
+
+  <div class="tool-hero-content">
+    <div class="breadcrumb">
+      <a href="index.html"><i class="fas fa-house"></i> Home</a>
+      <i class="fas fa-chevron-right"></i>
+      <a href="the-toolkit.html">The Toolkit</a>
+      <i class="fas fa-chevron-right"></i>
+      <a href="category-career-playbook.html">Career Playbook</a>
+      <i class="fas fa-chevron-right"></i>
+      <span class="current">Exit &amp; Reputation Plan</span>
+    </div>
+
+    <span class="checklist-name">EXIT &amp; REPUTATION PLAN</span>
+
+    <h1 class="hero-main-heading">Leave clean, stay powerful, and control the final narrative without burning bridges</h1>
+
+    <div class="hero-subheading">
+      This tool helps you plan your exit like a strategist: protect your reputation, reduce legal/process risk, secure references,
+      and leave with momentum. Draft the modules, then generate an Exit Pack: timeline, risk prompts, and ready-to-send scripts.
+    </div>
+
+    <div class="related-row" aria-label="Related categories">
+      <span class="related-label">Related categories</span>
+
+      <div class="related-pills">
+        <a class="category-pill hr" href="category-hr-and-formal-processes.html" title="HR & Formal Processes">
+          <i class="fas fa-gavel category-icon"></i>
+          <span>HR &amp; Formal Processes</span>
+        </a>
+
+        <a class="category-pill politics" href="category-workplace-dynamics-and-politics.html" title="Workplace Dynamics & Politics">
+          <i class="fas fa-chess category-icon"></i>
+          <span>Workplace Dynamics & Politics</span>
+        </a>
+
+        <a class="category-pill confidence" href="category-confidence-presence-influence.html" title="Confidence, Presence & Influence">
+          <i class="fas fa-bolt category-icon"></i>
+          <span>Confidence, Presence & Influence</span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===========================
+     CONTEXT & PRO TIPS
+=========================== -->
+<div class="context-tips-grid">
+  <div class="context-card">
+    <h3 class="section-title"><i class="fas fa-compass"></i>When to Use This Plan</h3>
+    <ul class="bullet-list">
+      <li>When you’re considering resigning, negotiating an exit, or sensing you may be managed out.</li>
+      <li>When restructure, performance noise, or politics are creating reputational risk.</li>
+      <li>When you want to leave <strong>cleanly</strong> but still protect yourself (facts, narrative, documentation).</li>
+      <li>When you need references, a handover strategy, or a controlled goodbye message.</li>
+      <li>When you want your exit to increase leverage — not create vulnerability.</li>
+    </ul>
+  </div>
+
+  <div class="tips-card">
+    <h3 class="section-title"><i class="fas fa-bolt"></i>How to Use It (fast)</h3>
+    <ul class="bullet-list">
+      <li>Separate <strong>facts</strong> (what’s documented) from <strong>stories</strong> (what people say).</li>
+      <li>Assume your exit creates a “final version” of you in people’s heads — design it.</li>
+      <li>Secure your <strong>proof</strong>: decisions, outcomes, ownership, and written updates.</li>
+      <li>Keep tone controlled. Calm professionalism is a signal of strength.</li>
+      <li>Exit clean, but never naïve: protect your future self.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===========================
+     WORKSPACE
+=========================== -->
+<div class="workspace-wrap" id="workspace">
+  <div class="workspace-header">
+    <div class="workspace-title">
+      <h2>Draft your exit & reputation plan</h2>
+      <p>
+        Eight modules to plan the exit, protect your narrative, reduce HR/process risk, and leave with leverage.
+        Generate your Exit Pack when you have enough to execute.
+      </p>
+    </div>
+  </div>
+
+  <div class="modules-grid" id="modulesGrid">
+    <!-- Modules injected by JS -->
+  </div>
+
+  <!-- ACTIONS AT BOTTOM -->
+  <div class="workspace-actions bottom" aria-label="Draft actions">
+    <button class="btn secondary" id="copyDraftBtn"><i class="far fa-copy"></i> Copy draft</button>
+    <button class="btn secondary" id="clearDraftBtn"><i class="fas fa-eraser"></i> Clear</button>
+    <button class="btn primary" id="generatePackBtn" disabled><i class="fas fa-wand-magic-sparkles"></i> Generate Exit Pack</button>
+  </div>
+</div>
+
+<!-- ===========================
+     GENERATED PACK
+=========================== -->
+<div class="pack-section" id="packSection">
+  <div class="pack-header">
+    <h2 class="pack-title">Your Exit Pack</h2>
+    <p class="pack-subtitle">
+      A structured pack you can use immediately: a one-page exit plan, risk prompts to avoid reputation traps,
+      and scripts for resignation/negotiation/handover — UK-friendly and calm.
+    </p>
+  </div>
+
+  <div class="pack-bar">
+    <div class="pack-metrics">
+      <div class="metric-row">
+        <div class="metric-title">Draft completeness</div>
+        <div class="metric-score" id="completenessScore">0%</div>
+      </div>
+      <div class="mini-progress"><div class="mini-fill" id="miniFill"></div></div>
+      <div class="metric-row" style="margin-top:2px;">
+        <div class="metric-title">Exit risk signal</div>
+        <div class="metric-score" id="riskSignal">—</div>
+      </div>
+    </div>
+
+    <div class="pack-actions">
+      <button class="btn primary" id="copyPackBtn"><i class="far fa-copy"></i> Copy pack</button>
+      <button class="btn secondary" id="downloadPackBtn"><i class="fas fa-download"></i> Download .txt</button>
+      <button class="btn secondary" id="printPackBtn"><i class="fas fa-print"></i> Print</button>
+    </div>
+  </div>
+
+  <h3 class="section-header purple"><i class="fas fa-flag-checkered"></i> One-page exit plan</h3>
+  <div class="pack-output">
+    <div class="mono" id="onePageOutput"></div>
+  </div>
+
+  <h3 class="section-header orange"><i class="fas fa-triangle-exclamation"></i> Exit risk prompts (avoid reputation damage)</h3>
+  <div class="pack-grid" id="riskGrid"></div>
+
+  <h3 class="section-header blue"><i class="fas fa-comments"></i> Scripts (calm, clear, UK-friendly)</h3>
+  <div class="pack-grid" id="scriptsGrid"></div>
+</div>
+
+<!-- ===========================
+     MY PLAYBOOK SIDEBAR (Right)
+=========================== -->
+<div class="playbook-sidebar-overlay" id="playbookOverlay">
+  <div class="playbook-sidebar" id="playbookSidebar">
+    <div class="playbook-sidebar-header">
+      <div class="playbook-sidebar-header-title-row">
+        <h3>My Playbook</h3>
+        <button class="playbook-close-btn" id="closePlaybook" aria-label="Close My Playbook">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p>Saved items</p>
+    </div>
+    <div class="playbook-sidebar-body">
+      <div id="savedItemsContainer">
+        <p class="saved-items-empty" id="savedItemsEmpty">
+          You haven’t saved anything yet. Use <strong>Save</strong> on tools you want quick access to.
+        </p>
+        <ul class="saved-items-list" id="savedItemsList"></ul>
+      </div>
+
+      <div class="playbook-quick-links">
+        <div class="playbook-quick-links-header">
+          <span class="quick-links-title">Quick links</span>
+        </div>
+        <div class="playbook-quick-links-list">
+          <a href="dashboard.html" class="quick-link-pill">
+            <i class="fas fa-gauge"></i> The Dashboard
+          </a>
+          <a href="the-lens.html" class="quick-link-pill">
+            <i class="fas fa-search"></i> The Lens
+          </a>
+          <a href="the-toolkit.html" class="quick-link-pill">
+            <i class="fas fa-toolbox"></i> The Toolkit
+          </a>
+          <a href="the-coach.html" class="quick-link-pill">
+            <i class="fas fa-comments"></i> The Coach
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="my-playbook-fab" id="myPlaybookButton">
+  <i class="fas fa-book-open"></i>
+  <span>My Playbook</span>
+</div>
+
+<!-- ===========================
+     FOOTER
+=========================== -->
+<footer>
+  <div class="container">
+    <p>© 2025 The Employee Playbook. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ===========================
+   BOOT
+=========================== */
+document.addEventListener('DOMContentLoaded', () => {
+  // Apply dark mode class to body based on preloaded html class
+  if (document.documentElement.classList.contains('dark-mode')) {
+    document.body.classList.add('dark-mode');
+  }
+
+  document.body.classList.add('loaded');
+
+  initializeThemeToggle();
+  initializeMobileNav();
+  initializePlaybook();
+
+  buildModules();
+  loadDraft();
+  wireDraftHandlers();
+
+  refreshGenerateState();
+});
+
+/* ===========================
+   MOBILE NAV
+=========================== */
+function initializeMobileNav() {
+  const mobileToggle = document.querySelector('.mobile-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (!mobileToggle || !navLinks) return;
+
+  mobileToggle.addEventListener('click', function () {
+    navLinks.classList.toggle('active');
+    const icon = this.querySelector('i');
+    if (icon) {
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-times');
+    }
+  });
+
+  document.addEventListener('click', function(event) {
+    if (navLinks.classList.contains('active') &&
+        !navLinks.contains(event.target) &&
+        !mobileToggle.contains(event.target)) {
+      navLinks.classList.remove('active');
+      const icon = mobileToggle.querySelector('i');
+      if (icon) {
+        icon.classList.add('fa-bars');
+        icon.classList.remove('fa-times');
+      }
+    }
+  });
+}
+
+/* ===========================
+   THEME TOGGLE + LOGO
+=========================== */
+function initializeThemeToggle() {
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  if (!themeToggleBtn) return;
+
+  const themeIcon = themeToggleBtn.querySelector('i');
+  const logoImg = document.getElementById('mainLogo');
+  const logoFallback = document.getElementById('logoFallback');
+
+  function getLogoPath(filename) {
+    if (window.location.protocol === 'file:') {
+      const currentPath = window.location.pathname;
+      const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+      return basePath + 'assets/img/' + filename;
+    } else {
+      return './assets/img/' + filename;
+    }
+  }
+
+  function showFallbackLogo() {
+    if (logoImg) logoImg.style.display = 'none';
+    if (logoFallback) logoFallback.style.display = 'inline-flex';
+  }
+
+  function showImageLogo() {
+    if (logoFallback) logoFallback.style.display = 'none';
+    if (logoImg) logoImg.style.display = 'block';
+  }
+
+  function updateLogoForTheme(isDarkMode) {
+    if (!logoImg) return;
+    showImageLogo();
+    logoImg.src = isDarkMode ? getLogoPath('logo-dark.png') : getLogoPath('logo.png');
+    logoImg.alt = 'The Employee Playbook';
+  }
+
+  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+  const savedTheme = localStorage.getItem('theme');
+  const shouldUseDark = savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches);
+
+  if (shouldUseDark) {
+    document.body.classList.add('dark-mode');
+    document.documentElement.classList.add('dark-mode');
+    if (themeIcon) { themeIcon.classList.remove('fa-moon'); themeIcon.classList.add('fa-sun'); }
+    updateLogoForTheme(true);
+  } else {
+    document.body.classList.remove('dark-mode');
+    document.documentElement.classList.remove('dark-mode');
+    if (themeIcon) { themeIcon.classList.remove('fa-sun'); themeIcon.classList.add('fa-moon'); }
+    updateLogoForTheme(false);
+  }
+
+  themeToggleBtn.addEventListener('click', function() {
+    const isDarkMode = document.body.classList.contains('dark-mode');
+
+    if (isDarkMode) {
+      document.body.classList.remove('dark-mode');
+      document.documentElement.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+      if (themeIcon) { themeIcon.classList.remove('fa-sun'); themeIcon.classList.add('fa-moon'); }
+      updateLogoForTheme(false);
+    } else {
+      document.body.classList.add('dark-mode');
+      document.documentElement.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+      if (themeIcon) { themeIcon.classList.remove('fa-moon'); themeIcon.classList.add('fa-sun'); }
+      updateLogoForTheme(true);
+    }
+  });
+
+  prefersDarkScheme.addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      if (e.matches) {
+        document.body.classList.add('dark-mode');
+        document.documentElement.classList.add('dark-mode');
+        if (themeIcon) { themeIcon.classList.remove('fa-moon'); themeIcon.classList.add('fa-sun'); }
+        updateLogoForTheme(true);
+      } else {
+        document.body.classList.remove('dark-mode');
+        document.documentElement.classList.remove('dark-mode');
+        if (themeIcon) { themeIcon.classList.remove('fa-sun'); themeIcon.classList.add('fa-moon'); }
+        updateLogoForTheme(false);
+      }
+    }
+  });
+
+  if (logoImg) {
+    logoImg.addEventListener('error', function() {
+      if (this.src.indexOf('logo-dark.png') !== -1) {
+        this.src = getLogoPath('logo.png');
+      } else {
+        showFallbackLogo();
+      }
+    });
+  }
+}
+
+/* ===========================
+   MODULES (EVEN NUMBER)
+   IMPORTANT FIX: We do NOT inject multi-line placeholder text into HTML attributes.
+   We set placeholders after creation to prevent DOM parsing issues.
+=========================== */
+const DRAFT_KEY = 'tepExitReputationDraft_v1';
+
+const modules = [
+  {
+    id: 'exit_decision',
+    title: 'Exit intention (why, when, what “clean” looks like)',
+    hint: 'You’re designing the outcome — not just reacting.',
+    pill: 'Intent',
+    placeholder:
+`Define your intent with brutal clarity.
+
+1) Why I’m exiting (facts + pattern, not emotion):
+• …
+
+2) My preferred exit path:
+• Resign normally / Negotiate terms / Wait & see / Internal move
+
+3) My timing window:
+• Ideal date:
+• Latest tolerable date:
+• What must happen before I go:
+
+4) “Clean exit” definition:
+• What I need to protect (reputation, reference, finances, wellbeing)
+• What I will not do (explode, rant, public blame, sloppy handover)`
+  },
+  {
+    id: 'runway_and_options',
+    title: 'Runway & options (your leverage)',
+    hint: 'Leverage comes from choices. Choices come from runway.',
+    pill: 'Runway',
+    placeholder:
+`Map your leverage position.
+
+• Financial runway (weeks/months):
+• Risk tolerance (low/medium/high):
+• Back-up options (roles, contract, internal move, referral routes):
+
+Define your negotiation posture:
+• Must-haves:
+• Nice-to-haves:
+• Deal-breakers:
+
+What you will quietly prepare:
+• CV/LinkedIn refresh items
+• Recruiter list
+• Portfolio / evidence pack`
+  },
+  {
+    id: 'stakeholder_landscape',
+    title: 'Stakeholder landscape (who controls the narrative)',
+    hint: 'Exit is political whether you like it or not.',
+    pill: 'Map',
+    placeholder:
+`List key stakeholders and their likely behaviour during an exit.
+
+Include:
+• Manager / skip / HR
+• Key peers and influencers
+• One “wild card” (high ego, political, unpredictable)
+
+For each:
+• Their incentive (what they want)
+• Their likely storyline about you
+• Your risk level (low/medium/high)
+• Your strategy (align / neutralise / document / minimise contact)`
+  },
+  {
+    id: 'evidence_and_receipts',
+    title: 'Evidence & receipts (protect your future self)',
+    hint: 'Facts are your armour if things get messy.',
+    pill: 'Proof',
+    placeholder:
+`Create your evidence bank for exit.
+
+Include:
+• Outcomes delivered (numbers where possible)
+• Decisions you influenced (with dates)
+• Risks you raised (and what happened)
+• Ownership clarity (who owned what)
+
+Write your “exit-safe” timeline:
+• Key dates
+• Key agreements
+• Key communications
+
+Also note:
+• Anything you need copies of for your portfolio (within policy)
+• Any sensitive/confidential boundaries you must respect`
+  },
+  {
+    id: 'hr_process_risk',
+    title: 'HR/process risk scan (what could be weaponised)',
+    hint: 'Spot attack vectors early: policy, process, performance narratives.',
+    pill: 'Risk',
+    placeholder:
+`Scan for process traps.
+
+• Current status: stable / informal noise / formal process / PIP risk / restructure
+• Any “paper trail” being built about you?
+• Any policy risks (lateness, conduct, comms, handover, access)?
+
+Write:
+• What you will document going forward (weekly summaries, decisions, owners)
+• What you will avoid (heated language, off-channel arguments, vague updates)
+• If exiting, what you want confirmed in writing (dates, notice, pay, references)`
+  },
+  {
+    id: 'handover_and_exit_story',
+    title: 'Handover plan (the final impression)',
+    hint: 'A crisp handover is reputation engineering.',
+    pill: 'Handover',
+    placeholder:
+`Design a handover that makes you look calm, competent, and valuable.
+
+Include:
+• Workstreams and current status
+• Risks and mitigations
+• Decision log (what’s been decided, by whom, why)
+• Next actions + owners
+• Where information lives (docs, trackers)
+
+Write your “exit story” (1–2 lines):
+• Professional, neutral, future-facing.
+• No blame. No drama. No emotional dump.`
+  },
+  {
+    id: 'scripts_and_messages',
+    title: 'Messages & scripts (resignation, negotiation, goodbye)',
+    hint: 'Prepared words = controlled outcomes.',
+    pill: 'Scripts',
+    placeholder:
+`Draft the key messages:
+
+1) Resignation message (to manager)
+2) Negotiation opener (if you want terms)
+3) Internal goodbye note (team)
+4) External narrative (if asked: “why did you leave?”)
+
+For each:
+• Tone you want to signal (calm / appreciative / firm)
+• One boundary line you will use if pushed`
+  },
+  {
+    id: 'personality_lens',
+    title: 'Personality / behaviour lens (how people will read your exit)',
+    hint: 'Under pressure, your style is interpreted — sometimes badly.',
+    pill: 'Lens',
+    placeholder:
+`Pick 1–2 patterns that could be misread during an exit.
+
+Common patterns:
+• High standards (misread as “difficult”)
+• Quiet competence (misread as “disengaged”)
+• Direct communicator (misread as “attitude”)
+• Helpful rescuer (misread as “always available”)
+• Cautious thinker (misread as “slow”)
+
+For each:
+• How it’s misread
+• Your translation sentence (frame intent)
+• Your micro-behaviour (speak early, summarise facts, document decisions)
+
+End with:
+• “The version of me I want visible on the way out is…”`
+  }
+];
+
+(function ensureEvenModules(){
+  if (modules.length % 2 !== 0) {
+    modules.push({
+      id: 'notes',
+      title: 'Notes (auto-added)',
+      hint: 'A safety module to keep the set even.',
+      pill: 'Notes',
+      placeholder: "Any extra context you don't want to lose."
+    });
+  }
+})();
+
+function buildModules(){
+  const grid = document.getElementById('modulesGrid');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+
+  modules.forEach((m, idx) => {
+    const card = document.createElement('div');
+    card.className = 'module-card';
+
+    card.innerHTML = `
+      <div class="module-top">
+        <div class="module-chip">
+          <div class="module-num">${idx + 1}</div>
+          <div class="module-title">
+            <h3>${escapeHtml(m.title)}</h3>
+            <p>${escapeHtml(m.hint)}</p>
+          </div>
+        </div>
+        <div class="module-helper">
+          <i class="fas fa-crosshairs"></i>
+          <span>${escapeHtml(m.pill)}</span>
+        </div>
+      </div>
+
+      <textarea class="module-input" id="input_${escapeAttr(m.id)}"></textarea>
+
+      <div class="module-meta">
+        <div class="meta-left">
+          <span class="micro-pill clear-pill" role="button" tabindex="0" id="clear_${escapeAttr(m.id)}" aria-label="Clear all text in this box">
+            <i class="fas fa-eraser"></i> Clear all
+          </span>
+        </div>
+        <div class="count" id="count_${escapeAttr(m.id)}">0 chars</div>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    // SAFE PLACEHOLDER SET (no HTML parsing risk)
+    const input = document.getElementById(`input_${m.id}`);
+    if (input) input.placeholder = m.placeholder || '';
+  });
+}
+
+function escapeHtml(str){
+  const s = String(str || '');
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+function escapeAttr(str){
+  // For IDs and attribute contexts (conservative)
+  return String(str || '').replace(/[^a-zA-Z0-9_\-]/g, '');
+}
+
+/* ===========================
+   DRAFT STORAGE
+=========================== */
+function getDraft(){
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch(e){
+    return {};
+  }
+}
+function setDraft(d){
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); }
+  catch(e){ console.warn('Draft save failed:', e); }
+}
+
+function loadDraft(){
+  const d = getDraft();
+  modules.forEach(m => {
+    const el = document.getElementById(`input_${m.id}`);
+    if (!el) return;
+    el.value = (d[m.id] || '');
+    updateModuleCount(m.id);
+  });
+}
+
+function wireDraftHandlers(){
+  modules.forEach(m => {
+    const el = document.getElementById(`input_${m.id}`);
+    const clearBtn = document.getElementById(`clear_${m.id}`);
+    if (el) {
+      el.addEventListener('input', () => {
+        const d = getDraft();
+        d[m.id] = el.value;
+        setDraft(d);
+        updateModuleCount(m.id);
+        refreshGenerateState();
+      });
+    }
+
+    if (clearBtn) {
+      const clearThis = () => {
+        const input = document.getElementById(`input_${m.id}`);
+        if (!input) return;
+        input.value = '';
+        const d = getDraft();
+        d[m.id] = '';
+        setDraft(d);
+        updateModuleCount(m.id);
+        refreshGenerateState();
+      };
+
+      clearBtn.addEventListener('click', clearThis);
+      clearBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          clearThis();
+        }
+      });
+    }
+  });
+
+  const copyDraftBtn = document.getElementById('copyDraftBtn');
+  const clearDraftBtn = document.getElementById('clearDraftBtn');
+  const generateBtn = document.getElementById('generatePackBtn');
+
+  if (copyDraftBtn) copyDraftBtn.addEventListener('click', copyDraft);
+  if (clearDraftBtn) clearDraftBtn.addEventListener('click', clearDraft);
+  if (generateBtn) generateBtn.addEventListener('click', generateExitPack);
+
+  const copyPackBtn = document.getElementById('copyPackBtn');
+  const downloadPackBtn = document.getElementById('downloadPackBtn');
+  const printPackBtn = document.getElementById('printPackBtn');
+
+  if (copyPackBtn) copyPackBtn.addEventListener('click', () => {
+    const text = buildPackText();
+    copyText(text, copyPackBtn, 'Pack copied');
+  });
+
+  if (downloadPackBtn) downloadPackBtn.addEventListener('click', () => {
+    const text = buildPackText();
+    downloadText(text, 'exit-and-reputation-pack.txt');
+  });
+
+  if (printPackBtn) printPackBtn.addEventListener('click', () => window.print());
+}
+
+function updateModuleCount(moduleId){
+  const input = document.getElementById(`input_${moduleId}`);
+  const count = document.getElementById(`count_${moduleId}`);
+  if (!input || !count) return;
+  count.textContent = `${(input.value || '').length} chars`;
+}
+
+function refreshGenerateState(){
+  const btn = document.getElementById('generatePackBtn');
+  if (!btn) return;
+
+  const d = getDraft();
+  const filled = modules.filter(m => ((d[m.id] || '').trim().length > 0)).length;
+  btn.disabled = filled < 2;
+}
+
+/* ===========================
+   COPY / CLEAR
+=========================== */
+function copyDraft(){
+  const text = buildDraftText();
+  const btn = document.getElementById('copyDraftBtn');
+  copyText(text, btn, 'Draft copied');
+}
+
+function clearDraft(){
+  const ok = confirm('Clear the full draft? This cannot be undone.');
+  if (!ok) return;
+
+  localStorage.removeItem(DRAFT_KEY);
+  loadDraft();
+  refreshGenerateState();
+
+  const pack = document.getElementById('packSection');
+  if (pack) pack.classList.remove('active');
+}
+
+/* ===========================
+   CLIPBOARD (FIXED)
+   - Works on https, localhost
+   - Falls back for file:// and restricted contexts
+=========================== */
+async function copyText(text, buttonEl, successLabel){
+  let copied = false;
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      copied = true;
+    }
+  } catch (e) {
+    copied = false;
+  }
+
+  if (!copied) {
+    // Fallback: temporary textarea
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+    } catch (e) {
+      copied = false;
+    }
+  }
+
+  if (!buttonEl) return;
+
+  const originalHTML = buttonEl.innerHTML;
+  const originalBg = buttonEl.style.background;
+  const originalColor = buttonEl.style.color;
+
+  if (copied) {
+    buttonEl.innerHTML = `<i class="fas fa-check"></i> ${successLabel}`;
+    buttonEl.style.background = '#10b981';
+    buttonEl.style.color = '#ffffff';
+  } else {
+    buttonEl.innerHTML = `<i class="fas fa-triangle-exclamation"></i> Copy failed`;
+    buttonEl.style.background = '#f59e0b';
+    buttonEl.style.color = '#ffffff';
+  }
+
+  setTimeout(() => {
+    buttonEl.innerHTML = originalHTML;
+    buttonEl.style.background = originalBg;
+    buttonEl.style.color = originalColor;
+  }, 1800);
+}
+
+function downloadText(text, filename){
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ===========================
+   PACK GENERATION
+=========================== */
+function generateExitPack(){
+  const d = getDraft();
+
+  const packSection = document.getElementById('packSection');
+  const onePageOutput = document.getElementById('onePageOutput');
+  const riskGrid = document.getElementById('riskGrid');
+  const scriptsGrid = document.getElementById('scriptsGrid');
+
+  if (!packSection || !onePageOutput || !riskGrid || !scriptsGrid) return;
+
+  const completeness = calcCompleteness(d);
+  const risk = calcRiskSignal(d, completeness);
+
+  document.getElementById('completenessScore').textContent = `${completeness}%`;
+  document.getElementById('riskSignal').textContent = risk.label;
+
+  const fill = document.getElementById('miniFill');
+  fill.style.width = `${completeness}%`;
+  fill.classList.remove('high','medium','low');
+  fill.classList.add(risk.fillClass);
+
+  onePageOutput.textContent = buildOnePageSummary(d);
+
+  riskGrid.innerHTML = '';
+  buildRiskCards(d, riskGrid);
+
+  scriptsGrid.innerHTML = '';
+  buildScriptCards(d, scriptsGrid);
+
+  packSection.classList.add('active');
+  packSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function calcCompleteness(d){
+  const total = modules.length;
+  const filled = modules.filter(m => ((d[m.id] || '').trim().length > 0)).length;
+  return total > 0 ? Math.round((filled / total) * 100) : 0;
+}
+
+function calcRiskSignal(d, completeness){
+  const coreIds = ['exit_decision','runway_and_options','stakeholder_landscape','evidence_and_receipts','hr_process_risk','handover_and_exit_story','scripts_and_messages'];
+  const missingCore = coreIds.filter(id => !((d[id]||'').trim().length > 0));
+
+  if (completeness >= 75 && missingCore.length === 0) return { label: 'Lower risk', fillClass: 'high' };
+  if (completeness >= 45 && missingCore.length <= 2) return { label: 'Moderate risk', fillClass: 'medium' };
+  return { label: 'Higher risk', fillClass: 'low' };
+}
+
+function buildOnePageSummary(d){
+  const safe = (s) => (s || '').trim() || '—';
+
+  const now = new Date();
+  const date = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+
+  const out = [];
+  out.push(`EXIT & REPUTATION PACK (One-page)`);
+  out.push(`Date: ${date}`);
+  out.push(``);
+  out.push(`1) Exit intention (why, when, what “clean” looks like)`);
+  out.push(indentBlock(safe(d.exit_decision)));
+  out.push(``);
+  out.push(`2) Runway & options (your leverage)`);
+  out.push(indentBlock(safe(d.runway_and_options)));
+  out.push(``);
+  out.push(`3) Stakeholder landscape (who controls the narrative)`);
+  out.push(indentBlock(safe(d.stakeholder_landscape)));
+  out.push(``);
+  out.push(`4) Evidence & receipts (protect your future self)`);
+  out.push(indentBlock(safe(d.evidence_and_receipts)));
+  out.push(``);
+  out.push(`5) HR/process risk scan (what could be weaponised)`);
+  out.push(indentBlock(safe(d.hr_process_risk)));
+  out.push(``);
+  out.push(`6) Handover plan + exit story (final impression)`);
+  out.push(indentBlock(safe(d.handover_and_exit_story)));
+  out.push(``);
+  out.push(`7) Messages & scripts (resignation, negotiation, goodbye)`);
+  out.push(indentBlock(safe(d.scripts_and_messages)));
+  out.push(``);
+  out.push(`8) Personality / behaviour lens (how you’ll be read)`);
+  out.push(indentBlock(safe(d.personality_lens)));
+  out.push(``);
+  out.push(`My clean-exit anchors (3 things I will always do):`);
+  out.push(indentBlock(buildAnchors(d)));
+
+  return out.join('\n');
+}
+
+function buildAnchors(d){
+  const a = [];
+  a.push('Keep everything factual: dates, decisions, owners, outcomes.');
+  a.push('Use calm written summaries to prevent narrative drift.');
+  a.push('Deliver a crisp handover that makes competence undeniable.');
+  if ((d.evidence_and_receipts || '').trim()) a.push('Maintain “receipts” that defend my work if the story turns.');
+  if ((d.hr_process_risk || '').trim()) a.push('Avoid process traps: no heat, no loose language, no vague commitments.');
+  return a.map(x => `• ${x}`).join('\n');
+}
+
+function indentBlock(text){
+  return (text || '—').split('\n').map(l => `   ${l}`).join('\n');
+}
+
+function buildRiskCards(d, grid){
+  const prompts = getRiskPrompts(d);
+  prompts.slice(0, 6).forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'pack-card';
+    card.innerHTML = `
+      <div class="pc-ico"><i class="${escapeHtml(p.icon)}"></i></div>
+      <div class="pc-title">${escapeHtml(p.title)}</div>
+      <div class="pc-body">${escapeCardText(p.body)}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function getRiskPrompts(d){
+  const missing = (id) => !((d[id]||'').trim());
+  const prompts = [];
+
+  prompts.push({
+    title: 'Are you exiting without a controlled story?',
+    icon: 'fas fa-bullhorn',
+    body: 'If you don’t define a neutral, future-focused reason for leaving, others will define one for you. Keep it short, consistent, and calm.'
+  });
+
+  prompts.push({
+    title: 'Is there a “paper trail” being built about you?',
+    icon: 'fas fa-file-lines',
+    body: 'If process risk exists, avoid heat. Document facts, decisions, ownership, and timelines. Don’t write emotional content you wouldn’t want read back.'
+  });
+
+  prompts.push({
+    title: 'Are you leaving value invisible?',
+    icon: 'fas fa-eye-slash',
+    body: 'Quiet delivery can be reframed as low impact. Summarise outcomes and decisions in writing before you go. Visibility is clarity, not ego.'
+  });
+
+  prompts.push({
+    title: 'Are you vulnerable to blame drift during handover?',
+    icon: 'fas fa-arrows-turn-to-dots',
+    body: 'Anything without clear ownership becomes “your fault” when pressure hits. Lock owners, dates, and decisions before departure.'
+  });
+
+  if (missing('evidence_and_receipts')) {
+    prompts.push({
+      title: 'Do you have receipts?',
+      icon: 'fas fa-receipt',
+      body: 'Without receipts, your value becomes opinion-based. Build a simple evidence bank: outcomes, decisions, risks raised, and written summaries.'
+    });
+  } else {
+    prompts.push({
+      title: 'Is your evidence easy to find?',
+      icon: 'fas fa-folder-open',
+      body: 'Evidence that lives only in your head is not evidence. Put it where decision-makers look: weekly updates, meeting notes, and handover docs.'
+    });
+  }
+
+  prompts.push({
+    title: 'Are you letting personality misreads define your exit?',
+    icon: 'fas fa-masks-theater',
+    body: 'High standards can be framed as “difficult”. Quiet competence can be framed as “disengaged”. Add one line that frames intent and protects tone.'
+  });
+
+  // Extra (grid shows first 6)
+  prompts.push({
+    title: 'Are you negotiating without leverage?',
+    icon: 'fas fa-scale-balanced',
+    body: 'Leverage comes from options and runway. Know your must-haves, deal-breakers, and the clean alternative if terms aren’t met.'
+  });
+
+  return prompts;
+}
+
+function buildScriptCards(d, grid){
+  const scripts = getScripts(d);
+  scripts.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'pack-card';
+    card.innerHTML = `
+      <div class="pc-ico"><i class="${escapeHtml(s.icon)}"></i></div>
+      <div class="pc-title">${escapeHtml(s.title)}</div>
+      <div class="pc-body">${escapeCardText(s.body)}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function getScripts(d){
+  const story = deriveExitStory(d);
+
+  return [
+    {
+      title: 'Resignation (manager) — clean and calm',
+      icon: 'fas fa-envelope-open-text',
+      body:
+`“Hi [Name] — I’m writing to formally resign from my role. My last working day will be [date], in line with my notice period.
+I’m committed to a professional handover and will share a clear plan for workstreams, risks, and next steps.
+
+I appreciate the opportunities in the role and want to ensure a smooth transition.”`
+    },
+    {
+      title: 'Negotiation opener (if you want terms)',
+      icon: 'fas fa-handshake',
+      body:
+`“I’d like to discuss a clean and pragmatic exit arrangement that protects delivery and avoids unnecessary disruption.
+I’m keen to agree dates, handover expectations, and confirmation of references in writing so we can close this professionally.”`
+    },
+    {
+      title: 'Neutral exit story (when asked “why are you leaving?”)',
+      icon: 'fas fa-comment-dots',
+      body:
+`Use one line. Repeat it consistently.\n
+“${story}”\n
+If pushed:\n
+“I’m focusing on a positive transition and keeping things professional.”`
+    },
+    {
+      title: 'Handover summary (what, so what, next)',
+      icon: 'fas fa-clipboard-check',
+      body:
+`Subject: Handover summary — [Area]\n
+WHAT (status)\n• Workstream A: …\n• Workstream B: …\n• Decisions locked: …\n\nSO WHAT (risk/impact)\n• Key risk: … (mitigation: …)\n• Dependencies: …\n\nNEXT (actions)\n• Owner(s) + dates: …\n• Decisions needed by: …\n• Where docs live: …`
+    },
+    {
+      title: 'Boundary line (if someone tries to provoke you)',
+      icon: 'fas fa-shield-halved',
+      body:
+`“I want to keep this professional. I’m happy to align on facts, dates, and handover. I’m not going to debate interpretations.”`
+    },
+    {
+      title: 'Team goodbye (polished, no oversharing)',
+      icon: 'fas fa-users',
+      body:
+`“I wanted to share that I’ll be leaving the business on [date]. I’m grateful for working with you and I’m committed to a smooth handover.
+Wishing you all the best — and thank you for the collaboration.”`
+    }
+  ];
+}
+
+function deriveExitStory(d){
+  const raw = (d.handover_and_exit_story || '').trim();
+  if (raw) {
+    const firstLine = raw.split('\n').map(s => s.trim()).find(Boolean) || raw;
+    // Keep it short for repeatability
+    return firstLine.length > 140 ? firstLine.slice(0, 140).trim() + '…' : firstLine;
+  }
+  return 'I’m moving on to a role that’s a better fit for where I’m heading next';
+}
+
+function escapeCardText(str){
+  return escapeHtml(str).replace(/\n/g, '<br>');
+}
+
+function buildDraftText(){
+  const d = getDraft();
+  const out = [];
+  out.push('EXIT & REPUTATION PLAN (Draft)');
+  out.push('================================');
+  out.push('');
+
+  modules.forEach((m, idx) => {
+    out.push(`${idx + 1}. ${m.title}`);
+    out.push((d[m.id] || '').trim() ? (d[m.id] || '').trim() : '—');
+    out.push('');
+  });
+
+  return out.join('\n');
+}
+
+function buildPackText(){
+  const d = getDraft();
+  const onePage = buildOnePageSummary(d);
+
+  const prompts = getRiskPrompts(d).slice(0, 6)
+    .map((p, i) => `${i+1}. ${p.title}\n   ${p.body}`)
+    .join('\n\n');
+
+  const scripts = getScripts(d)
+    .map((s, i) => `${i+1}. ${s.title}\n${s.body}`)
+    .join('\n\n');
+
+  const out = [];
+  out.push(onePage);
+  out.push('\n\nEXIT RISK PROMPTS\n=================\n');
+  out.push(prompts);
+  out.push('\n\nSCRIPTS\n=======\n');
+  out.push(scripts);
+
+  return out.join('');
+}
+
+/* ===========================
+   MY PLAYBOOK (LOCALSTORAGE)
+=========================== */
+const PLAYBOOK_KEY = 'tepSavedItems';
+const CURRENT_TOOL_ID = 'exit-and-reputation-plan';
+const CURRENT_TOOL_TITLE = 'Exit & Reputation Plan';
+const CURRENT_TOOL_TYPE = 'Plan';
+
+function getSavedItems(){
+  try {
+    const raw = localStorage.getItem(PLAYBOOK_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch(e){
+    console.warn('Error reading saved items:', e);
+    return [];
+  }
+}
+function setSavedItems(items){
+  try { localStorage.setItem(PLAYBOOK_KEY, JSON.stringify(items)); }
+  catch(e){ console.warn('Error saving items:', e); }
+}
+
+function initializePlaybook(){
+  const playbookOverlay = document.getElementById('playbookOverlay');
+  const playbookSidebar = document.getElementById('playbookSidebar');
+  const playbookButton = document.getElementById('myPlaybookButton');
+  const closeBtn = document.getElementById('closePlaybook');
+  const saveItemBtn = document.getElementById('saveBtn');
+
+  if (!playbookOverlay || !playbookSidebar || !playbookButton || !closeBtn || !saveItemBtn) return;
+
+  renderSavedItems();
+
+  const savedItems = getSavedItems();
+  const isAlreadySaved = savedItems.some(item => item.id === CURRENT_TOOL_ID);
+  updateSaveButtonState(saveItemBtn, isAlreadySaved);
+
+  saveItemBtn.addEventListener('click', () => {
+    const items = getSavedItems();
+    const index = items.findIndex(item => item.id === CURRENT_TOOL_ID);
+    let nowSaved;
+
+    if (index === -1) {
+      const toolLink = window.location.pathname.split('/').pop() || 'exit-and-reputation-plan.html';
+      items.push({
+        id: CURRENT_TOOL_ID,
+        title: CURRENT_TOOL_TITLE,
+        type: CURRENT_TOOL_TYPE,
+        link: toolLink,
+        savedAt: new Date().toISOString()
+      });
+      nowSaved = true;
+    } else {
+      items.splice(index, 1);
+      nowSaved = false;
+    }
+
+    setSavedItems(items);
+    updateSaveButtonState(saveItemBtn, nowSaved);
+    renderSavedItems();
+  });
+
+  playbookButton.addEventListener('click', () => {
+    playbookOverlay.classList.add('open');
+    playbookSidebar.classList.add('open');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    playbookOverlay.classList.remove('open');
+    playbookSidebar.classList.remove('open');
+  });
+
+  playbookOverlay.addEventListener('click', (e) => {
+    if (e.target === playbookOverlay) {
+      playbookOverlay.classList.remove('open');
+      playbookSidebar.classList.remove('open');
+    }
+  });
+}
+
+function updateSaveButtonState(button, isSaved){
+  if (!button) return;
+  const icon = button.querySelector('i');
+  const label = button.querySelector('span');
+
+  if (isSaved) {
+    button.classList.add('saved');
+    if (icon) { icon.classList.remove('far'); icon.classList.add('fas'); }
+    if (label) label.textContent = 'Saved';
+  } else {
+    button.classList.remove('saved');
+    if (icon) { icon.classList.remove('fas'); icon.classList.add('far'); }
+    if (label) label.textContent = 'Save item';
+  }
+}
+
+function renderSavedItems(){
+  const listEl = document.getElementById('savedItemsList');
+  const emptyEl = document.getElementById('savedItemsEmpty');
+  if (!listEl || !emptyEl) return;
+
+  const items = getSavedItems();
+  listEl.innerHTML = '';
+
+  if (!items.length) {
+    emptyEl.style.display = 'block';
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.className = 'saved-item';
+
+    const savedDate = item.savedAt ? new Date(item.savedAt) : null;
+    const dateText = savedDate
+      ? savedDate.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
+      : '';
+
+    li.innerHTML = `
+      <div class="saved-item-title-row">
+        <span class="saved-item-title">${escapeHtml(item.title)}</span>
+        <span class="saved-item-type">${escapeHtml(item.type)}</span>
+      </div>
+      <div class="saved-item-meta">
+        ${dateText ? `Saved on ${escapeHtml(dateText)}` : ``}
+      </div>
+      <a class="saved-item-link" href="${escapeHtml(item.link)}">
+        Open <i class="fas fa-arrow-right"></i>
+      </a>
+    `;
+    listEl.appendChild(li);
+  });
+}
+</script>
+
+</body>
+</html>
