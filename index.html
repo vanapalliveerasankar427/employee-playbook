@@ -709,7 +709,7 @@
             color: var(--text-medium);
             margin-bottom: 20px;
             line-height: 1.6;
-            max-width: 900px;
+            max-width: 700px;
             margin: 0 auto;
             min-height: 1.6em;
         }
@@ -820,7 +820,7 @@
         .stats-placeholder {
             text-align: left;
             color: var(--text-medium);
-            max-width: 800px;
+            max-width: 700px;
             margin: 0;
             padding-top: 10px;
         }
@@ -838,7 +838,7 @@
             font-size: 18px;
             line-height: 1.6;
             margin-bottom: 30px;
-            max-width: 800px;
+            max-width: 700px;
         }
 
         .stats-placeholder-cta {
@@ -900,7 +900,7 @@
 
         .stat-value {
             font-size: 36px;
-            font-weight: 800;
+            font-weight: 700;
             margin-bottom: 15px;
             color: var(--accent-purple);
             line-height: 1;
@@ -985,7 +985,7 @@
 
         .stats-mobile-value {
             font-size: 28px;
-            font-weight: 800;
+            font-weight: 700;
             margin-bottom: 12px;
             color: var(--accent-purple);
             line-height: 1;
@@ -2156,7 +2156,7 @@
             color: var(--text-medium);
             margin-bottom: 20px;
             line-height: 1.6;
-            max-width: 900px;
+            max-width: 700px;
             margin: 0 auto 60px;
             min-height: 1.6em;
         }
@@ -2249,7 +2249,7 @@
         
         .metric-value {
             font-size: 2.8rem;
-            font-weight: 800;
+            font-weight: 700;
             margin-bottom: 0.5rem;
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
             -webkit-background-clip: text;
@@ -2294,7 +2294,7 @@
 
         .testimonials-carousel {
             position: relative;
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
             overflow: hidden;
         }
@@ -3151,6 +3151,33 @@
     <i class="fas fa-user-plus"></i>
 </a>
 
+<!-- NEW: Create Account Modal -->
+<div class="create-account-modal" id="createAccountModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Create Account</h2>
+            <button class="close-modal" id="closeModal">&times;</button>
+        </div>
+        <form class="modal-form">
+            <div class="form-group">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" id="name" class="form-input" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="Create a password" required>
+            </div>
+            <button type="submit" class="submit-btn">Create Account</button>
+        </form>
+        <div class="modal-footer">
+            Already have an account? <a href="sign-in.html">Sign in</a>
+        </div>
+    </div>
+</div>
 
 <!-- Cookie Popup Overlay -->
 <div class="cookie-popup-overlay" id="cookiePopupOverlay">
@@ -4199,190 +4226,231 @@
     document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('loaded');
         
-        // Create Account Modal Functionality
-        const createAccountTab = document.getElementById('createAccountTab');
+        // Logo fallback handling
+        const logo = document.getElementById('logo');
+        const footerLogo = document.getElementById('footer-logo');
+        const logoFallback = document.getElementById('logo-fallback');
+        const footerLogoFallback = document.getElementById('footer-logo-fallback');
+
+        if (logo && logoFallback) {
+            logo.onerror = function() {
+                this.style.display = 'none';
+                logoFallback.style.display = 'block';
+            };
+        }
+
+        if (footerLogo && footerLogoFallback) {
+            footerLogo.onerror = function() {
+                this.style.display = 'none';
+                footerLogoFallback.style.display = 'block';
+            };
+        }
+        
+        // Safely handle theme toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        if (themeToggle) {
+            const themeIcon = themeToggle.querySelector('i');
+            
+            // Check for saved theme preference or default to light
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (themeIcon) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                }
+            }
+            
+            themeToggle.addEventListener('click', function () {
+                document.body.classList.toggle('dark-mode');
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                
+                // Update icon if present
+                if (themeIcon) {
+                    themeIcon.classList.toggle('fa-moon');
+                    themeIcon.classList.toggle('fa-sun');
+                }
+                
+                // Save theme preference
+                localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+                
+                // Safely update logos if they exist
+                const logo = document.getElementById('logo');
+                const footerLogo = document.getElementById('footer-logo');
+                if (isDarkMode) {
+                    if (logo) logo.src = 'assets/img/logo-dark.png';
+                    if (footerLogo) footerLogo.src = 'assets/img/logo-dark.png';
+                } else {
+                    if (logo) logo.src = 'assets/img/logo.png';
+                    if (footerLogo) footerLogo.src = 'assets/img/logo.png';
+                }
+            });
+        }
+
+        // Mobile navigation toggle with safe element checks
+        const mobileToggle = document.querySelector('.mobile-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (mobileToggle && navLinks) {
+            mobileToggle.addEventListener('click', function () {
+                navLinks.classList.toggle('active');
+                const icon = this.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
+                }
+            });
+        }
+
+        // Create Account Modal Functionality (with safe checks)
         const createAccountModal = document.getElementById('createAccountModal');
+        const createAccountTab = document.getElementById('createAccountTab');
         const closeModal = document.getElementById('closeModal');
         
-        // Open modal when tab is clicked
-        createAccountTab.addEventListener('click', function(e) {
-            e.preventDefault();
-            createAccountModal.classList.add('active');
-        });
+        if (createAccountTab && createAccountModal) {
+            // Open modal when tab is clicked
+            createAccountTab.addEventListener('click', function(e) {
+                e.preventDefault();
+                createAccountModal.classList.add('active');
+            });
+        }
         
-        // Close modal when X button is clicked
-        closeModal.addEventListener('click', function() {
-            createAccountModal.classList.remove('active');
-        });
-        
-        // Close modal when clicking outside the form
-        createAccountModal.addEventListener('click', function(e) {
-            if (e.target === createAccountModal) {
+        if (closeModal && createAccountModal) {
+            // Close modal when X button is clicked
+            closeModal.addEventListener('click', function() {
                 createAccountModal.classList.remove('active');
-            }
-        });
+            });
+        }
+        
+        if (createAccountModal) {
+            // Close modal when clicking outside the form
+            createAccountModal.addEventListener('click', function(e) {
+                if (e.target === createAccountModal) {
+                    createAccountModal.classList.remove('active');
+                }
+            });
+        }
         
         // Close modal with ESC key
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && createAccountModal.classList.contains('active')) {
+            if (e.key === 'Escape' && createAccountModal && createAccountModal.classList.contains('active')) {
                 createAccountModal.classList.remove('active');
             }
         });
         
-        // Handle form submission
+        // Handle form submission if form exists
         const modalForm = document.querySelector('.modal-form');
-        modalForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            // In a real implementation, you would handle form submission here
-            alert('Account creation would be processed here in a real implementation');
-            createAccountModal.classList.remove('active');
-        });
+        if (modalForm) {
+            modalForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // In a real implementation, you would handle form submission here
+                alert('Account creation would be processed here in a real implementation');
+                if (createAccountModal) {
+                    createAccountModal.classList.remove('active');
+                }
+            });
+        }
         
-        // Cookie popup functionality
+        // Cookie popup functionality (safe checks)
         const cookiePopupOverlay = document.getElementById('cookiePopupOverlay');
-        const cookieAccept = document.querySelector('.cookie-accept');
-        const cookieSettings = document.querySelector('.cookie-settings');
         
-        // Show cookie popup after 3 seconds
-        setTimeout(() => {
-            if (!localStorage.getItem('cookiesAccepted')) {
-                cookiePopupOverlay.classList.add('active');
+        if (cookiePopupOverlay) {
+            const cookieAccept = document.querySelector('.cookie-accept');
+            const cookieSettings = document.querySelector('.cookie-settings');
+            
+            // Show cookie popup after 3 seconds
+            setTimeout(() => {
+                if (!localStorage.getItem('cookiesAccepted')) {
+                    cookiePopupOverlay.classList.add('active');
+                }
+            }, 3000);
+            
+            if (cookieAccept) {
+                // Accept cookies
+                cookieAccept.addEventListener('click', function() {
+                    localStorage.setItem('cookiesAccepted', 'true');
+                    cookiePopupOverlay.classList.remove('active');
+                });
             }
-        }, 3000);
-        
-        // Accept cookies
-        cookieAccept.addEventListener('click', function() {
-            localStorage.setItem('cookiesAccepted', 'true');
-            cookiePopupOverlay.classList.remove('active');
-        });
-        
-        // Cookie settings functionality
-        const cookieSettingsButton = document.querySelector('.cookie-settings');
-        const cookieSettingsModal = document.getElementById('cookieSettingsModal');
-        const cookieSettingsClose = document.querySelector('.cookie-settings-close');
-        const cookieSettingsSave = document.querySelector('.cookie-settings-save');
-        const cookieAcceptAll = document.querySelector('.cookie-settings-accept-all');
-        const cookieRejectAll = document.querySelector('.cookie-settings-reject-all');
-        const analyticsCookies = document.getElementById('analyticsCookies');
-        const marketingCookies = document.getElementById('marketingCookies');
-
-        // Open cookie settings
-        cookieSettingsButton.addEventListener('click', function() {
-            cookiePopupOverlay.classList.remove('active');
-            cookieSettingsModal.classList.add('active');
             
-            // Load current preferences
-            const currentPreferences = getCookiePreferences();
-            analyticsCookies.checked = currentPreferences.analytics;
-            marketingCookies.checked = currentPreferences.marketing;
-        });
+            // Cookie settings functionality with safe checks
+            if (cookieSettings) {
+                const cookieSettingsModal = document.getElementById('cookieSettingsModal');
+                if (cookieSettingsModal) {
+                    const cookieSettingsClose = document.querySelector('.cookie-settings-close');
+                    const cookieSettingsSave = document.querySelector('.cookie-settings-save');
+                    const cookieAcceptAll = document.querySelector('.cookie-settings-accept-all');
+                    const cookieRejectAll = document.querySelector('.cookie-settings-reject-all');
+                    const analyticsCookies = document.getElementById('analyticsCookies');
+                    const marketingCookies = document.getElementById('marketingCookies');
 
-        // Close cookie settings
-        cookieSettingsClose.addEventListener('click', function() {
-            cookieSettingsModal.classList.remove('active');
-        });
+                    // Open cookie settings
+                    cookieSettings.addEventListener('click', function() {
+                        cookiePopupOverlay.classList.remove('active');
+                        cookieSettingsModal.classList.add('active');
+                        
+                        // Load current preferences
+                        if (analyticsCookies && marketingCookies) {
+                            const currentPreferences = getCookiePreferences();
+                            analyticsCookies.checked = currentPreferences.analytics;
+                            marketingCookies.checked = currentPreferences.marketing;
+                        }
+                    });
 
-        // Save cookie preferences
-        cookieSettingsSave.addEventListener('click', function() {
-            saveCookiePreferences();
-            cookieSettingsModal.classList.remove('active');
-            alert('Your cookie preferences have been saved.');
-        });
+                    // Close cookie settings
+                    if (cookieSettingsClose) {
+                        cookieSettingsClose.addEventListener('click', function() {
+                            cookieSettingsModal.classList.remove('active');
+                        });
+                    }
 
-        // Accept all cookies
-        cookieAcceptAll.addEventListener('click', function() {
-            analyticsCookies.checked = true;
-            marketingCookies.checked = true;
-            saveCookiePreferences();
-            cookieSettingsModal.classList.remove('active');
-            alert('All cookies have been accepted.');
-        });
+                    // Save cookie preferences
+                    if (cookieSettingsSave) {
+                        cookieSettingsSave.addEventListener('click', function() {
+                            saveCookiePreferences();
+                            cookieSettingsModal.classList.remove('active');
+                            alert('Your cookie preferences have been saved.');
+                        });
+                    }
 
-        // Reject all non-essential cookies
-        cookieRejectAll.addEventListener('click', function() {
-            analyticsCookies.checked = false;
-            marketingCookies.checked = false;
-            saveCookiePreferences();
-            cookieSettingsModal.classList.remove('active');
-            alert('Non-essential cookies have been rejected.');
-        });
+                    // Accept all cookies
+                    if (cookieAcceptAll) {
+                        cookieAcceptAll.addEventListener('click', function() {
+                            if (analyticsCookies && marketingCookies) {
+                                analyticsCookies.checked = true;
+                                marketingCookies.checked = true;
+                            }
+                            saveCookiePreferences();
+                            cookieSettingsModal.classList.remove('active');
+                            alert('All cookies have been accepted.');
+                        });
+                    }
 
-        // Get current cookie preferences from localStorage
-        function getCookiePreferences() {
-            const preferences = localStorage.getItem('cookiePreferences');
-            if (preferences) {
-                return JSON.parse(preferences);
+                    // Reject all non-essential cookies
+                    if (cookieRejectAll) {
+                        cookieRejectAll.addEventListener('click', function() {
+                            if (analyticsCookies && marketingCookies) {
+                                analyticsCookies.checked = false;
+                                marketingCookies.checked = false;
+                            }
+                            saveCookiePreferences();
+                            cookieSettingsModal.classList.remove('active');
+                            alert('Non-essential cookies have been rejected.');
+                        });
+                    }
+                }
             }
-            // Default preferences if none exist
-            return {
-                analytics: true,
-                marketing: false
-            };
         }
-
-        // Save cookie preferences to localStorage
-        function saveCookiePreferences() {
-            const preferences = {
-                analytics: analyticsCookies.checked,
-                marketing: marketingCookies.checked
-            };
-            localStorage.setItem('cookiePreferences', JSON.stringify(preferences));
-            localStorage.setItem('cookiesAccepted', 'true');
-            
-            // In a real implementation, you would update the actual cookies here
-            // based on the user's preferences
-        }
-        
-        // Dark mode toggle
-        const themeToggle = document.querySelector('.theme-toggle');
-        const themeIcon = themeToggle.querySelector('i');
-        
-        // Check for saved theme preference or default to light
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        if (currentTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-        
-        themeToggle.addEventListener('click', function () {
-            document.body.classList.toggle('dark-mode');
-            const isDarkMode = document.body.classList.contains('dark-mode');
-            
-            // Update icon
-            themeIcon.classList.toggle('fa-moon');
-            themeIcon.classList.toggle('fa-sun');
-            
-            // Save theme preference
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-            
-            // Update logo for dark mode
-            const logo = document.getElementById('logo');
-            const footerLogo = document.getElementById('footer-logo');
-            if (isDarkMode) {
-                logo.src = 'assets/img/logo-dark.png';
-                footerLogo.src = 'assets/img/logo-dark.png';
-            } else {
-                logo.src = 'assets/img/logo.png';
-                footerLogo.src = 'assets/img/logo.png';
-            }
-        });
-
-        // Mobile navigation toggle
-        document.querySelector('.mobile-toggle').addEventListener('click', function () {
-            document.querySelector('.nav-links').classList.toggle('active');
-            const icon = this.querySelector('i');
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
-        });
 
         // Form close functionality - FIXED VERSION
         const formClose = document.getElementById('formClose');
         const createAccountForm = document.getElementById('createAccountForm');
 
-        formClose.addEventListener('click', function() {
-            createAccountForm.style.display = 'none';
-        });
+        if (formClose && createAccountForm) {
+            formClose.addEventListener('click', function() {
+                createAccountForm.style.display = 'none';
+            });
+        }
 
         // Show create account form (for demonstration)
         document.querySelectorAll('.header-cta, .mobile-sign-up, .cta-button').forEach(button => {
@@ -4390,9 +4458,11 @@
                 if (this.getAttribute('href') === 'create-account.html') {
                     e.preventDefault();
                     // Show the form instead of navigating
-                    createAccountForm.style.display = 'block';
-        // Scroll to the form
-        createAccountForm.scrollIntoView({ behavior: 'smooth' });
+                    if (createAccountForm) {
+                        createAccountForm.style.display = 'block';
+                        // Scroll to the form
+                        createAccountForm.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             });
         });
@@ -4401,171 +4471,200 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offset = 96; // 80px header + 16px extra spacing
-                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                    
-                    // Close mobile menu if open
-                    document.querySelector('.nav-links').classList.remove('active');
-                    document.querySelector('.mobile-toggle i').classList.add('fa-bars');
-                    document.querySelector('.mobile-toggle i').classList.remove('fa-times');
+                const targetId = this.getAttribute('href');
+                if (targetId && targetId !== '#') {
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        const offset = 96; // 80px header + 16px extra spacing
+                        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                        
+                        // Close mobile menu if open
+                        if (navLinks) {
+                            navLinks.classList.remove('active');
+                        }
+                        if (mobileToggle) {
+                            const toggleIcon = mobileToggle.querySelector('i');
+                            if (toggleIcon) {
+                                toggleIcon.classList.add('fa-bars');
+                                toggleIcon.classList.remove('fa-times');
+                            }
+                        }
+                    }
                 }
             });
         });
 
-        // Chat Widget Functionality
+        // Chat Widget Functionality (only if elements exist)
         const chatToggle = document.querySelector('.chat-toggle');
         const chatContainer = document.querySelector('.chat-container');
-        const chatClose = document.querySelector('.chat-close');
-        const chatForm = document.getElementById('chatForm');
+        
+        if (chatToggle && chatContainer) {
+            const chatClose = document.querySelector('.chat-close');
+            const chatForm = document.getElementById('chatForm');
 
-        chatToggle.addEventListener('click', function() {
-            chatContainer.classList.toggle('active');
-        });
+            chatToggle.addEventListener('click', function() {
+                chatContainer.classList.toggle('active');
+            });
 
-        chatClose.addEventListener('click', function() {
-            chatContainer.classList.remove('active');
-        });
+            if (chatClose) {
+                chatClose.addEventListener('click', function() {
+                    chatContainer.classList.remove('active');
+                });
+            }
 
-        chatForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = {
-                name: this.querySelector('input[type="text"]').value,
-                email: this.querySelector('input[type="email"]').value,
-                message: this.querySelector('textarea').value
-            };
-            
-            // In a real implementation, you would send this data to a server
-            console.log('Chat form submitted:', formData);
-            
-            // Show success message
-            const chatMessages = document.querySelector('.chat-messages');
-            const userMessage = document.createElement('div');
-            userMessage.classList.add('message', 'message-user');
-            userMessage.textContent = "Thanks! We'll get back to you soon.";
-            chatMessages.appendChild(userMessage);
-            
-            // Reset form
-            this.reset();
-            
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        });
+            if (chatForm) {
+                chatForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form data
+                    const formData = {
+                        name: this.querySelector('input[type="text"]')?.value || '',
+                        email: this.querySelector('input[type="email"]')?.value || '',
+                        message: this.querySelector('textarea')?.value || ''
+                    };
+                    
+                    // In a real implementation, you would send this data to a server
+                    console.log('Chat form submitted:', formData);
+                    
+                    // Show success message
+                    const chatMessages = document.querySelector('.chat-messages');
+                    if (chatMessages) {
+                        const userMessage = document.createElement('div');
+                        userMessage.classList.add('message', 'message-user');
+                        userMessage.textContent = "Thanks! We'll get back to you soon.";
+                        chatMessages.appendChild(userMessage);
+                        
+                        // Reset form
+                        this.reset();
+                        
+                        // Scroll to bottom
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                });
+            }
+        }
 
-        // Testimonials Carousel
+        // Testimonials Carousel (only if elements exist)
         const testimonialsTrack = document.getElementById('testimonialsTrack');
         const carouselDots = document.querySelectorAll('.carousel-dot');
-        let currentSlide = 0;
-        const totalSlides = 7;
-
-        function updateCarousel() {
-            testimonialsTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
-            
-            // Update active dot
-            carouselDots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
-        }
-
-        // Add click events to dots
-        carouselDots.forEach(dot => {
-            dot.addEventListener('click', function() {
-                currentSlide = parseInt(this.getAttribute('data-index'));
-                updateCarousel();
-            });
-        });
-
-        // Auto-advance carousel
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            updateCarousel();
-        }, 5000);
         
-        // Animated counter for metrics
+        if (testimonialsTrack && carouselDots.length > 0) {
+            let currentSlide = 0;
+            const totalSlides = 7;
+
+            function updateCarousel() {
+                testimonialsTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+                
+                // Update active dot
+                carouselDots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentSlide);
+                });
+            }
+
+            // Add click events to dots
+            carouselDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    if (index) {
+                        currentSlide = parseInt(index, 10);
+                        updateCarousel();
+                    }
+                });
+            });
+
+            // Auto-advance carousel
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                updateCarousel();
+            }, 5000);
+        }
+        
+        // Animated counter for metrics (only if elements exist)
         const metricValues = document.querySelectorAll('.metric-value');
         
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const metricValue = entry.target;
-                    const finalValue = parseInt(metricValue.textContent);
-                    
-                    animateValue(metricValue, 0, finalValue, 1500);
-                    observer.unobserve(metricValue);
-                }
+        if (metricValues.length > 0) {
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const metricValue = entry.target;
+                        const text = metricValue.textContent;
+                        const finalValue = parseInt(text, 10);
+                        
+                        if (!isNaN(finalValue)) {
+                            animateValue(metricValue, 0, finalValue, 1500);
+                            observer.unobserve(metricValue);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            metricValues.forEach(value => {
+                observer.observe(value);
             });
-        }, { threshold: 0.5 });
-        
-        metricValues.forEach(value => {
-            observer.observe(value);
-        });
-        
-        function animateValue(element, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const value = Math.floor(progress * (end - start) + start);
-                element.textContent = value + '%';
-                
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
         }
         
-        // Statistics cards interactive functionality
+        // Statistics cards interactive functionality (safe checks)
         const statCards = document.querySelectorAll('.stat-card');
         const statsPlaceholder = document.getElementById('stats-placeholder');
         const expansionBars = document.querySelectorAll('.stats-expansion-bar');
         
-        statCards.forEach(card => {
-            card.addEventListener('click', function() {
-                // Get the target expansion bar
-                const targetId = this.getAttribute('data-target');
-                const targetExpansion = document.getElementById(targetId);
-                
-                // Hide all expansion bars and placeholder
-                expansionBars.forEach(bar => {
-                    bar.classList.remove('active');
+        if (statCards.length > 0) {
+            statCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Get the target expansion bar
+                    const targetId = this.getAttribute('data-target');
+                    if (targetId) {
+                        const targetExpansion = document.getElementById(targetId);
+                        
+                        // Hide all expansion bars and placeholder
+                        expansionBars.forEach(bar => {
+                            bar.classList.remove('active');
+                        });
+                        if (statsPlaceholder) {
+                            statsPlaceholder.style.display = 'none';
+                        }
+                        
+                        // Show the selected expansion bar
+                        if (targetExpansion) {
+                            targetExpansion.classList.add('active');
+                        }
+                        
+                        // Update active state for cards
+                        statCards.forEach(c => {
+                            c.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    }
                 });
-                statsPlaceholder.style.display = 'none';
-                
-                // Show the selected expansion bar
-                targetExpansion.classList.add('active');
-                
-                // Update active state for cards
-                statCards.forEach(c => {
-                    c.classList.remove('active');
-                });
-                this.classList.add('active');
             });
-        });
+        }
         
         // Close expansion bars
         const closeButtons = document.querySelectorAll('.close-expansion');
-        closeButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const expansionBar = this.closest('.stats-expansion-bar');
-                expansionBar.classList.remove('active');
-                
-                // Show placeholder again
-                statsPlaceholder.style.display = 'block';
-                
-                // Remove active state from cards
-                statCards.forEach(card => {
-                    card.classList.remove('active');
+        if (closeButtons.length > 0) {
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const expansionBar = this.closest('.stats-expansion-bar');
+                    if (expansionBar) {
+                        expansionBar.classList.remove('active');
+                        
+                        // Show placeholder again
+                        if (statsPlaceholder) {
+                            statsPlaceholder.style.display = 'block';
+                        }
+                        
+                        // Remove active state from cards
+                        statCards.forEach(card => {
+                            card.classList.remove('active');
+                        });
+                    }
                 });
             });
-        });
+        }
         
-        // Pillar cards mobile-friendly functionality
+        // Pillar cards mobile-friendly functionality (safe checks)
         const pillarCards = document.querySelectorAll('.pillar-card');
         
         pillarCards.forEach(card => {
@@ -4588,10 +4687,70 @@
             });
         });
     });
+    
+    // Helper functions for cookie management
+    function getCookiePreferences() {
+        const preferences = localStorage.getItem('cookiePreferences');
+        if (preferences) {
+            try {
+                return JSON.parse(preferences);
+            } catch (e) {
+                console.error('Error parsing cookie preferences:', e);
+            }
+        }
+        // Default preferences if none exist
+        return {
+            analytics: true,
+            marketing: false
+        };
+    }
+
+    function saveCookiePreferences() {
+        const analyticsCookies = document.getElementById('analyticsCookies');
+        const marketingCookies = document.getElementById('marketingCookies');
+        
+        if (analyticsCookies && marketingCookies) {
+            const preferences = {
+                analytics: analyticsCookies.checked,
+                marketing: marketingCookies.checked
+            };
+            try {
+                localStorage.setItem('cookiePreferences', JSON.stringify(preferences));
+                localStorage.setItem('cookiesAccepted', 'true');
+            } catch (e) {
+                console.error('Error saving cookie preferences:', e);
+            }
+        }
+    }
+    
+    function animateValue(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const value = Math.floor(progress * (end - start) + start);
+            element.textContent = value + '%';
+            
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
 </script>
 
-<script defer src="/_vercel/speed-insights/script.js"></script>
-
+<script>
+    // Safely load Vercel Speed Insights only on production (Vercel)
+    if (window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost') {
+        const script = document.createElement('script');
+        script.src = '/_vercel/speed-insights/script.js';
+        script.defer = true;
+        script.onerror = function() {
+            console.log('Vercel Speed Insights script failed to load (expected on localhost)');
+        };
+        document.head.appendChild(script);
+    }
+</script>
 
 </body>
 </html>
