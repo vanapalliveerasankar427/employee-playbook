@@ -1,4598 +1,923 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Private strategic clarity for workplace decisions. Smart scripts, frameworks and guidance for when moments matter. Not legal advice.">
-    <title>The Employee Playbook | Strategic Clarity for Critical Moments</title>
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
-    
-    <!-- Font Preconnect -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
-    <link rel="icon" type="image/png" href="assets/img/favicon.png">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-white: #FFFFFF;
-            --light-gray: #F8F9FA;
-            --medium-gray: #E9ECEF;
-            --dark-gray: #6C757D;
-            --text-dark: #212529;
-            --text-medium: #495057;
-            --accent-purple: #7B5FC4;
-            --accent-purple-dark: #5A4496;
-            --light-purple: #E6E0F5;
-            --lighter-purple: #F0EBFA;
-            --border-light: rgba(0, 0, 0, 0.08);
-            --hero-gray: #f5f7fa;
-            --nav-bg: rgba(255, 255, 255, 0.95);
-            --sidebar-bg: #fafbfc;
-            --chat-bg: #ffffff;
-            --online-green: #10B981;
-            --hero-purple: #5A4496;
-            --user-msg-bg: #7B5FC4;
-            --bot-msg-bg: #F1F3F9;
-            --shadow: 0 2px 8px rgba(0,0,0,0.08);
-            --premium-gradient: linear-gradient(135deg, #7B5FC4 0%, #5A4496 100%);
-            --premium-card-shadow: 0 6px 20px rgba(123, 95, 196, 0.12);
-            --neutral-bg: #F8F9FA;
-            --crisis-red: #FF6B6B;
-            --deep-navy: #0A1428;
-            --soft-blue: #EFF5FF;
-            --gradient-primary: linear-gradient(135deg, #7B5FC4 0%, #5A3FB5 100%);
-            --gradient-secondary: linear-gradient(135deg, #E6E0F5 0%, #F0EDFA 100%);
-        }
-
-        .dark-mode {
-            --primary-white: #121212;
-            --light-gray: #1E1E1E;
-            --medium-gray: #2D2D2D;
-            --dark-gray: #8A8A8A;
-            --text-dark: #F5F5F5;
-            --text-medium: #CCCCCC;
-            --accent-purple: #8B6CE6;
-            --accent-purple-dark: #6A4FC4;
-            --light-purple: #2A1E4A;
-            --lighter-purple: #1E1A2E;
-            --border-light: rgba(255, 255, 255, 0.08);
-            --hero-gray: #1a1a1a;
-            --nav-bg: rgba(18, 18, 18, 0.95);
-            --sidebar-bg: #1a1a1a;
-            --chat-bg: #1e1e1e;
-            --user-msg-bg: #8B6CE6;
-            --bot-msg-bg: #2D2D2D;
-            --shadow: 0 2px 8px rgba(0,0,0,0.2);
-            --premium-card-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-            --neutral-bg: #1E1E1E;
-            --crisis-red: #FF5252;
-            --deep-navy: #EFF5FF;
-            --soft-blue: #1A2333;
-            --gradient-primary: linear-gradient(135deg, #8B6CE6 0%, #6A4BD6 100%);
-            --gradient-secondary: linear-gradient(135deg, #2D2D2D 0%, #3D3D3D 100%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--primary-white);
-            color: var(--text-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            opacity: 0;
-        }
-
-        body.loaded {
-            opacity: 1;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        section {
-            padding: 100px 0;
-        }
-
-        /* NEW: Create Account Tab for Mobile */
-        .mobile-create-account-tab {
-            display: none;
-            position: fixed;
-            top: 15%; /* Changed from 20% to 15% */
-            right: 0;
-            background: var(--accent-purple);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 12px 0 0 12px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 24px;
-            z-index: 999;
-            box-shadow: -2px 4px 12px rgba(123, 95, 196, 0.4);
-            transition: all 0.3s ease;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid white;
-        }
-
-        .mobile-create-account-tab:hover {
-            transform: translateX(-3px);
-            box-shadow: -3px 6px 16px rgba(123, 95, 196, 0.5);
-            background: var(--accent-purple-dark);
-        }
-
-        .dark-mode .mobile-create-account-tab {
-            border: 2px solid var(--primary-white);
-        }
-
-        /* NEW: Create Account Modal */
-        .create-account-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1001;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .create-account-modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--primary-white);
-            width: 90%;
-            max-width: 400px;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            position: relative;
-            animation: modalSlideIn 0.3s ease-out;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--deep-navy);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--dark-gray);
-            cursor: pointer;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .close-modal:hover {
-            background-color: var(--light-gray);
-        }
-
-        .modal-form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-label {
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .form-input {
-            padding: 12px 16px;
-            border: 1px solid var(--medium-gray);
-            border-radius: 8px;
-            font-size: 16px;
-            background: var(--primary-white);
-            color: var(--text-dark);
-            transition: border-color 0.3s ease;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--accent-purple);
-        }
-
-        .submit-btn {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(123, 95, 196, 0.3);
-        }
-
-        .modal-footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-medium);
-        }
-
-        .modal-footer a {
-            color: var(--accent-purple);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        /* Navigation - Copied from The Lens */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: var(--nav-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-light);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-            height: 80px;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            height: 100%;
-        }
-
-        /* Logo Styles */
-        .logo-img {
-            height: 100px;
-            width: auto;
-            transform: translateX(20%);
-            padding: 14px 10px;
-            transition: all 0.3s ease;
-            display: block;
-            min-height: 100px;
-        }
-
-        .dark-mode .logo-img {
-            content: url("assets/img/logo-dark.png");
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 50px;
-        }
-
-        .nav-link {
-            color: var(--text-dark);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            font-size: 17px;
-        }
-
-        .nav-link:hover {
-            color: var(--accent-purple);
-        }
-
-        .nav-link.active {
-            color: var(--text-dark);
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            transform: translateX(-20%);
-        }
-
-        .sign-in {
-            color: var(--text-dark);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 17px;
-        }
-
-        .header-cta {
-            background: var(--accent-purple);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(123, 95, 196, 0.3);
-        }
-
-        .header-cta:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(123, 95, 196, 0.35);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-dark);
-            cursor: pointer;
-            font-size: 16px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background-color: var(--light-gray);
-        }
-
-        .mobile-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-dark);
-            cursor: pointer;
-            font-size: 24px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .mobile-toggle:hover {
-            background-color: var(--light-gray);
-        }
-
-        /* New Tag for The Coach */
-        .nav-link-container {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .new-tag {
-            position: absolute;
-            top: -12px;
-            right: -35px;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #000;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            z-index: 10;
-            white-space: nowrap;
-        }
-
-        /* NEW: Mobile Sign Up Button */
-        .mobile-sign-up {
-            display: none;
-        }
-
-        /* NEW: Mobile Sign In Button */
-        .mobile-sign-in {
-            display: none;
-        }
-
-        /* Create Account Form Styles */
-        .create-account-form {
-            background: var(--primary-white);
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: var(--premium-card-shadow);
-            border: 1px solid var(--border-light);
-            max-width: 500px;
-            margin: 100px auto;
-            position: relative;
-        }
-
-        .form-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: var(--text-medium);
-            cursor: pointer;
-            font-size: 24px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-            z-index: 10;
-        }
-
-        .form-close:hover {
-            background-color: var(--light-gray);
-        }
-
-        .form-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            color: var(--text-dark);
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--medium-gray);
-            border-radius: 8px;
-            font-size: 16px;
-            background: var(--primary-white);
-            color: var(--text-dark);
-            transition: all 0.3s ease;
-        }
-
-        .form-input:focus {
-            border-color: var(--accent-purple);
-            box-shadow: 0 0 0 2px rgba(123, 95, 196, 0.1);
-            outline: none;
-        }
-
-        .form-submit {
-            width: 100%;
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .form-submit:hover {
-            background: var(--accent-purple-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(123, 95, 196, 0.3);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: var(--hero-gray);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-            padding-top: 0;
-            width: 100%;
-            margin: 0;
-            padding-left: 0;
-            padding-right: 0;
-            min-height: calc(100vh - 80px);
-            margin-top: 80px;
-        }
-
-        .hero-content {
-            max-width: none;
-            margin: 0 auto;
-            padding: 10px 30px;
-            padding-top: 60px;
-            text-align: center;
-            width: 100%;
-        }
-
-        .hero-headline {
-            font-size: 84px;
-            font-weight: 700;
-            line-height: 1.25;
-            margin-bottom: 25px;
-            max-width: 800px;
-            margin: 20px auto 28px;
-            letter-spacing: -1px;
-            min-height: 1.25em;
-        }
-
-        .hero-subhead {
-            font-size: 26px;
-            color: var(--text-medium);
-            margin-bottom: 44px;
-            line-height: 1.5;
-            max-width: 1200px;
-            margin: 0 auto 44px;
-            min-height: 1.5em;
-        }
-
-        .hero-note {
-            display: block;
-            font-size: 16px;
-            margin-top: 20px;
-        }
-
-        /* Flashing words styling */
-        .flashing-words {
-            font-size: 84px;
-            font-weight: 700;
-            line-height: 1.25;
-            margin-bottom: 25px;
-            max-width: 800px;
-            margin: 20px auto 28px;
-            letter-spacing: -1px;
-            min-height: 1.25em;
-            position: relative;
-            height: 105px;
-        }
-
-        .flashing-word {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            opacity: 0;
-            animation: flashWords 15s infinite;
-        }
-
-        .flashing-word:nth-child(1) { animation-delay: 0s; }
-        .flashing-word:nth-child(2) { animation-delay: 2s; }
-        .flashing-word:nth-child(3) { animation-delay: 4s; }
-        .flashing-word:nth-child(4) { animation-delay: 6s; }
-        .flashing-word:nth-child(5) { animation-delay: 8s; }
-        .flashing-word:nth-child(6) { animation-delay: 10s; }
-        .flashing-word:nth-child(7) { animation-delay: 12s; }
-
-        @keyframes flashWords {
-            0%, 12% { opacity: 0; }
-            2%, 10% { opacity: 1; }
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: var(--accent-purple);
-            color: white;
-            padding: 18px 42px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 17px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(123, 95, 196, 0.3);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(123, 95, 196, 0.4);
-        }
-
-        /* Banner */
-        .search-banner {
-            background: var(--light-purple);
-            padding: 16px 0;
-            overflow: hidden;
-            margin-top: 10px;
-            width: 100%;
-            margin-left: 0;
-            margin-right: 0;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-banner-content {
-            white-space: nowrap;
-            padding-left: 100%;
-            display: inline-block;
-            animation: scrollBanner 200s linear infinite;
-            font-size: 18px;
-            color: #000000;
-        }
-
-        .dark-mode .search-banner-content {
-            color: white;
-        }
-
-        .search-banner:hover .search-banner-content {
-            animation-play-state: paused;
-        }
-
-        @keyframes scrollBanner {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        .highlight { color: var(black); font-weight: 600; }
-
-        /* Statistics Section */
-        .statistics {
-            background-color: var(--light-gray);
-            padding: 100px 0;
-        }
-
-        .stats-container {
-            display: flex;
-            flex-direction: column;
-            gap: 50px;
-            align-items: center;
-        }
-
-        .stats-content {
-            max-width: 1000px;
-            text-align: center;
-        }
-
-        .stats-title {
-            font-size: 45px;
-            font-weight: 700;
-            margin-bottom: 24px;
-            line-height: 1.2;
-            min-height: 1.2em;
-        }
-
-        .stats-description {
-            font-size: 20px;
-            color: var(--text-medium);
-            margin-bottom: 20px;
-            line-height: 1.6;
-            max-width: 900px;
-            margin: 0 auto;
-            min-height: 1.6em;
-        }
-
-        .stats-interactive-container {
-            display: flex;
-            width: 100%;
-            max-width: 1200px;
-            gap: 40px;
-            margin: 0 auto;
-        }
-
-        .stats-cards-column {
-            flex: 0 0 350px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .stat-card {
-            background: var(--primary-white);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.4s ease;
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid transparent;
-        }
-
-        .stat-card.active {
-            border-color: var(--accent-purple);
-            box-shadow: 0 10px 25px rgba(139, 95, 191, 0.15);
-            transform: translateX(10px);
-        }
-
-        .stat-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-card-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .icon-container {
-            position: relative;
-            width: 60px;
-            height: 60px;
-            flex-shrink: 0;
-        }
-
-        .icon-circle {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: var(--light-purple);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: var(--accent-purple);
-        }
-
-        .stat-card.active .icon-circle {
-            background: var(--accent-purple);
-            color: white;
-        }
-
-        .stat-card-content {
-            flex: 1;
-        }
-
-        .stat-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: var(--text-dark);
-            line-height: 1.3;
-        }
-
-        .stat-subtitle {
-            font-size: 14px;
-            color: var(--text-medium);
-            font-weight: 500;
-        }
-
-        .stats-display-area {
-            flex: 1;
-            background: var(--primary-white);
-            border-radius: 16px;
-            padding: 38px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 467px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stats-placeholder {
-            text-align: left;
-            color: var(--text-medium);
-            max-width: 800px;
-            margin: 0;
-            padding-top: 10px;
-        }
-
-        .stats-placeholder-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            color: var(--accent-purple);
-            line-height: 1.3;
-            margin-top: 2px;
-        }
-
-        .stats-placeholder-text {
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            max-width: 800px;
-        }
-
-        .stats-placeholder-cta {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--accent-purple);
-        }
-
-        .stats-expansion-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--primary-white);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            padding: 40px;
-            transform: translateX(100%);
-            transition: transform 0.5s ease-in-out;
-            z-index: 10;
-        }
-
-        .stats-expansion-bar.active {
-            transform: translateX(0);
-        }
-
-        .stats-expansion-header {
-            margin-bottom: 40px;
-            text-align: left;
-        }
-
-        .stats-expansion-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--accent-purple);
-            margin-bottom: 10px;
-            margin-top: 0;
-        }
-
-        .stats-expansion-subtitle {
-            font-size: 18px;
-            color: var(--text-medium);
-            font-weight: 500;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .stat-value {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            color: var(--accent-purple);
-            line-height: 1;
-            min-height: 45px;
-        }
-
-        .stat-explanation {
-            font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            color: var(--text-dark);
-            min-height: 72px;
-        }
-
-        .stat-source {
-            font-size: 14px;
-            color: var(--dark-gray);
-            font-style: italic;
-        }
-
-        .close-expansion {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: var(--text-medium);
-            cursor: pointer;
-            font-size: 20px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .close-expansion:hover {
-            background-color: var(--light-gray);
-        }
-
-        /* Mobile Stats Layout */
-        .stats-mobile-container {
-            display: none;
-            flex-direction: column;
-            gap: 40px;
-            width: 100%;
-        }
-
-        .stats-mobile-category {
-            background: var(--primary-white);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .stats-mobile-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stats-mobile-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .stats-mobile-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-        }
-
-        .stats-mobile-item {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .stats-mobile-value {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: var(--accent-purple);
-            line-height: 1;
-        }
-
-        .stats-mobile-explanation {
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 12px;
-            color: var(--text-dark);
-        }
-
-        .stats-mobile-source {
-            font-size: 13px;
-            color: var(--dark-gray);
-            font-style: italic;
-        }
-
-        /* =========================
-           START HERE SECTION
-           (New Version)
-        ========================= */
-        .start-here-home {
-            background-color: var(--primary-white);
-            padding: 100px 0;
-        }
-
-        .start-here-home .container-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .start-here-home .measure {
-            max-width: 1000px;
-        }
-
-        /* Start Here card */
-        .start-here-home .start-here {
-            border-radius: 22px;
-            border: 1px solid var(--border-light);
-            background: linear-gradient(135deg, rgba(123, 95, 196, 0.06), rgba(255, 255, 255, 0.90));
-            box-shadow: 0 14px 34px rgba(123, 95, 196, 0.10);
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .dark-mode .start-here-home .start-here {
-            background: linear-gradient(135deg, rgba(157, 134, 233, 0.14), rgba(18, 18, 18, 0.72));
-            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
-        }
-
-        .start-here-home .start-here::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--premium-gradient);
-            opacity: 0.95;
-        }
-
-        .start-here-home .start-top {
-            display: flex;
-            gap: 18px;
-            align-items: flex-start;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
-            margin-bottom: 16px;
-        }
-
-        .start-here-home h2 {
-            font-size: 30px;
-            letter-spacing: -0.5px;
-            line-height: 1.12;
-            margin-bottom: 10px;
-            color: var(--text-dark);
-        }
-
-        .start-here-home .intro {
-            color: var(--text-medium);
-            font-size: 15px;
-            line-height: 1.6;
-            font-weight: 500;
-        }
-
-        .start-here-home .intro strong {
-            color: var(--text-dark);
-            font-weight: 600;
-        }
-
-        .start-here-home .value-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 14px;
-        }
-
-        .start-here-home .value-pill {
-            height: 34px;
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            padding: 0 12px;
-            border-radius: 999px;
-            border: 1px solid rgba(123, 95, 196, 0.22);
-            background: rgba(255, 255, 255, 0.78);
-            color: var(--text-dark);
-            font-weight: 600;
-            font-size: 12px;
-            letter-spacing: 0.2px;
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.05);
-            white-space: nowrap;
-        }
-
-        .dark-mode .start-here-home .value-pill {
-            background: rgba(18, 18, 18, 0.58);
-            border-color: rgba(157, 134, 233, 0.26);
-            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.30);
-        }
-
-        .start-here-home .value-pill i {
-            color: var(--accent-purple);
-        }
-
-        /* Stats strip (6) */
-        .start-here-home .stats {
-            margin-top: 14px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .start-here-home .stat {
-            border: 1px solid var(--border-light);
-            background: rgba(255, 255, 255, 0.74);
-            border-radius: 18px;
-            padding: 12px;
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            position: relative;
-            min-height: 108px;
-        }
-
-        .dark-mode .start-here-home .stat {
-            background: rgba(18, 18, 18, 0.55);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.30);
-        }
-
-        .start-here-home .stat::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 10%, rgba(123, 95, 196, 0.12), transparent 55%);
-            pointer-events: none;
-        }
-
-        .dark-mode .start-here-home .stat::before {
-            background: radial-gradient(circle at 30% 10%, rgba(157, 134, 233, 0.18), transparent 55%);
-        }
-
-        .start-here-home .stat-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 6px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .start-here-home .stat-top .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            border: 1px solid rgba(123, 95, 196, 0.22);
-            background: rgba(255, 255, 255, 0.65);
-            font-weight: 650;
-            font-size: 11px;
-            letter-spacing: 0.55px;
-            text-transform: uppercase;
-            color: var(--accent-purple);
-            white-space: nowrap;
-        }
-
-        .dark-mode .start-here-home .stat-top .badge {
-            background: rgba(18, 18, 18, 0.48);
-            border-color: rgba(157, 134, 233, 0.26);
-            color: var(--accent-purple);
-        }
-
-        .start-here-home .stat-top i {
-            color: var(--accent-purple);
-            opacity: 0.9;
-            margin-left: auto;
-        }
-
-        .start-here-home .stat .big {
-            font-size: 18px;
-            font-weight: 780;
-            letter-spacing: -0.3px;
-            line-height: 1.15;
-            position: relative;
-            z-index: 2;
-            color: var(--text-dark);
-        }
-
-        .start-here-home .stat .small {
-            margin-top: 6px;
-            color: var(--text-medium);
-            font-size: 12.5px;
-            line-height: 1.35;
-            font-weight: 520;
-            position: relative;
-            z-index: 2;
-        }
-
-        .start-here-home .sources {
-            margin-top: 10px;
-            color: var(--text-medium);
-            font-size: 11.5px;
-            line-height: 1.45;
-            font-weight: 600;
-            position: relative;
-            z-index: 2;
-            max-width: 1000px;
-        }
-
-        .start-here-home .sources a {
-            color: var(--accent-purple);
-            text-decoration: none;
-            font-weight: 650;
-            border-bottom: 1px solid rgba(123, 95, 196, 0.25);
-        }
-
-        .start-here-home .sources a:hover {
-            border-bottom-color: rgba(123, 95, 196, 0.45);
-        }
-
-        /* Issues grid */
-        .start-here-home .issues-wrap {
-            margin-top: 18px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .start-here-home .issues-head {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 14px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-
-        .start-here-home .issues-head h3 {
-            font-size: 16px;
-            letter-spacing: -0.2px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .start-here-home .issues-head .sub {
-            color: var(--text-medium);
-            font-size: 13.5px;
-            line-height: 1.5;
-            font-weight: 520;
-            max-width: 1000px;
-        }
-
-        .start-here-home .issues-head .sub strong {
-            color: var(--text-dark);
-            font-weight: 720;
-        }
-
-        .start-here-home .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-        }
-
-        .start-here-home .issue {
-            background: var(--primary-white);
-            border: 1px solid var(--border-light);
-            border-radius: 18px;
-            padding: 14px;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
-            transition: transform .18s ease, box-shadow .18s ease;
-            position: relative;
-            overflow: hidden;
-            min-height: 214px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .dark-mode .start-here-home .issue {
-            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
-        }
-
-        .start-here-home .issue::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--premium-gradient);
-            opacity: 0.75;
-        }
-
-        .start-here-home .issue:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.10);
-        }
-
-        .start-here-home .pill-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .start-here-home .pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            height: 30px;
-            padding: 0 10px;
-            border-radius: 999px;
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.55px;
-            text-transform: uppercase;
-            border: 1px solid transparent;
-            width: fit-content;
-            white-space: nowrap;
-            line-height: 1;
-        }
-
-        .start-here-home .pill i {
-            font-size: 11px;
-        }
-
-        /* Pill colour styles */
-        .start-here-home .pill.burnout {
-            color: #f59e0b;
-            border-color: rgba(245, 158, 11, 0.22);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(245, 158, 11, 0.04));
-        }
-
-        .start-here-home .pill.manager {
-            color: #10b981;
-            border-color: rgba(16, 185, 129, 0.22);
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04));
-        }
-
-        .start-here-home .pill.politics {
-            color: #3b82f6;
-            border-color: rgba(59, 130, 246, 0.22);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04));
-        }
-
-        .start-here-home .pill.hr {
-            color: #6D28D9;
-            border-color: rgba(109, 40, 217, 0.22);
-            background: linear-gradient(135deg, rgba(109, 40, 217, 0.08), rgba(109, 40, 217, 0.04));
-        }
-
-        .start-here-home .pill.career {
-            color: #800020;
-            border-color: rgba(128, 0, 32, 0.22);
-            background: linear-gradient(135deg, rgba(128, 0, 32, 0.08), rgba(128, 0, 32, 0.04));
-        }
-
-        .dark-mode .start-here-home .pill.burnout {
-            border-color: rgba(251, 191, 36, 0.32);
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.16), rgba(251, 191, 36, 0.08));
-        }
-
-        .dark-mode .start-here-home .pill.manager {
-            border-color: rgba(52, 211, 153, 0.32);
-            background: linear-gradient(135deg, rgba(52, 211, 153, 0.16), rgba(52, 211, 153, 0.08));
-        }
-
-        .dark-mode .start-here-home .pill.politics {
-            border-color: rgba(96, 165, 250, 0.32);
-            background: linear-gradient(135deg, rgba(96, 165, 250, 0.16), rgba(96, 165, 250, 0.08));
-        }
-
-        .dark-mode .start-here-home .pill.hr {
-            border-color: rgba(139, 92, 246, 0.32);
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.16), rgba(139, 92, 246, 0.08));
-        }
-
-        .dark-mode .start-here-home .pill.career {
-            border-color: rgba(176, 48, 96, 0.32);
-            background: linear-gradient(135deg, rgba(176, 48, 96, 0.16), rgba(176, 48, 96, 0.08));
-        }
-
-        .start-here-home .quote {
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: -0.2px;
-            line-height: 1.25;
-            margin-top: 2px;
-            color: var(--text-dark);
-        }
-
-        .start-here-home .quote span {
-            display: inline-block;
-            padding: 2px 0;
-        }
-
-        .start-here-home .desc {
-            color: var(--text-medium);
-            font-size: 13px;
-            line-height: 1.5;
-            font-weight: 520;
-            margin-top: -2px;
-        }
-
-        .start-here-home .help {
-            margin-top: auto;
-            padding-top: 10px;
-            border-top: 1px solid var(--border-light);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .start-here-home .help .label {
-            color: var(--text-medium);
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0.55px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-
-        .start-here-home .help .chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            padding: 8px 10px;
-            border-radius: 999px;
-            border: 1px solid rgba(123, 95, 196, 0.22);
-            background: rgba(255, 255, 255, 0.65);
-            color: var(--text-dark);
-            font-weight: 600;
-            font-size: 12px;
-            white-space: nowrap;
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.05);
-        }
-
-        .dark-mode .start-here-home .help .chip {
-            background: rgba(18, 18, 18, 0.50);
-            border-color: rgba(157, 134, 233, 0.26);
-            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.30);
-        }
-
-        .start-here-home .help .chip i {
-            color: var(--accent-purple);
-            opacity: 0.95;
-        }
-
-        /* Inside panel */
-        .start-here-home .inside {
-            margin-top: 14px;
-            border-radius: 18px;
-            border: 1px solid rgba(123, 95, 196, 0.22);
-            background: rgba(255, 255, 255, 0.70);
-            padding: 14px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .dark-mode .start-here-home .inside {
-            background: rgba(18, 18, 18, 0.52);
-            border-color: rgba(157, 134, 233, 0.26);
-        }
-
-        .start-here-home .inside .icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 14px;
-            background: rgba(123, 95, 196, 0.12);
-            border: 1px solid rgba(123, 95, 196, 0.25);
-            color: var(--accent-purple);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .dark-mode .start-here-home .inside .icon {
-            background: rgba(157, 134, 233, 0.14);
-            border-color: rgba(157, 134, 233, 0.28);
-        }
-
-        .start-here-home .inside .copy {
-            flex: 1;
-            max-width: 1000px;
-        }
-
-        .start-here-home .inside .copy .title {
-            font-weight: 780;
-            letter-spacing: -0.2px;
-            font-size: 13.8px;
-            margin-bottom: 6px;
-            color: var(--text-dark);
-        }
-
-        .start-here-home .inside .copy p {
-            color: var(--text-medium);
-            font-size: 13px;
-            line-height: 1.5;
-            font-weight: 520;
-            margin-bottom: 10px;
-        }
-
-        .start-here-home .inside .bullets {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .start-here-home .inside .b {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            padding: 8px 10px;
-            border-radius: 999px;
-            border: 1px solid rgba(123, 95, 196, 0.22);
-            background: rgba(255, 255, 255, 0.65);
-            color: var(--text-dark);
-            font-weight: 650;
-            font-size: 12px;
-            white-space: nowrap;
-        }
-
-        .dark-mode .start-here-home .inside .b {
-            background: rgba(18, 18, 18, 0.50);
-            border-color: rgba(157, 134, 233, 0.26);
-        }
-
-        .start-here-home .inside .b i {
-            color: var(--accent-purple);
-            opacity: 0.95;
-        }
-
-        /* Journey hint row */
-        .start-here-home .journey {
-            margin-top: 16px;
-            border-top: 1px solid var(--border-light);
-            padding-top: 14px;
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
-        }
-
-        .start-here-home .journey .copy {
-            max-width: 1000px;
-            color: var(--text-medium);
-            font-size: 13.5px;
-            line-height: 1.55;
-            font-weight: 500;
-        }
-
-        .start-here-home .journey .copy .jline {
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        .start-here-home .journey .copy .k {
-            color: var(--text-dark);
-            font-weight: 650;
-        }
-
-        .start-here-home .journey .copy .note {
-            color: var(--text-medium);
-            font-weight: 520;
-            display: block;
-            margin-top: 6px;
-        }
-
-        .start-here-home .journey .cta {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-left: auto;
-        }
-
-        .start-here-home .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border-radius: 999px;
-            text-decoration: none;
-            font-weight: 750;
-            font-size: 12.5px;
-            letter-spacing: 0.2px;
-            transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
-            white-space: nowrap;
-        }
-
-        .start-here-home .btn.primary {
-            background: var(--accent-purple);
-            color: #fff;
-            box-shadow: 0 16px 34px rgba(123, 95, 196, 0.22);
-        }
-
-        .start-here-home .btn.primary:hover {
-            transform: translateY(-1px);
-            background: var(--accent-purple-dark);
-            box-shadow: 0 20px 42px rgba(123, 95, 196, 0.28);
-        }
-
-        .start-here-home .btn.ghost {
-            background: rgba(255, 255, 255, 0.70);
-            border: 1px solid rgba(123, 95, 196, 0.26);
-            color: var(--accent-purple);
-            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.05);
-        }
-
-        .dark-mode .start-here-home .btn.ghost {
-            background: rgba(18, 18, 18, 0.55);
-            border-color: rgba(157, 134, 233, 0.28);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.30);
-        }
-
-        .start-here-home .btn.ghost:hover {
-            transform: translateY(-1px);
-            border-color: rgba(123, 95, 196, 0.40);
-            box-shadow: 0 16px 34px rgba(123, 95, 196, 0.12);
-        }
-
-        /* Responsive for Start Here Section */
-        @media (max-width: 1100px) {
-            .start-here-home .grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .start-here-home .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .start-here-home .start-here {
-                padding: 18px;
-            }
-            
-            .start-here-home h2 {
-                font-size: 24px;
-            }
-            
-            .start-here-home .grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .start-here-home .stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .start-here-home .journey .cta {
-                margin-left: 0;
-                width: 100%;
-            }
-            
-            .start-here-home .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .start-here-home .inside .b {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .start-here-home .help {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        /* Cookie Message */
-        .cookie-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .cookie-popup-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .cookie-popup {
-            background: var(--primary-white);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
-            width: 90%;
-            border: 1px solid var(--border-light);
-            transform: translateY(20px);
-            transition: transform 0.5s ease;
-        }
-
-        .cookie-popup-overlay.active .cookie-popup {
-            transform: translateY(0);
-        }
-
-        .cookie-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            text-align: center;
-        }
-
-        .cookie-text {
-            font-size: 16px;
-            color: var(--text-medium);
-            line-height: 1.5;
-        }
-
-        .cookie-text a {
-            color: var(--accent-purple);
-            text-decoration: none;
-        }
-
-        .cookie-text a:hover {
-            text-decoration: underline;
-        }
-
-        .cookie-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .cookie-button {
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .cookie-accept {
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-        }
-
-        .cookie-accept:hover {
-            background: var(--accent-purple-dark);
-        }
-
-        .cookie-settings {
-            background: var(--light-gray);
-            color: var(--text-medium);
-            border: 1px solid var(--border-light);
-        }
-
-        /* Cookie Settings Modal */
-        .cookie-settings-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2001;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .cookie-settings-modal.active {
-            opacity: 1;
-            visibility: visible;
-            display: flex;
-        }
-
-        .cookie-settings-content {
-            background: var(--primary-white);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 1px solid var(--border-light);
-            transform: translateY(20px);
-            transition: transform 0.5s ease;
-        }
-
-        .cookie-settings-modal.active .cookie-settings-content {
-            transform: translateY(0);
-        }
-
-        .cookie-settings-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 25px 30px 15px;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .cookie-settings-header h2 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .cookie-settings-close {
-            background: none;
-            border: none;
-            color: var(--text-medium);
-            cursor: pointer;
-            font-size: 24px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .cookie-settings-close:hover {
-            background-color: var(--light-gray);
-        }
-
-        .cookie-settings-body {
-            padding: 25px 30px 30px;
-        }
-
-        .cookie-category {
-            margin-bottom: 25px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .cookie-category:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-
-        .cookie-category-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .cookie-category-header h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        /* Cookie Toggle Switch */
-        .cookie-toggle {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
-        .cookie-toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .cookie-toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--medium-gray);
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        .cookie-toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .cookie-toggle-slider {
-            background-color: var(--accent-purple);
-        }
-
-        input:checked + .cookie-toggle-slider:before {
-            transform: translateX(26px);
-        }
-
-        input:disabled + .cookie-toggle-slider {
-            background-color: var(--dark-gray);
-            cursor: not-allowed;
-        }
-
-        .cookie-category-description {
-            color: var(--text-medium);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .cookie-settings-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 25px;
-            justify-content: space-between;
-        }
-
-        .cookie-settings-buttons button {
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .cookie-settings-accept-all {
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-        }
-
-        .cookie-settings-accept-all:hover {
-            background: var(--accent-purple-dark);
-        }
-
-        .cookie-settings-save {
-            background: var(--light-gray);
-            color: var(--text-medium);
-            border: 1px solid var(--border-light);
-        }
-
-        .cookie-settings-save:hover {
-            background: var(--medium-gray);
-        }
-
-        .cookie-settings-reject-all {
-            background: var(--light-gray);
-            color: var(--text-medium);
-            border: 1px solid var(--border-light);
-        }
-
-        .cookie-settings-reject-all:hover {
-            background: var(--medium-gray);
-        }
-
-        /* Pillars Section */
-        .pillars {
-            background-color: var(--primary-white);
-            padding: 80px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-title {
-            font-size: 45px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-            min-height: 1.2em;
-        }
-
-        .section-subtitle {
-            font-size: 20px;
-            color: var(--text-medium);
-            max-width: 700px;
-            margin: 0 auto;
-            min-height: 1.5em;
-        }
-
-        .pillars-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-        }
-
-        .pillar-card {
-            background: var(--primary-white);
-            border-radius: 16px;
-            padding: 30px 25px;
-            text-align: center;
-            transition: transform 0.6s ease, box-shadow 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-light);
-            perspective: 1000px;
-            height: 380px;
-            cursor: pointer;
-        }
-
-        .pillar-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .pillar-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-
-        .pillar-card.flipped .pillar-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .pillar-card-front, .pillar-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 10px;
-        }
-
-        .pillar-card-back {
-            transform: rotateY(180deg);
-            text-align: left;
-            justify-content: flex-start;
-            align-items: flex-start;
-            overflow: hidden;
-        }
-
-        .pillar-icon {
-            font-size: 42px;
-            margin-bottom: 20px;
-            color: var(--accent-purple);
-        }
-
-        .pillar-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .pillar-description {
-            color: var(--text-medium);
-        }
-
-        .pillar-back-content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .pillar-back-heading {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--accent-purple);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            line-height: 1.3;
-        }
-
-        .pillar-back-text {
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
-        .pillar-back-point {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            gap: 10px;
-        }
-
-        .pillar-back-icon {
-            color: var(--accent-purple);
-            margin-top: 3px;
-            flex-shrink: 0;
-        }
-
-        /* Usage Section with Impact Metrics */
-        .usage {
-            background: var(--light-gray);
-            text-align: center;
-            padding: 100px 0;
-        }
-
-        .usage-statement {
-            font-size: 45px;
-            font-weight: 700;
-            margin-bottom: 24px;
-            line-height: 1.2;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-            min-height: 1.2em;
-        }
-
-        .usage-subtitle {
-            font-size: 20px;
-            color: var(--text-medium);
-            margin-bottom: 20px;
-            line-height: 1.6;
-            max-width: 900px;
-            margin: 0 auto 60px;
-            min-height: 1.6em;
-        }
-
-        /* Impact Metrics Section */
-        .impact-metrics {
-            margin-top: 40px;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-        }
-        
-        .metric-card {
-            background: var(--primary-white);
-            border-radius: 16px;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid var(--border-light);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        
-        .metric-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(139, 95, 191, 0.12);
-        }
-        
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(to right, var(--accent-purple), var(--accent-purple-dark));
-        }
-        
-        .metric-icon-container {
-            margin: 0 auto 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 80px;
-        }
-        
-        .metric-icon {
-            font-size: 2.5rem;
-            color: var(--accent-purple);
-        }
-        
-        .policy-icon {
-            transition: transform 0.3s ease;
-        }
-        
-        .metric-card:hover .policy-icon {
-            transform: scale(1.1);
-        }
-        
-        .confidence-icon {
-            transition: transform 0.3s ease;
-        }
-        
-        .metric-card:hover .confidence-icon {
-            transform: translateY(-3px);
-        }
-        
-        .boundaries-icon {
-            transition: transform 0.3s ease;
-        }
-        
-        .metric-card:hover .boundaries-icon {
-            transform: rotate(10deg);
-        }
-        
-        .support-icon {
-            transition: transform 0.3s ease;
-        }
-        
-        .metric-card:hover .support-icon {
-            transform: scale(1.1);
-        }
-        
-        .metric-value {
-            font-size: 2.8rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            line-height: 1;
-        }
-        
-        .metric-label {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-dark);
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .metric-description {
-            color: var(--text-medium);
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
-
-        /* Trusted Section */
-        .trusted {
-            background-color: var(--primary-white);
-            padding: 80px 0;
-        }
-
-        .trusted-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .trusted-title {
-            font-size: 34px;
-            font-weight: 600;
-            color: var(--text-medium);
-        }
-
-        .testimonials-carousel {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto;
-            overflow: hidden;
-        }
-
-        .testimonials-track {
-            display: flex;
-            transition: transform 0.5s ease;
-        }
-
-        .testimonial {
-            min-width: 100%;
-            padding: 0 20px;
-            box-sizing: border-box;
-        }
-
-        .testimonial-content {
-            background: var(--light-gray);
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-light);
-        }
-
-        .testimonial-text {
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 24px;
-            font-style: italic;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-        }
-
-        .author-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--accent-purple);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            margin-right: 15px;
-        }
-
-        .author-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .author-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .author-role {
-            color: var(--text-medium);
-            font-size: 14px;
-        }
-
-        .carousel-nav {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-            gap: 10px;
-        }
-
-        .carousel-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--medium-gray);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .carousel-dot.active {
-            background: var(--accent-purple);
-            transform: scale(1.2);
-        }
-
-        /* Final CTA */
-        .final-cta {
-            background: var(--primary-white);
-            text-align: center;
-            padding: 100px 0;
-        }
-
-        .final-statement {
-            font-size: 40px;
-            font-weight: 700;
-            margin-bottom: 40px;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.3;
-            min-height: 1.3em;
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--primary-white);
-            padding: 40px 0 20px;
-            color: var(--text-medium);
-            border-top: 1px solid var(--border-light);
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 80px;
-            margin-bottom: 40px;
-            align-items: start;
-        }
-
-        .footer-about {
-            max-width: 400px;
-            padding-left: 20px;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .footer-logo-img {
-            height: 100px;
-            width: auto;
-            padding: 8px 0;
-            transition: all 0.3s ease;
-            display: block;
-            min-height: 100px;
-        }
-
-        .dark-mode .footer-logo-img {
-            content: url("assets/img/logo-dark.png");
-        }
-
-        .footer-description {
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
-
-        .footer-heading {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--text-dark);
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-link {
-            margin-bottom: 10px;
-        }
-
-        .footer-link a {
-            color: var(--text-medium);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-link a:hover {
-            color: var(--accent-purple);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid var(--border-light);
-            font-size: 14px;
-        }
-
-        .footer-nav {
-            background-color: transparent;
-            padding: 0;
-            border-radius: 0;
-            box-shadow: none;
-            margin: 0;
-        }
-
-        .footer-nav-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-
-        .footer-newsletter {
-            margin-top: 0;
-            padding-top: 0;
-            border-top: none;
-            text-align: center;
-        }
-
-        .footer-newsletter-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--text-dark);
-        }
-
-        .footer-newsletter-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 300px;
-            margin: 0 auto;
-        }
-
-        .footer-newsletter-input {
-            padding: 12px 16px;
-            border: 1px solid var(--medium-gray);
-            border-radius: 8px;
-            font-size: 14px;
-            background: var(--primary-white);
-            color: var(--text-dark);
-        }
-
-        .footer-newsletter-button {
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .footer-newsletter-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(123, 95, 196, 0.3);
-        }
-
-        /* Chat Widget */
-        .chat-widget {
-            position: fixed;
-            bottom: 70px;
-            right: 30px;
-            z-index: 1000;
-        }
-
-        .chat-toggle {
-            width: 60px;
-            height: 60px;
-            background: var(--accent-purple);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(123, 95, 196, 0.4);
-            transition: all 0.3s ease;
-            border: none;
-            font-size: 24px;
-        }
-
-        .chat-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(123, 95, 196, 0.5);
-        }
-
-        .chat-container {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 320px;
-            height: 460px;
-            background: var(--primary-white);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid var(--border-light);
-        }
-
-        .chat-container.active {
-            display: flex;
-        }
-
-        .chat-header {
-            background: var(--accent-purple);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-title {
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .chat-close {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message {
-            max-width: 100%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .message-bot {
-            background: var(--light-gray);
-            color: var(--text-dark);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        .message-user {
-            background: var(--accent-purple);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            max-width: 80%;
-        }
-
-        .chat-input-container {
-            padding: 15px;
-            border-top: 1px solid var(--border-light);
-        }
-
-        .chat-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .chat-input {
-            padding: 12px 16px;
-            border: 1px solid var(--medium-gray);
-            border-radius: 8px;
-            font-size: 14px;
-            background: var(--primary-white);
-            color: var(--text-dark);
-        }
-
-        .chat-send {
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .chat-send:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(123, 95, 196, 0.3);
-        }
-
-        .hand-wave {
-            display: inline-block;
-            animation: wave 2s infinite;
-            transform-origin: 70% 70%;
-        }
-
-        @keyframes wave {
-            0% { transform: rotate(0deg); }
-            10% { transform: rotate(14deg); }
-            20% { transform: rotate(-8deg); }
-            30% { transform: rotate(14deg); }
-            40% { transform: rotate(-4deg); }
-            50% { transform: rotate(10deg); }
-            60% { transform: rotate(0deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        /* Logo Fallback */
-        .logo-fallback {
-            display: none;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-dark);
-            text-decoration: none;
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .stats-interactive-container {
-                flex-direction: column;
-            }
-            
-            .stats-cards-column {
-                flex: 1;
-                max-width: 100%;
-            }
-            
-            .metrics-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .start-here-home .grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .start-here-home .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 992px) {
-            .hero-headline {
-                font-size: 58px;
-            }
-
-            .stats-container {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .pillars-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-links {
-                gap: 30px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            /* NEW: Show the Create Account Tab on mobile */
-            .mobile-create-account-tab {
-                display: flex;
-            }
-
-            /* Mobile Navigation - Copied from The Lens */
-            .nav-container {
-                justify-content: center;
-                position: relative;
-            }
-            
-            .logo {
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
-                display: flex;
-                align-items: center;
-                height: 100%;
-            }
-            
-            .logo-img {
-                height: 125px;
-                transform: none;
-                padding: 12px 0;
-                display: flex;
-                align-items: center;
-            }
-            
-            .mobile-toggle {
-                display: flex;
-                position: absolute;
-                left: 20px;
-                align-items: center;
-            }
-            
-            .nav-actions {
-                transform: none;
-                gap: 16px;
-                position: absolute;
-                right: 20px;
-                align-items: center;
-            }
-            
-            .nav-actions .sign-in {
-                display: none;
-            }
-            
-            .nav-actions .header-cta {
-                display: none;
-            }
-            
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: var(--nav-bg);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                flex-direction: column;
-                padding: 20px;
-                border-top: 1px solid var(--border-light);
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-                gap: 20px;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-            
-            .nav-link-container {
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                width: 100%;
-            }
-            
-            .new-tag {
-                position: static;
-                margin-left: 8px;
-                top: auto;
-                right: auto;
-            }
-            
-            /* UPDATED: Mobile Sign In Button */
-            .mobile-sign-in {
-                display: block !important;
-                margin-top: 10px;
-                padding: 12px 20px;
-                background: white;
-                color: var(--accent-purple);
-                border-radius: 8px;
-                text-align: center;
-                font-weight: 600;
-                text-decoration: none;
-                border: 2px solid var(--accent-purple);
-                transition: all 0.3s ease;
-            }
-
-            .mobile-sign-in:hover {
-                background: var(--light-gray);
-                transform: translateY(-2px);
-            }
-
-            .dark-mode .mobile-sign-in {
-                background: var(--primary-white);
-                color: var(--accent-purple);
-                border: 2px solid var(--accent-purple);
-            }
-
-            /* NEW: Mobile Sign Up Button */
-            .mobile-sign-up {
-                display: block !important;
-                margin-top: 10px;
-                padding: 12px 20px;
-                background: var(--accent-purple);
-                color: white;
-                border-radius: 8px;
-                text-align: center;
-                font-weight: 600;
-                text-decoration: none;
-                border: 2px solid var(--accent-purple);
-                transition: all 0.3s ease;
-            }
-
-            .mobile-sign-up:hover {
-                background: var(--accent-purple-dark);
-                transform: translateY(-2px);
-            }
-
-            .dark-mode .mobile-sign-up {
-                background: var(--accent-purple);
-                color: white;
-                border: 2px solid var(--accent-purple);
-            }
-
-            /* Create Account Form Mobile */
-            .create-account-form {
-                margin: 80px 20px;
-                padding: 30px 20px;
-                position: relative;
-            }
-
-            .form-close {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                background: none;
-                border: none;
-                color: var(--text-medium);
-                cursor: pointer;
-                font-size: 20px;
-                width: 35px;
-                height: 35px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: background-color 0.3s ease;
-                z-index: 10;
-            }
-
-            .form-close:hover {
-                background-color: var(--light-gray);
-            }
-
-            /* FIXED: Mobile Hero Header Proper Centering */
-            .hero-headline {
-                font-size: 59.8px;
-                margin-top: -30px;
-                line-height: 1.2;
-                text-align: center;
-                width: 100%;
-                padding: 0 20px;
-            }
-
-            .hero-subhead {
-                font-size: 18px;
-                text-align: center;
-                width: 100%;
-                padding: 0 20px;
-            }
-
-            .flashing-words {
-                font-size: 59.8px;
-                margin-top: -30px;
-                line-height: 1.2;
-                height: 75px;
-                text-align: center;
-                width: 100%;
-                padding: 0 20px;
-            }
-
-            .section-title {
-                font-size: 38px;
-            }
-
-            .stats-grid, .metrics-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .pillars-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-nav-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-newsletter-form {
-                flex-direction: column;
-            }
-            
-            .pillar-card {
-                height: 350px;
-            }
-            
-            .footer-logo-img {
-                height: 120px;
-            }
-            
-            .stats-title {
-                font-size: 38px;
-            }
-            
-            .usage-statement {
-                font-size: 32px;
-            }
-            
-            .usage-subtitle {
-                font-size: 18px;
-            }
-            
-            .footer-nav-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 30px;
-            }
-            
-            .search-banner {
-                padding: 10px 0;
-            }
-            
-            .search-banner-content {
-                font-size: 14px;
-            }
-            
-            .stats-interactive-container {
-                display: none;
-            }
-            
-            .stats-mobile-container {
-                display: flex;
-            }
-            
-            .stats-content {
-                margin-bottom: 30px;
-            }
-            
-            .stats-title {
-                font-size: 32px;
-            }
-            
-            .stats-description {
-                font-size: 18px;
-            }
-            
-            .final-statement {
-                font-size: 28px;
-            }
-
-            /* Chat Widget Mobile */
-            .chat-container {
-                width: 90vw;
-                height: 450px;
-                right: 5vw;
-            }
-            
-            .chat-toggle {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
-
-            /* Start Here Responsive */
-            .start-here-home .start-here {
-                padding: 18px;
-            }
-            
-            .start-here-home h2 {
-                font-size: 24px;
-            }
-            
-            .start-here-home .grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .start-here-home .stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .start-here-home .journey .cta {
-                margin-left: 0;
-                width: 100%;
-            }
-            
-            .start-here-home .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .start-here-home .inside .b {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo-img {
-                height: 100px;
-            }
-            
-            .footer-logo-img {
-                height: 100px;
-            }
-            
-            .logo-fallback {
-                font-size: 18px;
-            }
-            
-            /* FIXED: Mobile Hero Header Proper Centering for Very Small Screens */
-            .hero-headline {
-                font-size: 48.3px;
-                margin-top: -25px;
-                text-align: center;
-                width: 100%;
-                padding: 0 15px;
-            }
-            
-            .hero-subhead {
-                font-size: 16px;
-                text-align: center;
-                width: 100%;
-                padding: 0 15px;
-            }
-            
-            .flashing-words {
-                font-size: 48.3px;
-                margin-top: -25px;
-                height: 60px;
-                text-align: center;
-                width: 100%;
-                padding: 0 15px;
-            }
-            
-            .search-banner {
-                padding: 8px 0;
-            }
-            
-            .search-banner-content {
-                font-size: 12px;
-            }
-            
-            .stats-title {
-                font-size: 28px;
-            }
-            
-            .stats-description {
-                font-size: 16px;
-            }
-            
-            .stats-mobile-value {
-                font-size: 24px;
-            }
-            
-            .stats-mobile-title {
-                font-size: 20px;
-            }
-            
-            .final-statement {
-                font-size: 24px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account | The Employee Playbook</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root{
+      --primary-white:#FFFFFF;
+      --page-bg:#F5F5F5;
+      --panel-border:#E6E6E6;
+      --text-dark:#37352F;
+      --text-medium:#5C5C5C;
+      --text-muted:#8A8A8A;
+
+      --accent-purple:#7B5FC4;
+
+      --success:#1f8f4a;
+      --danger:#c0392b;
+      --warning:#b7791f;
+      --info:#2f6fd6;
+
+      --shadow:0 10px 30px rgba(0,0,0,0.08);
+      --radius-16:16px;
+      --radius-14:14px;
+      --radius-12:12px;
+      --radius-10:10px;
+    }
+
+    *{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+
+    body{
+      background:var(--page-bg);
+      color:var(--text-dark);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:22px;
+    }
+
+    .auth-container{
+      width:100%;
+      max-width:1160px;
+      background:var(--primary-white);
+      border-radius:var(--radius-16);
+      box-shadow:var(--shadow);
+      border:1px solid var(--panel-border);
+      overflow:hidden;
+      display:flex;
+      min-height:620px;
+      max-height:88vh;
+      position:relative; /* ✅ for modal stacking context */
+    }
+
+    /* LEFT */
+    .left-column{
+      flex:1.15;
+      background:rgba(123,95,196,0.10);
+      padding:70px 50px 30px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+    }
+
+    .left-column h1{
+      font-size:30px;
+      font-weight:700;
+      letter-spacing:-0.02em;
+      line-height:1.12;
+      margin-top:50px;
+      margin-bottom:12px;
+      color:var(--text-dark);
+    }
+
+    .left-column p{
+      color:var(--text-medium);
+      font-size:18px;
+      line-height:1.5;
+      max-width:520px;
+      margin-bottom:24px;
+    }
+
+    .benefits-list{
+      list-style:none;
+      margin-top:6px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      max-width:560px;
+    }
+
+    .benefits-list li{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      color:var(--text-medium);
+      font-size:16px;
+      line-height:1.45;
+    }
+
+    .benefits-list i{
+      color:var(--accent-purple);
+      margin-top:3px;
+      font-size:16px;
+      flex-shrink:0;
+    }
+
+    /* RIGHT */
+    .right-column{
+      flex:1;
+      padding:18px 46px 14px;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .brand-row{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin-bottom:8px;
+    }
+
+    .logo-img{ height:77px; width:auto; }
+    .logo-fallback{ display:none; font-weight:800; letter-spacing:.08em; font-size:14px; }
+
+    .form-header{
+      margin-top:0px;
+      margin-bottom:8px;
+    }
+
+    .form-header h2{
+      font-size:25px;
+      font-weight:700;
+      margin-top:20px;
+      letter-spacing:-0.02em;
+      margin-bottom:4px;
+    }
+
+    .form-header p{
+      color:var(--text-muted);
+      font-size:14px;
+      line-height:1.35;
+    }
+
+    /* Status */
+    .inline-status{
+      display:none;
+      border-radius:var(--radius-12);
+      padding:10px 12px;
+      font-size:13px;
+      line-height:1.45;
+      border:1px solid var(--panel-border);
+      background:#fafafa;
+      color:var(--text-medium);
+      margin:6px 0 8px;
+    }
+    .inline-status.show{ display:block; }
+    .inline-status.success{ border-color:rgba(31,143,74,0.25); background:rgba(31,143,74,0.06); color:var(--success); }
+    .inline-status.error{ border-color:rgba(192,57,43,0.25); background:rgba(192,57,43,0.06); color:var(--danger); }
+    .inline-status.info{ border-color:rgba(47,111,214,0.22); background:rgba(47,111,214,0.06); color:var(--info); }
+
+    /* Form */
+    .form-row{ display:flex; gap:12px; }
+    .form-group{ flex:1; margin-bottom:8px; }
+
+    .form-label{
+      display:block;
+      margin-bottom:5px;
+      font-weight:700;
+      font-size:13px;
+      color:var(--text-dark);
+    }
+
+    .form-input{
+      width:100%;
+      padding:9px 12px;
+      border:1px solid var(--panel-border);
+      border-radius:var(--radius-10);
+      font-size:14.5px;
+      background:var(--primary-white);
+      color:var(--text-dark);
+      transition:all .15s ease;
+    }
+    .form-input:focus{
+      outline:none;
+      border-color:rgba(123,95,196,0.55);
+      box-shadow:0 0 0 4px rgba(123,95,196,0.14);
+    }
+    .form-input::placeholder{ color:#b2b2b2; }
+
+    /* Password */
+    .secure-input{ -webkit-text-security: disc; }
+    .reveal-toggle:checked ~ .password-row .secure-input{ -webkit-text-security:none; }
+
+    .password-wrap{ position:relative; }
+    .reveal-toggle{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+      width:1px;
+      height:1px;
+    }
+    .password-row{
+      display:flex;
+      width:100%;
+      border:1px solid var(--panel-border);
+      border-radius:var(--radius-10);
+      overflow:hidden;
+      background:var(--primary-white);
+      transition:all .15s ease;
+    }
+    .password-row:focus-within{
+      border-color:rgba(123,95,196,0.55);
+      box-shadow:0 0 0 4px rgba(123,95,196,0.14);
+    }
+    .password-row .form-input{
+      border:none;
+      border-radius:0;
+      box-shadow:none !important;
+      flex:1;
+      padding:9px 12px;
+    }
+    .toggle-label{
+      width:46px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:none;
+      border-left:1px solid var(--panel-border);
+      background:transparent;
+      cursor:pointer;
+      color:#9b9b9b;
+      font-size:16px;
+      user-select:none;
+    }
+    .toggle-label:hover{
+      background:rgba(123,95,196,0.07);
+      color:var(--accent-purple);
+    }
+    .reveal-toggle:not(:checked) ~ .password-row .icon-eye-slash { display:none; }
+    .reveal-toggle:checked ~ .password-row .icon-eye { display:none; }
+
+    .password-strength{
+      margin-top:4px;
+      font-size:12.5px;
+      display:flex;
+      align-items:center;
+      min-height:14px;
+      font-weight:600;
+    }
+    .password-strength.weak{ color:var(--danger); }
+    .password-strength.medium{ color:var(--warning); }
+    .password-strength.strong{ color:var(--success); }
+
+    /* reduce space between password + confirm */
+    .form-group.password-wrap{ margin-bottom:6px; }
+    .form-group.password-wrap + .form-group.password-wrap{ margin-top:-4px; }
+
+    .form-checkbox{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin:8px 0 6px;
+    }
+    .checkbox-input{ margin-top:3px; accent-color:var(--accent-purple); }
+    .checkbox-label{
+      font-size:12.5px;
+      color:var(--text-medium);
+      line-height:1.45;
+    }
+    .checkbox-label a{ color:var(--accent-purple); text-decoration:none; font-weight:700; }
+    .checkbox-label a:hover{ text-decoration:underline; }
+
+    .submit-button{
+      width:100%;
+      background:var(--accent-purple);
+      color:white;
+      border:none;
+      padding:11px 14px;
+      border-radius:var(--radius-12);
+      font-weight:800;
+      cursor:pointer;
+      font-size:15px;
+      transition:all .15s ease;
+      margin:8px 0 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+    }
+    .submit-button:hover{
+      background:#6A4FB0;
+      transform:translateY(-1px);
+      box-shadow:0 10px 18px rgba(123,95,196,0.22);
+    }
+    .submit-button:disabled{
+      opacity:.7;
+      cursor:not-allowed;
+      transform:none;
+      box-shadow:none;
+    }
+
+    .auth-footer{
+      text-align:center;
+      padding-top:10px;
+      border-top:1px solid var(--panel-border);
+      margin-top:auto;
+    }
+    .auth-footer p{ color:var(--text-medium); font-size:13px; }
+    .auth-footer a{ color:var(--accent-purple); text-decoration:none; font-weight:800; }
+    .auth-footer a:hover{ text-decoration:underline; }
+
+    /* =========================
+       ✅ MODAL: What happens next
+    ========================== */
+    .modal-overlay{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:9999;
+      background:rgba(10, 10, 10, 0.22); /* soft dim */
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .modal-overlay.show{ display:flex; }
+
+    .modal-card{
+      width:100%;
+      max-width:520px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.38);
+      background:rgba(255,255,255,0.72); /* ✅ frosted */
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow:0 18px 50px rgba(0,0,0,0.18);
+      overflow:hidden;
+      animation: modalIn .16s ease-out;
+    }
+    @keyframes modalIn{
+      from{ transform: translateY(10px) scale(0.99); opacity:0; }
+      to{ transform: translateY(0) scale(1); opacity:1; }
+    }
+
+    .modal-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 16px 10px;
+      border-bottom:1px solid rgba(0,0,0,0.06);
+    }
+    .modal-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      font-size:15px;
+      color:var(--text-dark);
+      line-height:1.2;
+    }
+    .modal-title i{ color:var(--accent-purple); }
+
+    .modal-close{
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      color:rgba(55,53,47,0.65);
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:all .15s ease;
+      flex-shrink:0;
+    }
+    .modal-close:hover{
+      background:rgba(123,95,196,0.10);
+      color:var(--accent-purple);
+    }
+
+    .modal-body{
+      padding:12px 16px 14px;
+    }
+
+    .modal-body ol{
+      margin:0 0 10px 18px;
+      color:var(--text-medium);
+      font-size:13.5px;
+      line-height:1.55;
+    }
+    .modal-body li{ margin:0 0 4px 0; }
+
+    .modal-note{
+      color:var(--text-muted);
+      font-size:12.5px;
+      line-height:1.4;
+      margin-bottom:12px;
+    }
+    .modal-note strong{ color:var(--text-dark); font-weight:800; }
+
+    .modal-actions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      padding-top:6px;
+    }
+
+    .primary-link{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(123,95,196,0.95);
+      color:#fff;
+      font-weight:800;
+      text-decoration:none;
+      font-size:13px;
+      box-shadow:0 10px 18px rgba(123,95,196,0.18);
+      transition:all .15s ease;
+      border:1px solid rgba(255,255,255,0.18);
+    }
+    .primary-link:hover{
+      transform:translateY(-1px);
+      background:rgba(106,79,176,0.98);
+      box-shadow:0 14px 26px rgba(123,95,196,0.24);
+    }
+
+    .secondary-btn{
+      border:none;
+      background:transparent;
+      color:var(--accent-purple);
+      font-weight:800;
+      font-size:13px;
+      cursor:pointer;
+      padding:10px 8px;
+    }
+    .secondary-btn:hover{ text-decoration:underline; }
+
+    .micro-help{
+      margin-top:10px;
+      display:none;
+      border:1px solid rgba(47,111,214,0.20);
+      background:rgba(47,111,214,0.06);
+      color:var(--info);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:12.8px;
+      line-height:1.45;
+    }
+    .micro-help.show{ display:block; }
+
+    @media (max-width:980px){
+      .auth-container{ flex-direction:column; max-height:none; }
+      .left-column{ padding:36px 24px; }
+      .left-column h1{ font-size:32px; }
+      .right-column{ padding:18px 18px; }
+    }
+    @media (max-width:520px){
+      body{ padding:12px; }
+      .form-row{ flex-direction:column; gap:0; }
+      .form-header h2{ font-size:22px; }
+      .logo-img{ height:56px; }
+      .modal-card{ max-width: 94vw; }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="auth-container">
 
-<!-- NEW: Create Account Tab for Mobile -->
-<a href="#" class="mobile-create-account-tab" id="createAccountTab">
-    <i class="fas fa-user-plus"></i>
-</a>
+    <!-- LEFT -->
+    <div class="left-column">
+      <h1>Join The Employee Playbook</h1>
+      <p>Create your account and start making smarter moves in your career</p>
 
-
-<!-- Cookie Popup Overlay -->
-<div class="cookie-popup-overlay" id="cookiePopupOverlay">
-    <div class="cookie-popup">
-        <div class="cookie-content">
-            <div class="cookie-text">
-                We use cookies to enhance your experience and analyse site traffic. By clicking "Accept", you consent to our use of cookies. 
-                <a href="#">Learn more</a>
-            </div>
-            <div class="cookie-buttons">
-                <button class="cookie-button cookie-settings">Settings</button>
-                <button class="cookie-button cookie-accept">Accept</button>
-            </div>
-        </div>
+      <ul class="benefits-list">
+        <li><i class="fas fa-check-circle"></i> Access to The Coach for private strategic guidance</li>
+        <li><i class="fas fa-check-circle"></i> Instant clarity tools for high-stakes conversations</li>
+        <li><i class="fas fa-check-circle"></i> A confidential space to think before you respond</li>
+        <li><i class="fas fa-check-circle"></i> Smart scripts and tactical wording, tailored to your situation</li>
+        <li><i class="fas fa-check-circle"></i> Strategic frameworks for complex workplace dynamics</li>
+        <li><i class="fas fa-check-circle"></i> Guidance aligned with UK workplace standards (not legal advice)</li>
+        <li><i class="fas fa-check-circle"></i> Input from a system built for professionals who make decisive moves</li>
+      </ul>
     </div>
-</div>
 
-<!-- Cookie Settings Modal -->
-<div class="cookie-settings-modal" id="cookieSettingsModal">
-    <div class="cookie-settings-content">
-        <div class="cookie-settings-header">
-            <h2>Cookie Settings</h2>
-            <button class="cookie-settings-close">&times;</button>
-        </div>
-        <div class="cookie-settings-body">
-            <div class="cookie-category">
-                <div class="cookie-category-header">
-                    <h3>Essential Cookies</h3>
-                    <label class="cookie-toggle">
-                        <input type="checkbox" checked disabled>
-                        <span class="cookie-toggle-slider"></span>
-                    </label>
-                </div>
-                <p class="cookie-category-description">These cookies are necessary for the website to function and cannot be switched off. They are usually only set in response to actions made by you such as setting your privacy preferences, logging in or filling in forms.</p>
-            </div>
-            
-            <div class="cookie-category">
-                <div class="cookie-category-header">
-                    <h3>Analytics Cookies</h3>
-                    <label class="cookie-toggle">
-                        <input type="checkbox" id="analyticsCookies" checked>
-                        <span class="cookie-toggle-slider"></span>
-                    </label>
-                </div>
-                <p class="cookie-category-description">These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site. They help us to know which pages are the most and least popular and see how visitors move around the site.</p>
-            </div>
-            
-            <div class="cookie-category">
-                <div class="cookie-category-header">
-                    <h3>Marketing Cookies</h3>
-                    <label class="cookie-toggle">
-                        <input type="checkbox" id="marketingCookies">
-                        <span class="cookie-toggle-slider"></span>
-                    </label>
-                </div>
-                <p class="cookie-category-description">These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant adverts on other sites.</p>
-            </div>
-            
-            <div class="cookie-settings-buttons">
-                <button class="cookie-settings-accept-all">Accept All</button>
-                <button class="cookie-settings-save">Save Preferences</button>
-                <button class="cookie-settings-reject-all">Reject All</button>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- RIGHT -->
+    <div class="right-column">
 
-<!-- Navigation - Copied from The Lens -->
-<nav>
-    <div class="container nav-container">
-        <button class="mobile-toggle"><i class="fas fa-bars"></i></button>
-        
-        <a href="index.html" class="logo">
-            <img src="assets/img/logo.png" alt="The Employee Playbook" class="logo-img" id="logo"
-                 onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
-            <div class="logo-fallback" id="logo-fallback">THE EMPLOYEE PLAYBOOK</div>
-        </a>
-        
-        <div class="nav-links">
-            <a href="the-lens.html" class="nav-link">The Lens</a>
-            <a href="the-toolkit.html" class="nav-link">The Toolkit</a>
-            <div class="nav-link-container">
-                <a href="the-coach.html" class="nav-link">The Coach</a>
-                <span class="new-tag">NEW</span>
-            </div>
-            <a href="the-shift.html" class="nav-link">The Shift</a>
-            <a href="the-pricing.html" class="nav-link">The Pricing</a>
-            <!-- NEW: Mobile Sign In Button in Hamburger Menu -->
-            <a href="sign-in.html" class="mobile-sign-in">Sign In</a>
-            <!-- NEW: Mobile Sign Up Button in Hamburger Menu -->
-            <a href="create-account.html" class="mobile-sign-up">Sign Up</a>
-        </div>
-        
-        <div class="nav-actions">
-             <a href="create-account.html" class="header-cta">Sign up</a>
-            <a href="sign-in.html" class="sign-in">Sign in</a>
-            <button class="theme-toggle"><i class="fas fa-moon"></i></button>
-        </div>
-    </div>
-</nav>
+      <div class="brand-row">
+        <img src="assets/img/logo.png" alt="The Employee Playbook" class="logo-img" id="logo"
+          onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+        <div class="logo-fallback" id="logo-fallback">THE EMPLOYEE PLAYBOOK</div>
+      </div>
 
-<!-- Create Account Form (Example) -->
-<div class="create-account-form" id="createAccountForm" style="display: none;">
-    <button class="form-close" id="formClose">
-        <i class="fas fa-times"></i>
-    </button>
-    <h2 class="form-title">Create Your Account</h2>
-    <form>
+      <div class="form-header">
+        <h2>Create your account</h2>
+        <p>Enter your details to get started</p>
+      </div>
+
+      <div id="formStatus" class="inline-status" role="status" aria-live="polite"></div>
+
+      <form class="auth-form" id="createAccountForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName" class="form-label">First Name</label>
+            <input type="text" id="firstName" class="form-input" placeholder="First name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input type="text" id="lastName" class="form-input" placeholder="Last name" required>
+          </div>
+        </div>
+
         <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" class="form-input" placeholder="Enter your full name" required>
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" id="email" class="form-input" placeholder="your.email@example.com" required>
         </div>
-        <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <input type="email" class="form-input" placeholder="Enter your email" required>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-input" placeholder="Create a password" required>
-        </div>
-        <button type="submit" class="form-submit">Create Account</button>
-    </form>
-</div>
 
-<!-- Hero Section -->
-<section class="hero">
-    <div class="hero-content">
-        <h1 class="hero-headline">Are you feeling</h1>
-        <div class="flashing-words">
-            <div class="flashing-word">Stressed?</div>
-            <div class="flashing-word">Burned out?</div>
-            <div class="flashing-word">Frustrated?</div>
-            <div class="flashing-word">Excluded?</div>
-            <div class="flashing-word">Overwhelmed?</div>
-            <div class="flashing-word">Unsupported?</div>
-            <div class="flashing-word">Undervalued?</div>
+        <div class="form-group password-wrap">
+          <label for="password" class="form-label">Password</label>
+
+          <input type="checkbox" id="pwReveal" class="reveal-toggle">
+
+          <div class="password-row">
+            <input type="text" id="password" class="form-input secure-input" placeholder="Create a secure password" required autocomplete="new-password">
+            <label for="pwReveal" class="toggle-label" aria-label="Toggle password visibility" title="Show/hide password">
+              <i class="fa-solid fa-eye icon-eye"></i>
+              <i class="fa-solid fa-eye-slash icon-eye-slash"></i>
+            </label>
+          </div>
+
+          <div id="passwordStrength" class="password-strength"></div>
         </div>
-        <p class="hero-subhead">
-            Don't react. Respond with intent, using guidance, tools and <br>real-time support from The Coach to put you back in control
-            <span class="hero-note">Not legal advice. Just the clarity you wish you'd had sooner</span>
-        </p>
+
+        <div class="form-group password-wrap">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+
+          <input type="checkbox" id="cpwReveal" class="reveal-toggle">
+
+          <div class="password-row">
+            <input type="text" id="confirmPassword" class="form-input secure-input" placeholder="Confirm your password" required autocomplete="new-password">
+            <label for="cpwReveal" class="toggle-label" aria-label="Toggle confirm password visibility" title="Show/hide password">
+              <i class="fa-solid fa-eye icon-eye"></i>
+              <i class="fa-solid fa-eye-slash icon-eye-slash"></i>
+            </label>
+          </div>
+
+          <div id="passwordMatch" class="password-strength"></div>
+        </div>
+
+        <div class="form-checkbox">
+          <input type="checkbox" id="terms" class="checkbox-input" required>
+          <label for="terms" class="checkbox-label">
+            I agree to the <a href="terms-and-conditions.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>
+          </label>
+        </div>
+
+        <div class="form-checkbox">
+          <input type="checkbox" id="newsletter" class="checkbox-input">
+          <label for="newsletter" class="checkbox-label">
+            Send me strategic insights and career development tips
+          </label>
+        </div>
+
+        <button type="submit" class="submit-button" id="submitBtn">
+          <span id="submitText">Create Account</span>
+          <i class="fas fa-arrow-right" id="submitIcon" aria-hidden="true"></i>
+        </button>
+
+        <div class="auth-footer">
+          <p>Already have an account? <a href="sign-in.html">Sign in</a></p>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <!-- Banner -->
-    <div class="search-banner">
-        <div class="search-banner-content">
-            "How do I ask for a promotion without sounding entitled?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "What do I say when my work is being overlooked?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I push back without damaging the relationship?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I ask for a pay rise?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How can I be more confident?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I navigate office politics without compromising my values?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "What do I do when my manager takes credit for my work?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I handle a difficult coworker without escalating the situation?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "What should I do if I'm being micromanaged?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I negotiate better work-life balance?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            <span class="highlight">The Employee Playbook. Strategy when it matters most.</span>
-            &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I ask for a promotion without sounding entitled?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "What do I say when my work is being overlooked?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I push back without damaging the relationship?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I ask for a pay rise?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How can I be more confident?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I navigate office politics without compromising my values?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "What do I do when my manager takes credit for my work?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I handle a difficult coworker without escalating the situation?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "What should I do if I'm being micromanaged?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            "How do I negotiate better work-life balance?" &nbsp; &nbsp; • &nbsp; &nbsp; 
-            <span class="highlight">The Employee Playbook. Strategy when it matters most.</span>
+  <!-- ✅ Modal Overlay -->
+  <div class="modal-overlay" id="nextModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="What happens next">
+      <div class="modal-head">
+        <div class="modal-title">
+          <i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i>
+          What happens next
         </div>
+        <button class="modal-close" id="closeNextModal" type="button" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <ol>
+          <li>Create your account.</li>
+          <li>We’ll email a secure verification link to confirm it’s really you.</li>
+          <li>Open the link, then come back and sign in.</li>
+        </ol>
+
+        <div class="modal-note" id="modalEmailNote">
+          We’ve sent a verification link to <strong>your email</strong>. If you don’t see it within a few minutes, check spam/junk.
+        </div>
+
+        <div class="modal-actions">
+          <a class="primary-link" id="modalGoSignIn" href="sign-in.html">
+            Go to Sign In <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          <button class="secondary-btn" id="modalNoEmail" type="button">Didn’t get the email?</button>
+        </div>
+
+        <div class="micro-help" id="modalHelpBox">
+          If the email hasn’t arrived:
+          <br><strong>1)</strong> Check spam/junk
+          <br><strong>2)</strong> Wait 2–3 minutes
+          <br><strong>3)</strong> Try signing in (you may be prompted to confirm your email)
+          <br>If it still doesn’t arrive, use a different email or contact support.
+        </div>
+      </div>
     </div>
-</section>
+  </div>
 
-<!-- Statistics Section -->
-<section class="statistics" id="statistics">
-    <div class="container">
-        <div class="stats-container">
-            <!-- Duplicate header stats -->
-            <div class="stats-content">
-                <h2 class="stats-title">The hidden costs of workplace stress</h2>
-                <p class="stats-description">Data reveals the silent toll that workplace dynamics take on professionals' wellbeing, performance, and career trajectory</p>
-            </div>
-            
-            <!-- Desktop Layout -->
-            <div class="stats-interactive-container">
-                <div class="stats-cards-column">
-                    <!-- Personal Impact Card -->
-                    <div class="stat-card" id="personal-impact" data-target="personal-expansion">
-                        <div class="stat-card-header">
-                            <div class="icon-container">
-                                <div class="icon-circle">
-                                    <i class="fas fa-heartbeat"></i>
-                                </div>
-                            </div>
-                            <div class="stat-card-content">
-                                <div class="stat-title">Personal Impact</div>
-                                <div class="stat-subtitle">How work affects health, sleep and wellbeing</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Career Impact Card -->
-                    <div class="stat-card" id="career-impact" data-target="career-expansion">
-                        <div class="stat-card-header">
-                            <div class="icon-container">
-                                <div class="icon-circle">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                            </div>
-                            <div class="stat-card-content">
-                                <div class="stat-title">Career Impact</div>
-                                <div class="stat-subtitle">Barriers to progression and professional growth</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Knowledge Impact Card -->
-                    <div class="stat-card" id="knowledge-impact" data-target="knowledge-expansion">
-                        <div class="stat-card-header">
-                            <div class="icon-container">
-                                <div class="icon-circle">
-                                    <i class="fas fa-lightbulb"></i>
-                                </div>
-                            </div>
-                            <div class="stat-card-content">
-                                <div class="stat-title">Knowledge Gaps</div>
-                                <div class="stat-subtitle">Understanding policies, rights and expectations</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stats-display-area">
-                    <!-- Default Placeholder Content -->
-                    <div class="stats-placeholder" id="stats-placeholder">
-                        <div class="stats-placeholder-title">The Ripple Effect of Workplace Stress</div>
-                        <div class="stats-placeholder-text">
-                            <p>When work starts to take over, it doesn't just drain us during office hours — it seeps into everything.</p>
-                            <p>It unsettles our sleep, shortens our patience with the people we care about, and slowly erodes how capable we believe we are.</p>
-                            <p>Stress doesn't clock out when we do. It comes home with us, sits at the dinner table, and whispers at night when we should be resting.</p>
-                            <p>But it doesn't have to stay that way. The moment we recognise the true impact is the moment we start taking back control.</p>
-                        </div>
-                        <div class="stats-placeholder-cta">← Click on a category to explore the impact</div>
-                    </div>
-                    
-                    <!-- Personal Impact Expansion Bar -->
-                    <div class="stats-expansion-bar" id="personal-expansion">
-                        <button class="close-expansion">&times;</button>
-                        <div class="stats-expansion-header">
-                            <h3 class="stats-expansion-title">Personal Impact</h3>
-                            <p class="stats-expansion-subtitle">How work stress affects your health and wellbeing</p>
-                        </div>
-                        
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <div class="stat-value">43%</div>
-                                <div class="stat-explanation">of UK employees reported experiencing sleep problems in the past year, with work being a contributing factor.</div>
-                                <div class="stat-source">CIPD – Health & Well-being at Work Report (2024)</div>
-                            </div>
-                            
-                            <div class="stat-item">
-                                <div class="stat-value">79%</div>
-                                <div class="stat-explanation">of UK workers are experiencing moderate-to-high stress levels in the workplace.</div>
-                                <div class="stat-source">MHFA England – Workplace Mental Health Statistics (2024)</div>
-                            </div>
-                            
-                            <div class="stat-item">
-                                <div class="stat-value">63%</div>
-                                <div class="stat-explanation">of UK employees are now showing signs of burnout (exhaustion, disengagement, mental fatigue), up from 51% two years earlier.</div>
-                                <div class="stat-source">MHFA England (2024)</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Career Impact Expansion Bar -->
-                    <div class="stats-expansion-bar" id="career-expansion">
-                        <button class="close-expansion">&times;</button>
-                        <div class="stats-expansion-header">
-                            <h3 class="stats-expansion-title">Career Impact</h3>
-                            <p class="stats-expansion-subtitle">How workplace barriers hold back your professional growth</p>
-                        </div>
-                        
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <div class="stat-value">33%</div>
-                                <div class="stat-explanation">of UK employees say their career progression has not met expectations, and 39% attribute this to poor line management.</div>
-                                <div class="stat-source">Workplace Insight (UK)</div>
-                            </div>
-                            
-                            <div class="stat-item">
-                                <div class="stat-value">48%</div>
-                                <div class="stat-explanation">of UK employees say being micromanaged is one of the main reasons they feel unhappy at work.</div>
-                                <div class="stat-source">Drewberry Workplace Satisfaction Survey (2024)</div>
-                            </div>
-                            
-                            <div class="stat-item">
-                                <div class="stat-value">50%</div>
-                                <div class="stat-explanation">of UK employees feel workplace favouritism is holding back their career development, and 47% say not everyone is given a fair opportunity to grow.</div>
-                                <div class="stat-source">O.C. Tanner – HRReview, 2021</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Knowledge Impact Expansion Bar -->
-                    <div class="stats-expansion-bar" id="knowledge-expansion">
-                        <button class="close-expansion">&times;</button>
-                        <div class="stats-expansion-header">
-                            <h3 class="stats-expansion-title">Knowledge & Clarity Gaps</h3>
-                            <p class="stats-expansion-subtitle">How lack of information creates workplace uncertainty</p>
-                        </div>
-                        
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <div class="stat-value">21%</div>
-                                <div class="stat-explanation">of UK employees fully understand how their performance is evaluated by their employer.</div>
-                                <div class="stat-source">Personnel Today – Lattice Survey (2024)</div>
-                            </div>
-                            
-                            <div class="stat-item">
-                                <div class="stat-value">53%</div>
-                                <div class="stat-explanation">of UK workers know their employer's HR policies, and just 43% understand their procedural rights.</div>
-                                <div class="stat-source">People Management (2024)</div>
-                            </div>
-                            
-                            <div class="stat-item">
-                                <div class="stat-value">25%</div>
-                                <div class="stat-explanation">of UK employees feel they do not have a voice in their organisation – they do not believe feedback is genuinely listened to or acted upon.</div>
-                                <div class="stat-source">CIPHR Research (2024)</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Mobile Stats Layout -->
-            <div class="stats-mobile-container">
-                <!-- Personal Impact Mobile -->
-                <div class="stats-mobile-category">
-                    <div class="stats-mobile-header">
-                        <div class="icon-container">
-                            <div class="icon-circle">
-                                <i class="fas fa-heartbeat"></i>
-                            </div>
-                        </div>
-                        <h3 class="stats-mobile-title">Personal Impact</h3>
-                    </div>
-                    <div class="stats-mobile-grid">
-                        <div class="stats-mobile-item">
-                            <div class="stats-mobile-value">43%</div>
-                            <div class="stats-mobile-explanation">of UK employees reported experiencing sleep problems in the past year, with work being a contributing factor.</div>
-                            <div class="stats-mobile-source">CIPD – Health & Well-being at Work Report (2024)</div>
-                        </div>
-                        <div class="stats-mobile-item">
-                            <div class="stats-mobile-value">79%</div>
-                            <div class="stats-mobile-explanation">of UK workers are experiencing moderate-to-high stress levels in the workplace.</div>
-                            <div class="stats-mobile-source">MHFA England – Workplace Mental Health Statistics (2024)</div>
-                        </div>
-                        <div class="stats-mobile-item">
-                            <div class="stats-mobile-value">63%</div>
-                            <div class="stats-mobile-explanation">of UK employees are now showing signs of burnout (exhaustion, disengagement, mental fatigue), up from 51% two years earlier.</div>
-                            <div class="stats-mobile-source">MHFA England (2024)</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Career Impact Mobile -->
-                <div class="stats-mobile-category">
-                    <div class="stats-mobile-header">
-                        <div class="icon-container">
-                            <div class="icon-circle">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                        </div>
-                        <h3 class="stats-mobile-title">Career Impact</h3>
-                    </div>
-                    <div class="stats-mobile-grid">
-                        <div class="stats-mobile-item">
-                            <div class="stats-mobile-value">33%</div>
-                            <div class="stats-mobile-explanation">of UK employees say their career progression has not met expectations, and 39% attribute this to poor line management.</div>
-                            <div class="stats-mobile-source">Workplace Insight (UK)</div>
-                        </div>
-                        <div class="stats-mobile-item">
-                            <div class="stats-mobile-value">48%</div>
-                            <div class="stats-mobile-explanation">of UK employees say being micromanaged is one of the main reasons they feel unhappy at work.</div>
-                            <div class="stats-mobile-source">Drewberry Workplace Satisfaction Survey (2024)</div>
-                        </div>
-                        <div class="stats-mobile-item">
-                            <div class="stats-mobile-value">50%</div>
-                            <div class="stats-mobile-explanation">of UK employees feel workplace favouritism is holding back their career development, and 47% say not everyone is given a fair opportunity to grow.</div>
-                            <div class="stats-mobile-source">O.C. Tanner – HRReview, 2021</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Knowledge Gaps Mobile -->
-                <div class="stats-mobile-category">
-                    <div class="stats-mobile-header">
-                        <div class="icon-container">
-                            <div class="icon-circle">
-                                <i class="fas fa-lightbulb"></i>
-                            </div>
-                        </div>
-                        <h3 class="stats-mobile-title">Knowledge Gaps</h3>
-                    </div>
-                    <div class="stats-mobile-grid">
-                        <div class="stats-mobile-item">
-                            <div class="stats-mobile-value">21%</div>
-                            <div class="stats-mobile-explanation">of UK employees fully understand how their performance is evaluated by their employer.</div>
-                            <div class="stats-mobile-source">Personnel Today – Lattice Survey (2024)</div>
-                        </div>
-                        <div class="stats-mobile-item">
-                            <div class="stats-mobile-value">53%</div>
-                            <div class="stats-mobile-explanation">of UK workers know their employer's HR policies, and just 43% understand their procedural rights.</div>
-                            <div class="stats-mobile-source">People Management (2024)</div>
-                        </div>
-                        <div class="stats-mobile-item">
-                            <div class="stats-mobile-value">25%</div>
-                            <div class="stats-mobile-explanation">of UK employees feel they do not have a voice in their organisation. They do not believe feedback is genuinely listened to or acted upon.</div>
-                            <div class="stats-mobile-source">CIPHR Research (2024)</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabaseClient.js"></script>
 
-<!-- Start Here Section (New Version) -->
-<section class="start-here-home">
-    <div class="container container-inner">
-                      <h2 class="stats-title">Start Here</h2><br>
-        <section class="start-here" id="startHere">
-            <div class="start-top">
-                <div style="flex: 2; min-width: 600px;">
+  <script>
+  (() => {
+    const supabaseClient = window.supabaseClient;
 
-                    <p class="intro measure">
-                        Most people only realise they needed structure after things have started to change. 
-                        <br>When something shifts at work, your brain tries to protect you… and that's exactly when it can spiral:
-                        re-reading messages, guessing motives, replaying conversations you can't prove.
-                        <strong>The Employee Playbook exists for that exact moment.</strong>
-                        <br>You don't need more opinions. You need a calm read on what's happening, what matters, and what to do next, without losing credibility.
-                    </p>
+    const formStatus = document.getElementById('formStatus');
 
-                    <div class="value-pills" aria-label="Core principles">
-                        <div class="value-pill"><i class="fa-solid fa-lock"></i> Private by design</div>
-                        <div class="value-pill"><i class="fa-solid fa-language"></i> Plain-English guidance</div>
-                        <div class="value-pill"><i class="fa-solid fa-map"></i> Scripts, plans &amp; playbooks</div>
-                        <div class="value-pill"><i class="fa-solid fa-scale-balanced"></i> Not legal advice</div>
-                    </div>
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const submitIcon = document.getElementById('submitIcon');
 
-                    <!-- Reality check: 6 stats -->
-                    <div class="stats" aria-label="Reality check stats">
-                        <div class="stat">
-                            <div class="stat-top">
-                                <span class="badge"><i class="fa-solid fa-brain"></i> wellbeing</span>
-                                <i class="fa-solid fa-chart-line"></i>
-                            </div>
-                            <div class="big">8.5 million</div>
-                            <div class="small">UK workers say their job negatively affects their mental health (around a quarter of employees).</div>
-                        </div>
+    // Modal elements
+    const nextModal = document.getElementById('nextModal');
+    const closeNextModal = document.getElementById('closeNextModal');
+    const modalEmailNote = document.getElementById('modalEmailNote');
+    const modalGoSignIn = document.getElementById('modalGoSignIn');
+    const modalNoEmail = document.getElementById('modalNoEmail');
+    const modalHelpBox = document.getElementById('modalHelpBox');
 
-                        <div class="stat">
-                            <div class="stat-top">
-                                <span class="badge"><i class="fa-solid fa-building"></i> hybrid</span>
-                                <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                            </div>
-                            <div class="big">49%</div>
-                            <div class="small">Graduates say they wouldn't apply for roles requiring 4+ days a week in the office.</div>
-                        </div>
+    // ✅ track whether modal was opened due to successful signup
+    let shouldRedirectOnModalClose = false;
 
-                        <div class="stat">
-                            <div class="stat-top">
-                                <span class="badge"><i class="fa-solid fa-route"></i> rto pressure</span>
-                                <i class="fa-solid fa-person-walking"></i>
-                            </div>
-                            <div class="big">9%</div>
-                            <div class="small">London workers say they'd start looking for a new job if asked to increase office attendance.</div>
-                        </div>
+    function setLoading(isLoading) {
+      submitBtn.disabled = !!isLoading;
+      if (isLoading) {
+        submitText.textContent = 'Creating…';
+        submitIcon.className = 'fas fa-spinner fa-spin';
+      } else {
+        submitText.textContent = 'Create Account';
+        submitIcon.className = 'fas fa-arrow-right';
+      }
+    }
 
-                        <div class="stat">
-                            <div class="stat-top">
-                                <span class="badge"><i class="fa-solid fa-people-arrows"></i> conflict</span>
-                                <i class="fa-solid fa-bolt"></i>
-                            </div>
-                            <div class="big">36%</div>
-                            <div class="small">Only this share say workplace conflict is resolved quickly and fairly in their organisation.</div>
-                        </div>
+    function showStatus(html, type) {
+      formStatus.innerHTML = html;
+      formStatus.className = 'inline-status show ' + (type || '');
+    }
+    function clearStatus() {
+      formStatus.textContent = '';
+      formStatus.className = 'inline-status';
+    }
 
-                        <div class="stat">
-                            <div class="stat-top">
-                                <span class="badge"><i class="fa-solid fa-user-tie"></i> managers</span>
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                            </div>
-                            <div class="big">74%</div>
-                            <div class="small">Organisations report they don't train line managers on how to handle redundancies well.</div>
-                        </div>
+    function escapeHtml(str){
+      return String(str || '').replace(/[&<>"']/g, (m) => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+      }[m]));
+    }
 
-                        <div class="stat">
-                            <div class="stat-top">
-                                <span class="badge"><i class="fa-solid fa-sterling-sign"></i> cost</span>
-                                <i class="fa-solid fa-signal"></i>
-                            </div>
-                            <div class="big">£28.5bn</div>
-                            <div class="small">Estimated annual cost of workplace conflict to UK organisations.</div>
-                        </div>
-                    </div>
+    function getNextTarget() {
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get('next');
+      const stored = localStorage.getItem('tep_post_login_redirect');
+      return next || stored || 'the-toolkit.html';
+    }
 
-                    <div class="sources measure">
-                        Sources (linked):
-                        <a href="https://www.cipd.org/globalassets/media/knowledge/knowledge-hub/reports/2025-pdfs/8868-good-work-index-2025-report-web1.pdf" target="_blank" rel="noopener noreferrer">CIPD Good Work Index 2025</a>
-                        &nbsp;·&nbsp;
-                        <a href="https://www.personneltoday.com/hr/graduates-office-attendance-hybrid-work/" target="_blank" rel="noopener noreferrer">Personnel Today</a>
-                        &nbsp;·&nbsp;
-                        <a href="https://www.personneltoday.com/hr/office-return-commuting-weak-effect/" target="_blank" rel="noopener noreferrer">Personnel Today</a>
-                        &nbsp;·&nbsp;
-                        <a href="https://www.peoplemanagement.co.uk/article/1881261/organisations-failing-manage-workplace-conflict-cipd-report" target="_blank" rel="noopener noreferrer">People Management</a>
-                        &nbsp;·&nbsp;
-                        <a href="https://www.peoplemanagement.co.uk/article/1885211/organisations-failing-train-line-managers-handle-redundancies-cipd-report" target="_blank" rel="noopener noreferrer">People Management</a>
-                        &nbsp;·&nbsp;
-                        <a href="https://www.acas.org.uk/the-business-and-human-cost-of-conflict-at-work" target="_blank" rel="noopener noreferrer">Acas</a>
-                    </div>
-                </div>
-            </div>
+    function premiumMessageForError(error) {
+      const raw = (error && error.message) ? String(error.message) : '';
+      const msg = raw.toLowerCase();
 
-            <div class="issues-wrap">
-                <div class="issues-head">
-                    <div class="measure">
-                        <h3>The pressing issues that we're built for</h3>
-                        <div class="sub">
-                            Time after time, these are the most prevalent pressure-points, the ones that quietly change careers, health, confidence, and choices.
-                            These aren't "work problems". They're <strong>risk moments</strong>: where stress makes people over-explain, under-document and send the wrong message.
-                            <strong>It's time for change.</strong><br>
-                        </div>
-                    </div>
-                </div>
+      if (msg.includes('already registered') || msg.includes('already exists') || msg.includes('user already registered')) {
+        return {
+          type:'error',
+          html:"This email is already linked to an account.<br><span style='color:var(--text-medium);font-weight:600;'>Please sign in — or reset your password if you’ve forgotten it.</span>"
+        };
+      }
+      if (msg.includes('password') && (msg.includes('weak') || msg.includes('least') || msg.includes('min'))) {
+        return {
+          type:'error',
+          html:"Please choose a stronger password.<br><span style='color:var(--text-medium);font-weight:600;'>Use at least 8 characters. For extra security, include a mix of letters and numbers.</span>"
+        };
+      }
+      if (msg.includes('rate limit') || msg.includes('too many requests')) {
+        return {
+          type:'error',
+          html:"Too many attempts in a short time.<br><span style='color:var(--text-medium);font-weight:600;'>Please wait a moment and try again.</span>"
+        };
+      }
+      if (msg.includes('fetch') || msg.includes('network') || msg.includes('failed to fetch')) {
+        return {
+          type:'error',
+          html:"We couldn’t reach the service just now.<br><span style='color:var(--text-medium);font-weight:600;'>Check your connection and try again.</span>"
+        };
+      }
+      return {
+        type:'error',
+        html:"We couldn’t create your account right now.<br><span style='color:var(--text-medium);font-weight:600;'>Please try again — if it continues, contact support.</span>"
+      };
+    }
 
-                <div class="grid">
-                    <!-- 1 -->
-                    <article class="issue">
-                        <div class="quote"><span>"They're pushing us, it's too much… and it's getting 'quietly' intense."</span></div>
-                        <div class="desc">
-                            It starts as "one more day" or "just for visibility". Then it becomes a loyalty test. You can feel the consequences before anyone admits them.
-                        </div>
-                        <div class="help">
-                            <div class="chip"><i class="fa-solid fa-toolbox"></i> Use The Toolkit for boundary scripts that keep<br> your status intact</div>
-                        </div>
-                        <div class="pill-row">
-                            <div class="pill politics"><i class="fa-solid fa-users"></i> Workplace Dynamics &amp; Politics</div>
-                        </div>
-                    </article>
+    // =========================
+    // ✅ Modal open/close behaviour
+    // =========================
+    function openNextModal(email, nextTarget){
+      modalEmailNote.innerHTML =
+        `We’ve sent a verification link to <strong>${escapeHtml(email)}</strong>. If you don’t see it within a few minutes, check spam/junk.`;
 
-                    <!-- 2 -->
-                    <article class="issue">
-                        <div class="quote"><span>"Something's off. I'm not sure but I think I'm being managed out."</span></div>
-                        <div class="desc">
-                            The vibe changes: fewer invites, strange feedback, "process" language. You can't prove it yet but your nervous system knows.
-                        </div>
-                        <div class="help">
-                            <div class="chip"><i class="fa-solid fa-magnifying-glass"></i> Use The Lens to name the pattern, spot the <br>risk, choose your next move</div>
-                        </div>
-                        <div class="pill-row">
-                            <div class="pill hr"><i class="fa-solid fa-file-contract"></i> HR &amp; Formal Processes</div>
-                        </div>
-                    </article>
+      modalGoSignIn.href = 'sign-in.html?check_email=1&next=' + encodeURIComponent(nextTarget) + '&email=' + encodeURIComponent(email);
 
-                    <!-- 4 -->
-                    <article class="issue">
-                        <div class="quote"><span>"Rules are changing… and I don't want to say the wrong thing."</span></div>
-                        <div class="desc">
-                            Policy shifts create confusion. Confusion creates mistakes: messy emails, premature admissions, or agreements you didn't fully understand.
-                        </div>
-                        <div class="help">
-                            <div class="chip"><i class="fa-solid fa-file-lines"></i> Use The Toolkit to get wording + decision <br>checklists or process moments</div>
-                        </div>
-                        <div class="pill-row">
-                            <div class="pill hr"><i class="fa-solid fa-scale-balanced"></i> HR &amp; Formal Processes</div>
-                        </div>
-                    </article>
+      modalHelpBox.classList.remove('show');
+      nextModal.classList.add('show');
+      nextModal.setAttribute('aria-hidden', 'false');
 
-                    <!-- 5 -->
-                    <article class="issue">
-                        <div class="quote"><span>"I'm at capacity but I don't know how to reset it safely."</span></div>
-                        <div class="desc">
-                            You keep pushing because you're responsible… until your body forces the decision your calendar refused to make.
-                        </div>
-                        <div class="help">
-                            <div class="chip"><i class="fa-solid fa-user-shield"></i> Use The Coach for a calm capacity reset plan<br> you can hold to</div>
-                        </div>
-                        <div class="pill-row">
-                            <div class="pill burnout"><i class="fa-solid fa-battery-half"></i> Expectations, Burnout &amp; Capacity</div>
-                        </div>
-                    </article>
+      // ✅ if they dismiss the modal, send them to sign-in
+      shouldRedirectOnModalClose = true;
 
-                    <!-- 6 -->
-                    <article class="issue">
-                        <div class="quote"><span>"The culture is toxic. Everything feels heavy and unpredictable."</span></div>
-                        <div class="desc">
-                            People document more. Small disagreements become identity battles. You're trying to stay steady inside something unstable.
-                        </div>
-                        <div class="help">
-                            <div class="chip"><i class="fa-solid fa-comment-dots"></i> Use the Script Library for de-escalation <br>language that keeps you credible</div>
-                        </div>
-                        <div class="pill-row">
-                            <div class="pill politics"><i class="fa-solid fa-users"></i> Workplace Dynamics &amp; Politics</div>
-                        </div>
-                    </article>
+      // lock scroll (optional but feels premium)
+      document.body.style.overflow = 'hidden';
+    }
 
-                    <!-- 7 -->
-                    <article class="issue">
-                        <div class="quote"><span>"I'm doing the work… but I'm not progressing. I feel stuck."</span></div>
-                        <div class="desc">
-                            Progress is getting jammed. You're delivering — but the system isn't rewarding it. You need strategy, not more effort.
-                        </div>
-                        <div class="help">
-                            <div class="chip"><i class="fa-solid fa-map"></i> Use the Toolkit for visibility, sponsorship, <br>and a move plan for 7–30 days</div>
-                        </div>
-                        <div class="pill-row">
-                            <div class="pill career"><i class="fa-solid fa-arrow-trend-up"></i> Career Playbook</div>
-                        </div>
-                    </article>
-                </div>
+    function closeModal({ redirect = true } = {}){
+      nextModal.classList.remove('show');
+      nextModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
 
-                <!-- What you'll use inside -->
-                <div class="inside" aria-label="What you'll use inside">
-                    <div class="icon"><i class="fa-solid fa-toolbox"></i></div>
-                    <div class="copy">
-                        <div class="title">What you actually get (and why it works when you're under pressure)</div>
-                        <p>
-                            The Employee Playbook is a private system for moments that feel unclear, political, or quietly high-risk.
-                            Use it to decode what's happening, choose a safer next move, and communicate clearly without weakening your position.
-                        </p>
-                        <div class="bullets" aria-label="Inside the Playbook">
-                            <div class="b"><i class="fa-solid fa-magnifying-glass"></i> The Lens (90-second chaos-to-clarity)</div>
-                            <div class="b"><i class="fa-solid fa-comment-dots"></i> Script Library (wording that holds up)</div>
-                            <div class="b"><i class="fa-solid fa-shield"></i> Boundaries &amp; risk control (without drama)</div>
-                            <div class="b"><i class="fa-solid fa-pen-to-square"></i> Hard conversations made simple (what to say, what not to say)</div>
-                            <div class="b"><i class="fa-solid fa-circle-nodes"></i> Clarity maps (who holds power, what changes the game)</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      // ✅ NEW: when user clicks off / closes, go to sign-in
+      if (redirect && shouldRedirectOnModalClose) {
+        window.location.href = modalGoSignIn.href || 'sign-in.html';
+      }
+    }
 
-            <div class="journey" aria-label="Journey and offering hint">
-                <div class="copy">
-                    <span class="note">This is not legal advice. It's structured clarity for real workplace moments.</span>
-                </div>
-                <div class="cta">
-                    <a class="btn primary" href="the-lens.html"><i class="fa-solid fa-magnifying-glass"></i> Use The Lens</a>
-                    <a class="btn ghost" href="the-pricing.html"><i class="fa-solid fa-tags"></i> View pricing</a>
-                </div>
-            </div>
-        </section>
-    </div>
-</section>
+    // Close button -> redirect to sign in
+    closeNextModal.addEventListener('click', () => closeModal({ redirect: true }));
 
-<!-- Pillars Section -->
-<section class="pillars">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Your framework for decisive action</h2>
-            <p class="section-subtitle">Stop guessing in high-stakes moments. Start executing with precision. <strong>Select to see more</strong></p>
-        </div>
-        
-        <div class="pillars-grid">
-            <div class="pillar-card">
-                <div class="pillar-card-inner">
-                    <div class="pillar-card-front">
-                        <div class="pillar-icon">
-                            <i class="fas fa-binoculars"></i>
-                        </div>
-                        <h3 class="pillar-title">The Lens</h3>
-                        <p class="pillar-description">See beyond surface dynamics to understand what's truly happening in any situation.</p>
-                    </div>
-                    <div class="pillar-card-back">
-                        <div class="pillar-back-content">
-                            <div class="pillar-back-heading">
-                                <span>Before reacting, run it through The Lens.</span>
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-search"></i></span>
-                                <span>What's really happening?</span>
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-question-circle"></i></span>
-                                <span>What's actually being challenged on?</span>
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-shield-alt"></i></span>
-                                <span>What response strengthens your position?</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="pillar-card">
-                <div class="pillar-card-inner">
-                    <div class="pillar-card-front">
-                        <div class="pillar-icon">
-                            <i class="fas fa-tools"></i>
-                        </div>
-                        <h3 class="pillar-title">The Toolkit</h3>
-                        <p class="pillar-description">Precision instruments for communication, negotiation, and strategic positioning.</p>
-                    </div>
-                    <div class="pillar-card-back">
-                        <div class="pillar-back-content">
-                            <div class="pillar-back-heading">
-                                Before speaking, run it through The Toolkit.
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-bullseye"></i></span>
-                                <span>What outcome do you want?</span>
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-comments"></i></span>
-                                <span>Which words shift the dynamic?</span>
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-balance-scale"></i></span>
-                                <span>How do you say it without weakening your position?</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="pillar-card">
-                <div class="pillar-card-inner">
-                    <div class="pillar-card-front">
-                        <div class="pillar-icon">
-                            <i class="fas fa-comments"></i>
-                        </div>
-                        <h3 class="pillar-title">The Coach</h3>
-                        <p class="pillar-description">Strategic guidance translated into actionable language for your specific situation.</p>
-                    </div>
-                    <div class="pillar-card-back">
-                        <div class="pillar-back-content">
-                            <div class="pillar-back-heading">
-                                Before deciding, run it past The Coach.
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-lightbulb"></i></span>
-                                <span>What would a mentor or friend advise?</span>
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-exclamation-triangle"></i></span>
-                                <span>What risk are you not seeing?</span>
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-user-shield"></i></span>
-                                <span>What action preserves credibility?</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="pillar-card">
-                <div class="pillar-card-inner">
-                    <div class="pillar-card-front">
-                        <div class="pillar-icon">
-                            <i class="fas fa-arrow-trend-up"></i>
-                        </div>
-                        <h3 class="pillar-title">The Shift</h3>
-                        <p class="pillar-description">Transform how you're perceived and how you operate in your organization.</p>
-                    </div>
-                    <div class="pillar-card-back">
-                        <div class="pillar-back-content">
-                            <div class="pillar-back-heading">
-                                Before moving forward, run it through The Shift.
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-user"></i></span>
-                                <span>Who do you need to be in this moment?</span>
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-bolt"></i></span>
-                                <span>What would signal confidence, not reaction?</span>
-                            </div>
-                            <div class="pillar-back-point">
-                                <span class="pillar-back-icon"><i class="fas fa-arrows-alt"></i></span>
-                                <span>How do you move so others shift around you?</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Usage Section with Impact Metrics -->
-<section class="usage">
-    <div class="container">
-        <h2 class="usage-statement">This isn't about working harder.<br>It's about making every move count.</h2>
-        <p class="usage-subtitle">We're proud to share with you the impact we've made together with our community</p>
-        
-        <div class="impact-metrics">
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-icon-container">
-                        <i class="fas fa-book-open metric-icon policy-icon"></i>
-                    </div>
-                    <div class="metric-value">83%</div>
-                    <div class="metric-label">Understanding Policies<br>& Rights</div>
-                    <div class="metric-description">Employees gain clarity on workplace guidelines and their entitlements with our AI-powered guidance</div>
-                </div>
-                
-                <div class="metric-card">
-                    <div class="metric-icon-container">
-                        <i class="fas fa-comments metric-icon confidence-icon"></i>
-                    </div>
-                    <div class="metric-value">76%</div>
-                    <div class="metric-label">Confidence in Difficult Conversations</div>
-                    <div class="metric-description">Feel more prepared to handle challenging workplace discussions with our frameworks and scripts</div>
-                </div>
-                
-                <div class="metric-card">
-                    <div class="metric-icon-container">
-                        <i class="fas fa-shield-alt metric-icon boundaries-icon"></i>
-                    </div>
-                    <div class="metric-value">68%</div>
-                    <div class="metric-label">Equipped to Set Boundaries</div>
-                    <div class="metric-description">Better able to establish work-life boundaries to prevent burnout with personalised coaching</div>
-                </div>
-                
-                <div class="metric-card">
-                    <div class="metric-icon-container">
-                        <i class="fas fa-hands-helping metric-icon support-icon"></i>
-                    </div>
-                    <div class="metric-value">72%</div>
-                    <div class="metric-label">Feel Supported & Less Alone</div>
-                    <div class="metric-description">Access to 24/7 AI support means you're never alone in tough moments. Our AI coach is always there when you need backup.</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Trusted Section -->
-<section class="trusted">
-    <div class="container">
-        <div class="trusted-header">
-            <h2 class="trusted-title">Trusted by professionals seeking clarity</h2>
-        </div>
-        
-        <div class="testimonials-carousel">
-            <div class="testimonials-track" id="testimonialsTrack">
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"The free tier gave me exactly what I needed to navigate my first promotion conversation. I used the 'Words That Change the Outcome' tool and got a 15% raise. I've since upgraded to Core and it's been worth every penny."</p>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">JS</div>
-                            <div class="author-info">
-                                <div class="author-name">Jamie Sullivan</div>
-                                <div class="author-role">Marketing Coordinator</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"As someone who's always avoided difficult conversations, The Employee Playbook has been transformative. The Core tier gives me the confidence to handle situations I would have previously panicked about. The 30-second strategy resets are genius."</p>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">MR</div>
-                            <div class="author-info">
-                                <div class="author-name">Maya Rodriguez</div>
-                                <div class="author-role">Content Writer</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"I started with the free version to test the waters, and within a month I knew I needed Core Strategy. The unlimited plays and priority coaching have helped me navigate three major organizational changes without losing my footing."</p>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">TC</div>
-                            <div class="author-info">
-                                <div class="author-name">Thomas Chen</div>
-                                <div class="author-role">Software Developer</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"The free tier's Conversation Matrix helped me prepare for a crucial meeting with my director. I felt so prepared that the conversation went better than I could have imagined. I'm now using Core and it's become my secret weapon."</p>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">SP</div>
-                            <div class="author-info">
-                                <div class="author-name">Sarah Patel</div>
-                                <div class="author-role">Customer Support Specialist</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"Core Strategy has paid for itself ten times over. The advanced frameworks helped me negotiate a package that was 30% higher than their initial offer. The Follow-up Dynamics tool alone is worth the subscription."</p>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">DW</div>
-                            <div class="author-info">
-                                <div class="author-name">David Wilson</div>
-                                <div class="author-role">Account Manager</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"I was skeptical about paying for something like this, but the free tier convinced me. The two monthly coach queries helped me navigate office politics that had been stressing me out for months. Upgraded to Core and haven't looked back."</p>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">EG</div>
-                            <div class="author-info">
-                                <div class="author-name">Elena Gomez</div>
-                                <div class="author-role">Project Coordinator</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"The Core tier has been invaluable for my professional development. I use the tools to prepare for client negotiations and internal strategy sessions. The Immediate Action Plays have saved me in last-minute meeting prep more times than I can count."</p>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">RK</div>
-                            <div class="author-info">
-                                <div class="author-name">Ryan Kim</div>
-                                <div class="author-role">Team Lead</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="carousel-nav" id="carouselNav">
-                <div class="carousel-dot active" data-index="0"></div>
-                <div class="carousel-dot" data-index="1"></div>
-                <div class="carousel-dot" data-index="2"></div>
-                <div class="carousel-dot" data-index="3"></div>
-                <div class="carousel-dot" data-index="4"></div>
-                <div class="carousel-dot" data-index="5"></div>
-                <div class="carousel-dot" data-index="6"></div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Final CTA -->
-<section class="final-cta">
-    <div class="container">
-        <h2 class="final-statement">Your career shouldn't be left to chance. <br>Shape it by the choices you make deliberately.</h2>
-        <a href="create-account.html" class="cta-button">Start making intentional moves today</a>
-    </div>
-</section>
-
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-about">
-                <div class="footer-logo">
-                    <a href="index.html">
-                        <img src="assets/img/logo.png" alt="The Employee Playbook" class="footer-logo-img" id="footer-logo"
-                             onerror="this.style.display='none'; document.getElementById('footer-logo-fallback').style.display='block';">
-                        <div class="logo-fallback" id="footer-logo-fallback" style="font-size: 28px;">THE EMPLOYEE PLAYBOOK</div>
-                    </a>
-                </div>
-                <p class="footer-description">A private strategy system giving employees clarity and advantage in the moments that matter most.</p>
-            </div>
-            
-            <div class="footer-newsletter">
-                <h3 class="footer-newsletter-title">Stay updated with strategic insights</h3>
-                <form class="footer-newsletter-form">
-                    <input type="email" class="footer-newsletter-input" placeholder="Your email" required>
-                    <button type="submit" class="footer-newsletter-button">Subscribe</button>
-                </form>
-            </div>
-            
-            <div class="footer-nav">
-                <div class="footer-nav-grid">
-                    <div class="footer-nav-section">
-                        <h3 class="footer-heading">The Playbook</h3>
-                        <ul class="footer-links">
-                            <li class="footer-link"><a href="the-lens.html">The Lens</a></li>
-                            <li class="footer-link"><a href="the-toolkit.html">The Toolkit</a></li>
-                            <li class="footer-link"><a href="the-coach.html">The Coach</a></li>
-                            <li class="footer-link"><a href="the-shift.html">The Shift</a></li>
-                            <li class="footer-link"><a href="the-pricing.html">The Pricing</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-nav-section">
-                        <h3 class="footer-heading">The Company</h3>
-                        <ul class="footer-links">
-                            <li class="footer-link"><a href="profile.html">Profile</a></li>
-                            <li class="footer-link"><a href="about-us.html">About</a></li>
-                            <li class="footer-link"><a href="#privacy.html">Privacy</a></li>
-                            <li class="footer-link"><a href="terms-and-conditions.html">Terms</a></li>
-                            <li class="footer-link"><a href="help-centre.html">Help Centre</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>© 2025 The Employee Playbook. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
-
-<!-- Chat Widget -->
-<div class="chat-widget">
-    <button class="chat-toggle">
-        <i class="fas fa-comment"></i>
-    </button>
-    <div class="chat-container">
-        <div class="chat-header">
-            <div class="chat-title">Send us a message</div>
-            <button class="chat-close">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="chat-messages">
-            <div class="message message-bot">👋 Hi there! We'd love to hear from you.</div>
-        </div>
-        <div class="chat-input-container">
-            <form class="chat-form" id="chatForm">
-                <input type="text" class="chat-input" placeholder="Your Name" required>
-                <input type="email" class="chat-input" placeholder="Your Email" required>
-                <textarea class="chat-input" rows="3" required></textarea>
-                <button type="submit" class="chat-send">Send Message</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Mark page as loaded to prevent FOUC
-    document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.add('loaded');
-        
-        // Create Account Modal Functionality
-        const createAccountTab = document.getElementById('createAccountTab');
-        const createAccountModal = document.getElementById('createAccountModal');
-        const closeModal = document.getElementById('closeModal');
-        
-        // Open modal when tab is clicked
-        createAccountTab.addEventListener('click', function(e) {
-            e.preventDefault();
-            createAccountModal.classList.add('active');
-        });
-        
-        // Close modal when X button is clicked
-        closeModal.addEventListener('click', function() {
-            createAccountModal.classList.remove('active');
-        });
-        
-        // Close modal when clicking outside the form
-        createAccountModal.addEventListener('click', function(e) {
-            if (e.target === createAccountModal) {
-                createAccountModal.classList.remove('active');
-            }
-        });
-        
-        // Close modal with ESC key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && createAccountModal.classList.contains('active')) {
-                createAccountModal.classList.remove('active');
-            }
-        });
-        
-        // Handle form submission
-        const modalForm = document.querySelector('.modal-form');
-        modalForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            // In a real implementation, you would handle form submission here
-            alert('Account creation would be processed here in a real implementation');
-            createAccountModal.classList.remove('active');
-        });
-        
-        // Cookie popup functionality
-        const cookiePopupOverlay = document.getElementById('cookiePopupOverlay');
-        const cookieAccept = document.querySelector('.cookie-accept');
-        const cookieSettings = document.querySelector('.cookie-settings');
-        
-        // Show cookie popup after 3 seconds
-        setTimeout(() => {
-            if (!localStorage.getItem('cookiesAccepted')) {
-                cookiePopupOverlay.classList.add('active');
-            }
-        }, 3000);
-        
-        // Accept cookies
-        cookieAccept.addEventListener('click', function() {
-            localStorage.setItem('cookiesAccepted', 'true');
-            cookiePopupOverlay.classList.remove('active');
-        });
-        
-        // Cookie settings functionality
-        const cookieSettingsButton = document.querySelector('.cookie-settings');
-        const cookieSettingsModal = document.getElementById('cookieSettingsModal');
-        const cookieSettingsClose = document.querySelector('.cookie-settings-close');
-        const cookieSettingsSave = document.querySelector('.cookie-settings-save');
-        const cookieAcceptAll = document.querySelector('.cookie-settings-accept-all');
-        const cookieRejectAll = document.querySelector('.cookie-settings-reject-all');
-        const analyticsCookies = document.getElementById('analyticsCookies');
-        const marketingCookies = document.getElementById('marketingCookies');
-
-        // Open cookie settings
-        cookieSettingsButton.addEventListener('click', function() {
-            cookiePopupOverlay.classList.remove('active');
-            cookieSettingsModal.classList.add('active');
-            
-            // Load current preferences
-            const currentPreferences = getCookiePreferences();
-            analyticsCookies.checked = currentPreferences.analytics;
-            marketingCookies.checked = currentPreferences.marketing;
-        });
-
-        // Close cookie settings
-        cookieSettingsClose.addEventListener('click', function() {
-            cookieSettingsModal.classList.remove('active');
-        });
-
-        // Save cookie preferences
-        cookieSettingsSave.addEventListener('click', function() {
-            saveCookiePreferences();
-            cookieSettingsModal.classList.remove('active');
-            alert('Your cookie preferences have been saved.');
-        });
-
-        // Accept all cookies
-        cookieAcceptAll.addEventListener('click', function() {
-            analyticsCookies.checked = true;
-            marketingCookies.checked = true;
-            saveCookiePreferences();
-            cookieSettingsModal.classList.remove('active');
-            alert('All cookies have been accepted.');
-        });
-
-        // Reject all non-essential cookies
-        cookieRejectAll.addEventListener('click', function() {
-            analyticsCookies.checked = false;
-            marketingCookies.checked = false;
-            saveCookiePreferences();
-            cookieSettingsModal.classList.remove('active');
-            alert('Non-essential cookies have been rejected.');
-        });
-
-        // Get current cookie preferences from localStorage
-        function getCookiePreferences() {
-            const preferences = localStorage.getItem('cookiePreferences');
-            if (preferences) {
-                return JSON.parse(preferences);
-            }
-            // Default preferences if none exist
-            return {
-                analytics: true,
-                marketing: false
-            };
-        }
-
-        // Save cookie preferences to localStorage
-        function saveCookiePreferences() {
-            const preferences = {
-                analytics: analyticsCookies.checked,
-                marketing: marketingCookies.checked
-            };
-            localStorage.setItem('cookiePreferences', JSON.stringify(preferences));
-            localStorage.setItem('cookiesAccepted', 'true');
-            
-            // In a real implementation, you would update the actual cookies here
-            // based on the user's preferences
-        }
-        
-        // Dark mode toggle
-        const themeToggle = document.querySelector('.theme-toggle');
-        const themeIcon = themeToggle.querySelector('i');
-        
-        // Check for saved theme preference or default to light
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        if (currentTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-        
-        themeToggle.addEventListener('click', function () {
-            document.body.classList.toggle('dark-mode');
-            const isDarkMode = document.body.classList.contains('dark-mode');
-            
-            // Update icon
-            themeIcon.classList.toggle('fa-moon');
-            themeIcon.classList.toggle('fa-sun');
-            
-            // Save theme preference
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-            
-            // Update logo for dark mode
-            const logo = document.getElementById('logo');
-            const footerLogo = document.getElementById('footer-logo');
-            if (isDarkMode) {
-                logo.src = 'assets/img/logo-dark.png';
-                footerLogo.src = 'assets/img/logo-dark.png';
-            } else {
-                logo.src = 'assets/img/logo.png';
-                footerLogo.src = 'assets/img/logo.png';
-            }
-        });
-
-        // Mobile navigation toggle
-        document.querySelector('.mobile-toggle').addEventListener('click', function () {
-            document.querySelector('.nav-links').classList.toggle('active');
-            const icon = this.querySelector('i');
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
-        });
-
-        // Form close functionality - FIXED VERSION
-        const formClose = document.getElementById('formClose');
-        const createAccountForm = document.getElementById('createAccountForm');
-
-        formClose.addEventListener('click', function() {
-            createAccountForm.style.display = 'none';
-        });
-
-        // Show create account form (for demonstration)
-        document.querySelectorAll('.header-cta, .mobile-sign-up, .cta-button').forEach(button => {
-            button.addEventListener('click', function(e) {
-                if (this.getAttribute('href') === 'create-account.html') {
-                    e.preventDefault();
-                    // Show the form instead of navigating
-                    createAccountForm.style.display = 'block';
-        // Scroll to the form
-        createAccountForm.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        // Smooth scrolling with offset for fixed header
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offset = 96; // 80px header + 16px extra spacing
-                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                    
-                    // Close mobile menu if open
-                    document.querySelector('.nav-links').classList.remove('active');
-                    document.querySelector('.mobile-toggle i').classList.add('fa-bars');
-                    document.querySelector('.mobile-toggle i').classList.remove('fa-times');
-                }
-            });
-        });
-
-        // Chat Widget Functionality
-        const chatToggle = document.querySelector('.chat-toggle');
-        const chatContainer = document.querySelector('.chat-container');
-        const chatClose = document.querySelector('.chat-close');
-        const chatForm = document.getElementById('chatForm');
-
-        chatToggle.addEventListener('click', function() {
-            chatContainer.classList.toggle('active');
-        });
-
-        chatClose.addEventListener('click', function() {
-            chatContainer.classList.remove('active');
-        });
-
-        chatForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = {
-                name: this.querySelector('input[type="text"]').value,
-                email: this.querySelector('input[type="email"]').value,
-                message: this.querySelector('textarea').value
-            };
-            
-            // In a real implementation, you would send this data to a server
-            console.log('Chat form submitted:', formData);
-            
-            // Show success message
-            const chatMessages = document.querySelector('.chat-messages');
-            const userMessage = document.createElement('div');
-            userMessage.classList.add('message', 'message-user');
-            userMessage.textContent = "Thanks! We'll get back to you soon.";
-            chatMessages.appendChild(userMessage);
-            
-            // Reset form
-            this.reset();
-            
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        });
-
-        // Testimonials Carousel
-        const testimonialsTrack = document.getElementById('testimonialsTrack');
-        const carouselDots = document.querySelectorAll('.carousel-dot');
-        let currentSlide = 0;
-        const totalSlides = 7;
-
-        function updateCarousel() {
-            testimonialsTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
-            
-            // Update active dot
-            carouselDots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
-        }
-
-        // Add click events to dots
-        carouselDots.forEach(dot => {
-            dot.addEventListener('click', function() {
-                currentSlide = parseInt(this.getAttribute('data-index'));
-                updateCarousel();
-            });
-        });
-
-        // Auto-advance carousel
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            updateCarousel();
-        }, 5000);
-        
-        // Animated counter for metrics
-        const metricValues = document.querySelectorAll('.metric-value');
-        
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const metricValue = entry.target;
-                    const finalValue = parseInt(metricValue.textContent);
-                    
-                    animateValue(metricValue, 0, finalValue, 1500);
-                    observer.unobserve(metricValue);
-                }
-            });
-        }, { threshold: 0.5 });
-        
-        metricValues.forEach(value => {
-            observer.observe(value);
-        });
-        
-        function animateValue(element, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const value = Math.floor(progress * (end - start) + start);
-                element.textContent = value + '%';
-                
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-        
-        // Statistics cards interactive functionality
-        const statCards = document.querySelectorAll('.stat-card');
-        const statsPlaceholder = document.getElementById('stats-placeholder');
-        const expansionBars = document.querySelectorAll('.stats-expansion-bar');
-        
-        statCards.forEach(card => {
-            card.addEventListener('click', function() {
-                // Get the target expansion bar
-                const targetId = this.getAttribute('data-target');
-                const targetExpansion = document.getElementById(targetId);
-                
-                // Hide all expansion bars and placeholder
-                expansionBars.forEach(bar => {
-                    bar.classList.remove('active');
-                });
-                statsPlaceholder.style.display = 'none';
-                
-                // Show the selected expansion bar
-                targetExpansion.classList.add('active');
-                
-                // Update active state for cards
-                statCards.forEach(c => {
-                    c.classList.remove('active');
-                });
-                this.classList.add('active');
-            });
-        });
-        
-        // Close expansion bars
-        const closeButtons = document.querySelectorAll('.close-expansion');
-        closeButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const expansionBar = this.closest('.stats-expansion-bar');
-                expansionBar.classList.remove('active');
-                
-                // Show placeholder again
-                statsPlaceholder.style.display = 'block';
-                
-                // Remove active state from cards
-                statCards.forEach(card => {
-                    card.classList.remove('active');
-                });
-            });
-        });
-        
-        // Pillar cards mobile-friendly functionality
-        const pillarCards = document.querySelectorAll('.pillar-card');
-        
-        pillarCards.forEach(card => {
-            card.addEventListener('click', function() {
-                // Toggle flipped state on click for mobile
-                this.classList.toggle('flipped');
-            });
-            
-            // Keep hover functionality for desktop
-            card.addEventListener('mouseenter', function() {
-                if (window.innerWidth > 768) {
-                    this.classList.add('flipped');
-                }
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                if (window.innerWidth > 768) {
-                    this.classList.remove('flipped');
-                }
-            });
-        });
+    // Click anywhere outside card -> redirect to sign in
+    nextModal.addEventListener('click', (e) => {
+      if (e.target === nextModal) closeModal({ redirect: true });
     });
-</script>
 
-<script defer src="/_vercel/speed-insights/script.js"></script>
+    // Esc -> redirect to sign in
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nextModal.classList.contains('show')) closeModal({ redirect: true });
+    });
 
+    // "Didn't get the email?" (no redirect)
+    modalNoEmail.addEventListener('click', () => {
+      modalHelpBox.classList.toggle('show');
+    });
 
+    // =========================
+    // Password indicators
+    // =========================
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const passwordStrength = document.getElementById('passwordStrength');
+    const passwordMatch = document.getElementById('passwordMatch');
+
+    passwordInput.addEventListener('input', function () {
+      const pw = this.value;
+      let strength = '';
+      let cls = '';
+
+      if (pw.length === 0) {
+        strength = '';
+      } else if (pw.length < 8) {
+        strength = 'Weak password';
+        cls = 'weak';
+      } else if (pw.length < 12) {
+        strength = 'Medium password';
+        cls = 'medium';
+      } else {
+        strength = 'Strong password';
+        cls = 'strong';
+      }
+
+      passwordStrength.textContent = strength;
+      passwordStrength.className = 'password-strength ' + cls;
+
+      if (confirmPasswordInput.value.length > 0) checkPasswordMatch();
+    });
+
+    confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+
+    function checkPasswordMatch() {
+      if (passwordInput.value === confirmPasswordInput.value && confirmPasswordInput.value.length > 0) {
+        passwordMatch.textContent = 'Passwords match';
+        passwordMatch.className = 'password-strength strong';
+      } else if (confirmPasswordInput.value.length > 0) {
+        passwordMatch.textContent = 'Passwords do not match';
+        passwordMatch.className = 'password-strength weak';
+      } else {
+        passwordMatch.textContent = '';
+        passwordMatch.className = 'password-strength';
+      }
+    }
+
+    // =========================
+    // Submit
+    // =========================
+    const createAccountForm = document.getElementById('createAccountForm');
+
+    createAccountForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearStatus();
+
+      if (!supabaseClient || !supabaseClient.auth) {
+        showStatus(
+          "We couldn’t initialise the sign-up service.<br><span style='color:var(--text-medium);font-weight:600;'>Please refresh and try again.</span>",
+          "error"
+        );
+        return;
+      }
+
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (!firstName || !lastName) {
+        showStatus("Please enter your first and last name.", "error");
+        return;
+      }
+      if (password !== confirmPassword) {
+        showStatus("Passwords don’t match.<br><span style='color:var(--text-medium);font-weight:600;'>Please retype both fields.</span>", "error");
+        return;
+      }
+      if (password.length < 8) {
+        showStatus("Please choose a stronger password.<br><span style='color:var(--text-medium);font-weight:600;'>Use at least 8 characters.</span>", "error");
+        return;
+      }
+      if (!document.getElementById('terms').checked) {
+        showStatus("Please confirm you agree to the Terms of Service and Privacy Policy.", "error");
+        return;
+      }
+
+      const newsletterOptIn = document.getElementById('newsletter').checked;
+      setLoading(true);
+
+      try {
+        const nextTarget = getNextTarget();
+        localStorage.setItem('tep_post_login_redirect', nextTarget);
+
+        const { data, error } = await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              first_name: firstName,
+              last_name: lastName,
+              newsletter_opt_in: newsletterOptIn
+            },
+            emailRedirectTo: window.location.origin + '/auth-callback.html'
+          }
+        });
+
+        if (error) {
+          const mapped = premiumMessageForError(error);
+          showStatus(mapped.html, mapped.type);
+          return;
+        }
+
+        const needsEmailConfirm = !data?.session;
+
+        if (needsEmailConfirm) {
+          // ✅ show frosted modal AFTER submission success
+          openNextModal(email, nextTarget);
+
+          showStatus(
+            "Account created.<br><span style='color:var(--text-medium);font-weight:600;'>Please confirm your email to continue.</span>",
+            "success"
+          );
+
+        } else {
+          showStatus("Welcome — your account is ready.<br><span style='color:var(--text-medium);font-weight:600;'>Redirecting you now…</span>", "success");
+          localStorage.removeItem('tep_post_login_redirect');
+          setTimeout(() => window.location.href = nextTarget, 700);
+        }
+
+      } catch (err) {
+        console.error(err);
+        showStatus("Something went wrong.<br><span style='color:var(--text-medium);font-weight:600;'>Please try again in a moment.</span>", "error");
+      } finally {
+        setLoading(false);
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
-
