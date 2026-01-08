@@ -35,6 +35,10 @@
       --success:#1f8f4a;
       --danger:#c0392b;
       --warning:#b7791f;
+      --info:#2f6fd6;
+
+      --radius-12:12px;
+      --radius-10:10px;
     }
 
     *{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
@@ -141,6 +145,40 @@
     .form-header p{
       color:var(--dark-gray);
       font-size:13px;
+    }
+
+    /* ✅ New: "What happens next" helper (always visible) */
+    .next-steps{
+      border:1px solid rgba(123,95,196,0.18);
+      background:rgba(123,95,196,0.06);
+      border-radius:var(--radius-12);
+      padding:10px 12px;
+      margin:10px 0 12px;
+      color:var(--text-medium);
+      font-size:12.5px;
+      line-height:1.45;
+    }
+    .next-steps .title{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:650;
+      color:var(--text-dark);
+      margin-bottom:6px;
+      font-size:13px;
+    }
+    .next-steps .title i{ color:var(--accent-purple); }
+    .next-steps ol{
+      margin-left:18px;
+      padding-left:0;
+      margin-top:6px;
+      margin-bottom:6px;
+    }
+    .next-steps li{ margin-bottom:4px; }
+    .next-steps .small{
+      opacity:.9;
+      margin-top:6px;
+      font-size:12px;
     }
 
     .form-row{
@@ -328,6 +366,38 @@
     .inline-status.show{ display:block; }
     .inline-status.success{ border-color:rgba(31,143,74,0.25); background:rgba(31,143,74,0.06); color:var(--success); }
     .inline-status.error{ border-color:rgba(192,57,43,0.25); background:rgba(192,57,43,0.06); color:var(--danger); }
+    .inline-status.info{ border-color:rgba(47,111,214,0.22); background:rgba(47,111,214,0.06); color:var(--info); }
+
+    /* ✅ New: inline actions under status (premium + minimal) */
+    .status-actions{
+      display:none;
+      gap:10px;
+      margin:-2px 0 10px;
+    }
+    .status-actions.show{ display:flex; }
+    .action-link{
+      appearance:none;
+      border:none;
+      background:transparent;
+      color:var(--accent-purple);
+      font-weight:600;
+      font-size:12.5px;
+      cursor:pointer;
+      padding:0;
+      text-decoration:none;
+    }
+    .action-link:hover{ text-decoration:underline; }
+    .action-muted{
+      color:var(--dark-gray);
+      font-weight:600;
+      font-size:12.5px;
+      text-decoration:none;
+      cursor:pointer;
+      background:transparent;
+      border:none;
+      padding:0;
+    }
+    .action-muted:hover{ color:var(--text-dark); text-decoration:underline; }
 
     .auth-footer{
       text-align:center;
@@ -415,7 +485,24 @@
         <p>Enter your details to get started</p>
       </div>
 
+      <!-- ✅ New: Always-on next steps (premium guidance) -->
+      <div class="next-steps" aria-label="What happens next">
+        <div class="title"><i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i> What happens next</div>
+        <ol>
+          <li>Create your account.</li>
+          <li>We’ll email a secure verification link to confirm it’s really you.</li>
+          <li>Open the link, then come back and sign in.</li>
+        </ol>
+        <div class="small">If you don’t see the email within a few minutes, check spam/junk.</div>
+      </div>
+
       <div id="formStatus" class="inline-status" role="status" aria-live="polite"></div>
+
+      <!-- ✅ New: small premium actions (shown only when relevant) -->
+      <div class="status-actions" id="statusActions" aria-label="Next actions">
+        <a class="action-link" id="goSignIn" href="sign-in.html">Go to Sign In</a>
+        <button class="action-muted" id="resendBtn" type="button">Resend verification email</button>
+      </div>
 
       <form class="auth-form" id="createAccountForm">
         <div class="form-row">
@@ -506,13 +593,28 @@
 
     // Inline status helper
     const formStatus = document.getElementById('formStatus');
+    const statusActions = document.getElementById('statusActions');
+    const goSignIn = document.getElementById('goSignIn');
+    const resendBtn = document.getElementById('resendBtn');
+
+    function showActions(show, canResend = false) {
+      if (!show) {
+        statusActions.className = 'status-actions';
+        resendBtn.style.display = 'none';
+        return;
+      }
+      statusActions.className = 'status-actions show';
+      resendBtn.style.display = canResend ? 'inline-flex' : 'none';
+    }
+
     function showStatus(message, type) {
-      formStatus.textContent = message;
+      formStatus.innerHTML = message; // allow <strong> for email emphasis
       formStatus.className = 'inline-status show ' + (type || '');
     }
     function clearStatus() {
       formStatus.textContent = '';
       formStatus.className = 'inline-status';
+      showActions(false);
     }
 
     // Button loading state
@@ -544,10 +646,10 @@
 
       if (pw.length === 0) {
         strength = '';
-      } else if (pw.length < 6) {
+      } else if (pw.length < 8) {
         strength = 'Weak password';
         cls = 'weak';
-      } else if (pw.length < 10) {
+      } else if (pw.length < 12) {
         strength = 'Medium password';
         cls = 'medium';
       } else {
@@ -583,6 +685,70 @@
       return next || stored || 'the-toolkit.html';
     }
 
+    // ✅ Premium error mapping (no raw Supabase tone)
+    function premiumMessageForError(error) {
+      const raw = (error && error.message) ? String(error.message) : '';
+      const msg = raw.toLowerCase();
+
+      // common Supabase messages vary; map by keywords defensively
+      if (msg.includes('already registered') || msg.includes('user already registered') || msg.includes('already exists')) {
+        return {
+          type: 'error',
+          html: "This email is already linked to an account.<br><span style='color:var(--text-medium);font-weight:500;'>Please sign in — or reset your password if you’ve forgotten it.</span>",
+          actions: { show: true, canResend: false }
+        };
+      }
+
+      if (msg.includes('password') && (msg.includes('weak') || msg.includes('least') || msg.includes('min'))) {
+        return {
+          type: 'error',
+          html: "Please choose a stronger password.<br><span style='color:var(--text-medium);font-weight:500;'>Use at least 8 characters. For extra security, include a mix of letters and numbers.</span>",
+          actions: { show: false, canResend: false }
+        };
+      }
+
+      if (msg.includes('rate limit') || msg.includes('too many requests')) {
+        return {
+          type: 'error',
+          html: "Too many attempts in a short time.<br><span style='color:var(--text-medium);font-weight:500;'>Please wait a moment and try again.</span>",
+          actions: { show: false, canResend: false }
+        };
+      }
+
+      if (msg.includes('fetch') || msg.includes('network') || msg.includes('failed to fetch')) {
+        return {
+          type: 'error',
+          html: "We couldn’t reach the service just now.<br><span style='color:var(--text-medium);font-weight:500;'>Check your connection and try again.</span>",
+          actions: { show: false, canResend: false }
+        };
+      }
+
+      // fallback
+      return {
+        type: 'error',
+        html: "We couldn’t create your account right now.<br><span style='color:var(--text-medium);font-weight:500;'>Please try again — if it continues, contact support.</span>",
+        actions: { show: false, canResend: false },
+        debug: raw
+      };
+    }
+
+    // Resend verification (Supabase v2: resending verification is done via signInWithOtp or reset flows.
+    // For sign-up confirmation resends, a common approach is to call resend via Admin API (server-side).
+    // Here we provide a premium user-facing workaround without pretending we can resend:
+    function handleResendGuidance(email) {
+      showStatus(
+        "If your verification email hasn’t arrived:<br>" +
+        "<span style='color:var(--text-medium);font-weight:500;'>" +
+        "1) Check spam/junk.<br>" +
+        "2) Wait 2–3 minutes.<br>" +
+        "3) Then try signing in — if your email isn’t confirmed yet, you’ll be prompted accordingly.<br>" +
+        "If it still doesn’t arrive, use a different email or contact support.</span>",
+        'info'
+      );
+      showActions(true, false);
+      goSignIn.href = "sign-in.html?check_email=1&email=" + encodeURIComponent(email || '');
+    }
+
     // ✅ Main submit handler
     const createAccountForm = document.getElementById('createAccountForm');
 
@@ -591,7 +757,10 @@
       clearStatus();
 
       if (!supabaseClient || !supabaseClient.auth) {
-        showStatus('Supabase client not found. Check assets/supabaseClient.js is loading correctly.', 'error');
+        showStatus(
+          "We couldn’t initialise the sign-up service.<br><span style='color:var(--text-medium);font-weight:500;'>Please refresh the page. If it continues, check your Supabase connection.</span>",
+          'error'
+        );
         console.error('Supabase client missing:', supabaseClient);
         return;
       }
@@ -603,27 +772,29 @@
       const confirmPassword = confirmPasswordInput.value;
 
       if (!firstName || !lastName) {
-        showStatus('Please enter your first and last name.', 'error');
+        showStatus("Please enter your first and last name.", 'error');
         return;
       }
       if (password !== confirmPassword) {
-        showStatus('Passwords do not match. Please try again.', 'error');
+        showStatus("Passwords don’t match.<br><span style='color:var(--text-medium);font-weight:500;'>Please retype both fields.</span>", 'error');
         return;
       }
       if (password.length < 8) {
-        showStatus('Password must be at least 8 characters long.', 'error');
+        showStatus("Please choose a stronger password.<br><span style='color:var(--text-medium);font-weight:500;'>Use at least 8 characters.</span>", 'error');
         return;
       }
       if (!document.getElementById('terms').checked) {
-        showStatus('You must agree to the Terms of Service and Privacy Policy.', 'error');
+        showStatus("Please confirm you agree to the Terms of Service and Privacy Policy.", 'error');
         return;
       }
 
       const newsletterOptIn = document.getElementById('newsletter').checked;
-
       setLoading(true);
 
       try {
+        const nextTarget = getNextTarget();
+        localStorage.setItem('tep_post_login_redirect', nextTarget);
+
         const { data, error } = await supabaseClient.auth.signUp({
           email,
           password,
@@ -633,16 +804,16 @@
               last_name: lastName,
               newsletter_opt_in: newsletterOptIn
             },
-            // ✅ requires Supabase Auth URL allowlist for localhost
+            // ✅ Ensure this is allowlisted in Supabase Auth redirect URLs
             emailRedirectTo: window.location.origin + '/auth-callback.html'
           }
         });
 
         if (error) {
-          const msg = (error.message || '').toLowerCase().includes('already registered')
-            ? 'That email is already registered. Try signing in instead.'
-            : (error.message || 'Something went wrong. Please try again.');
-          showStatus(msg, 'error');
+          const mapped = premiumMessageForError(error);
+          showStatus(mapped.html, mapped.type);
+          showActions(!!mapped.actions?.show, !!mapped.actions?.canResend);
+          if (mapped.debug) console.warn('Supabase raw error:', mapped.debug);
           return;
         }
 
@@ -650,30 +821,42 @@
         const needsEmailConfirm = !data?.session;
 
         if (needsEmailConfirm) {
-          showStatus('Account created. Check your email to confirm, then sign in.', 'success');
+          showStatus(
+            "Check your inbox to confirm your email.<br>" +
+            "<span style='color:var(--text-medium);font-weight:500;'>" +
+            "We’ve sent a secure verification link to <strong>" + email + "</strong>. Open it to confirm your account, then return here to sign in.</span>",
+            'success'
+          );
 
-          const nextTarget = getNextTarget();
-          localStorage.setItem('tep_post_login_redirect', nextTarget);
-
-          setTimeout(() => {
-            window.location.href = 'sign-in.html?check_email=1&next=' + encodeURIComponent(nextTarget);
-          }, 900);
+          showActions(true, true);
+          goSignIn.href = 'sign-in.html?check_email=1&next=' + encodeURIComponent(nextTarget) + '&email=' + encodeURIComponent(email);
         } else {
-          showStatus('Account created. Redirecting…', 'success');
+          // (auto-confirm / auto-login environments)
+          showStatus(
+            "Welcome — your account is ready.<br><span style='color:var(--text-medium);font-weight:500;'>Redirecting you now…</span>",
+            'success'
+          );
 
-          const nextTarget = getNextTarget();
           localStorage.removeItem('tep_post_login_redirect');
-
           setTimeout(() => {
             window.location.href = nextTarget;
           }, 700);
         }
       } catch (err) {
         console.error(err);
-        showStatus('Unexpected error. Please try again.', 'error');
+        showStatus(
+          "Something went wrong.<br><span style='color:var(--text-medium);font-weight:500;'>Please try again in a moment.</span>",
+          'error'
+        );
       } finally {
         setLoading(false);
       }
+    });
+
+    // Resend button behaviour (premium guidance)
+    resendBtn.addEventListener('click', () => {
+      const email = (document.getElementById('email').value || '').trim();
+      handleResendGuidance(email);
     });
   })();
   </script>
