@@ -660,7 +660,7 @@
         <div class="form-checkbox">
           <input type="checkbox" id="newsletter" class="checkbox-input">
           <label for="newsletter" class="checkbox-label">
-            Send me strategic insights and career development tips
+            Send me Strategic Insights and Career Development tips
           </label>
         </div>
 
@@ -924,28 +924,50 @@
         policyTitle.innerHTML = `<i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Terms of Service`;
         policyMeta.textContent = "Please review the Terms of Service and approve to continue.";
         policyContent.innerHTML = `
-          <h3>Terms of Service (placeholder)</h3>
-          <p>Replace this with your real Terms of Service content.</p>
-          <p><strong>Summary:</strong> You agree to use the service lawfully and keep your login secure.</p>
+          <h3>Terms of Service</h3>
+          <p><strong>Important:</strong> You agree to use the service lawfully and keep your login secure.</p>
+          
           <h3>Use of service</h3>
+          <p>By using the platform, you agree that:<p>
           <ul>
-            <li>Do not misuse the platform or attempt unauthorised access.</li>
-            <li>Content is guidance and templates — not legal advice.</li>
-            <li>We may update the service and policies over time.</li>
+              <li>Content is provided as strategic guidance and templates — not legal, medical, or union advice.</li>
+              <li>You remain responsible for decisions made using the guidance.</li>
+              <li>Outcomes depend on your circumstances; results are not guaranteed.</li>
+              <li>Use the platform lawfully and respectfully at all times.</li>
+              <li>Do not misuse the service or attempt unauthorised access.</li>
+              <li>Some content may be supported by AI, with appropriate oversight.</li>
+              <li>Personal data is handled in line with our Privacy Policy.</li>
+              <li>We are not responsible for employer actions or responses.</li>
+              <li>Seek qualified professional support where legal, financial, or health risks exist.</li>
+              <li>All content is for personal use only and may not be reused or redistributed.</li>
+              <li>We may suspend access where these terms are breached.</li>
+              <li>The service and policies may be updated from time to time.</li>
+              <li>These terms are governed by the laws of England and Wales.</li>
           </ul>
         `;
       } else {
         policyTitle.innerHTML = `<i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy Policy`;
         policyMeta.textContent = "Please review the Privacy Policy and approve to continue.";
         policyContent.innerHTML = `
-          <h3>Privacy Policy (placeholder)</h3>
-          <p>Replace this with your real Privacy Policy content.</p>
-          <p><strong>Summary:</strong> We use your data to provide the service and keep it secure.</p>
-          <h3>What we collect</h3>
+              <h3>Privacy Policy</h3>
+              <p><strong>Summary:</strong> We use your data to provide the service and keep it secure.</p>
+              <h3>What we collect</h3>
           <ul>
-            <li>Account info (name, email) and sign-in metadata.</li>
-            <li>Optional newsletter preference.</li>
-            <li>Usage signals to improve product experience.</li>
+              <li>We collect only the information needed to create your account and deliver the service.</li>
+              <li>Personal information may include your name, email address, and subscription details.</li>
+              <li>We also collect basic technical data, such as device, browser, IP address, and usage signals.</li>
+              <li>We use your information to provide the platform, personalise your experience, and support your account.</li>
+              <li>We use security monitoring to detect unauthorised access, fraud, or misuse.</li>
+              <li>We do not sell your personal data.</li>
+              <li>We may share limited data with trusted service providers who help us operate the service securely.</li>
+              <li>We may disclose information where required by law or to protect our rights and users.</li>
+              <li>We use encryption and access controls to protect your data in transit and at rest.</li>
+              <li>We never store passwords in plain text.</li>
+              <li>We keep data only for as long as needed to run the service and meet legal obligations.</li>
+              <li>You can request access, correction, deletion, or a copy of your personal information.</li>
+              <li>You can opt out of marketing emails at any time.</li>
+              <li>We may update this policy from time to time and will reflect changes in the “Last updated” date.</li>
+              <li>If you have questions, contact us using the details provided in the Privacy and Security page.</li>
           </ul>
         `;
       }
