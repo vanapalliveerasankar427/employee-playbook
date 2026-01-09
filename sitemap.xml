@@ -23,28 +23,49 @@
   </url>
 
   <url>
-    <loc>https://www.theemployeeplaybook.com/resources.html</loc>
+    <loc>https://www.theemployeeplaybook.com/the-lens.html</loc>
     <lastmod>2026-01-09</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.theemployeeplaybook.com/how-it-works.html</loc>
+    <loc>https://www.theemployeeplaybook.com/the-toolkit.html</loc>
     <lastmod>2026-01-09</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.theemployeeplaybook.com/privacy-policy.html</loc>
+    <loc>https://www.theemployeeplaybook.com/the-coach.html</loc>
+    <lastmod>2026-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.theemployeeplaybook.com/the-shift.html</loc>
+    <lastmod>2026-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+  <loc>https://www.theemployeeplaybook.com/the-price.html</loc>
+  <lastmod>2026-01-09</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
+  
+  <url>
+    <loc>https://www.theemployeeplaybook.com/privacy-and-security.html</loc>
     <lastmod>2026-01-09</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
 
   <url>
-    <loc>https://www.theemployeeplaybook.com/terms.html</loc>
+    <loc>https://www.theemployeeplaybook.com/terms-and-conditions.html</loc>
     <lastmod>2026-01-09</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
