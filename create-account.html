@@ -487,6 +487,11 @@
       color:var(--text-medium);
       font-size:13.5px;
       line-height:1.55;
+      outline:none;
+    }
+    .policy-scroll:focus{
+      box-shadow:0 0 0 4px rgba(123,95,196,0.12);
+      border-color: rgba(123,95,196,0.28);
     }
     .policy-scroll h3{
       margin:10px 0 6px;
@@ -690,7 +695,6 @@
       </div>
 
       <div class="modal-body">
-        <!-- ✅ Updated: removed step 1 and replaced step 3 with click link to sign in -->
         <ol>
           <li>We’ll email a secure verification link to confirm it’s really you.</li>
           <li>Open the link, then come back and click <strong>Sign in</strong>.</li>
@@ -736,37 +740,18 @@
           Please read and approve to continue.
         </div>
 
-        <!-- NOTE: Replace the placeholder content below with your real Terms / Privacy text (or fetch from your HTML pages). -->
-        <div class="policy-scroll" id="policyContent" tabindex="0">
-          <h3>Placeholder content</h3>
-          <p>
-            This is a short placeholder so the popup works immediately.
-            Replace this with your full Terms of Service / Privacy Policy text.
-          </p>
-          <p>
-            If you prefer to load the text from existing pages (terms-and-conditions.html / privacy.html),
-            you can add a fetch() call in the script (works best when hosted, not via local file).
-          </p>
-          <h3>Key points</h3>
-          <ul>
-            <li>You must be at least 18 to create an account.</li>
-            <li>We use your data to provide the service and improve it.</li>
-            <li>We do not sell your personal data.</li>
-          </ul>
-        </div>
+        <!-- ✅ FIX: add the missing policy content container (your JS already expects this) -->
+        <div id="policyContent" class="policy-scroll" tabindex="0"></div>
 
         <div class="policy-actions">
           <button class="policy-btn ghost" id="policyDeclineBtn" type="button">
             Not now
           </button>
           <button class="policy-btn primary" id="policyApproveBtn" type="button">
-            I’ve read and approve <i class="fa-solid fa-check"></i>
+            I accept<i class="fa-solid fa-check"></i>
           </button>
         </div>
 
-        <div class="policy-hint" id="policyHint">
-          Tip: scroll if needed, then approve. Closing this popup won’t tick the agreement box.
-        </div>
       </div>
     </div>
   </div>
@@ -919,16 +904,15 @@
     function openPolicyModal(which){
       activePolicy = which;
 
-      // Update title/meta + content (placeholder content here)
       if (which === 'terms') {
         policyTitle.innerHTML = `<i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Terms of Service`;
         policyMeta.textContent = "Please review the Terms of Service and approve to continue.";
         policyContent.innerHTML = `
           <h3>Terms of Service</h3>
           <p><strong>Important:</strong> You agree to use the service lawfully and keep your login secure.</p>
-          
+
           <h3>Use of service</h3>
-          <p>By using the platform, you agree that:<p>
+          <p>By using the platform, you agree that:</p>
           <ul>
               <li>Content is provided as strategic guidance and templates — not legal, medical, or union advice.</li>
               <li>You remain responsible for decisions made using the guidance.</li>
@@ -949,9 +933,10 @@
         policyTitle.innerHTML = `<i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy Policy`;
         policyMeta.textContent = "Please review the Privacy Policy and approve to continue.";
         policyContent.innerHTML = `
-              <h3>Privacy Policy</h3>
-              <p><strong>Summary:</strong> We use your data to provide the service and keep it secure.</p>
-              <h3>What we collect</h3>
+          <h3>Privacy Policy</h3>
+          <p><strong>Summary:</strong> We use your data to provide the service and keep it secure.</p>
+
+          <h3>What we collect</h3>
           <ul>
               <li>We collect only the information needed to create your account and deliver the service.</li>
               <li>Personal information may include your name, email address, and subscription details.</li>
@@ -972,12 +957,10 @@
         `;
       }
 
-      // Show modal
       policyModal.classList.add('show');
       policyModal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
 
-      // Focus content for accessibility
       setTimeout(() => policyContent.focus(), 50);
     }
 
@@ -991,28 +974,22 @@
     }
 
     function syncTermsCheckbox(){
-      // Only tick the checkbox once BOTH have been approved
       const allApproved = approved.terms && approved.privacy;
       termsCheckbox.checked = allApproved;
 
-      // Optional: tiny status hint in main status area (only when they interact with policies)
       if (allApproved) {
-        // Keep it subtle; don't overwrite errors while user is filling form
         if (!formStatus.classList.contains('error')) {
           showStatus("Policies approved.<br><span style='color:var(--text-medium);font-weight:600;'>You can now create your account.</span>", "info");
           setTimeout(() => {
-            // Don't clear if an error replaced it
             if (formStatus.classList.contains('info')) clearStatus();
           }, 2000);
         }
       }
     }
 
-    // Intercept link clicks -> open modal (no navigation)
     openTermsLink.addEventListener('click', (e) => { e.preventDefault(); openPolicyModal('terms'); });
     openPrivacyLink.addEventListener('click', (e) => { e.preventDefault(); openPolicyModal('privacy'); });
 
-    // Approve / Decline buttons
     policyApproveBtn.addEventListener('click', () => {
       if (!activePolicy) return;
       approved[activePolicy] = true;
@@ -1024,13 +1001,11 @@
       closePolicy();
     });
 
-    // Close policy modal (X / click outside / Esc) -> no auto-approve
     closePolicyModal.addEventListener('click', () => closePolicy());
     policyModal.addEventListener('click', (e) => {
       if (e.target === policyModal) closePolicy();
     });
 
-    // Global Esc handling (closes whichever modal is open)
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (policyModal.classList.contains('show')) closePolicy();
@@ -1038,7 +1013,6 @@
       }
     });
 
-    // "Didn't get the email?" (no redirect)
     modalNoEmail.addEventListener('click', () => {
       modalHelpBox.classList.toggle('show');
     });
@@ -1126,7 +1100,6 @@
         return;
       }
 
-      // ✅ Updated: require BOTH policy approvals (checkbox will only tick once both are approved)
       if (!document.getElementById('terms').checked) {
         showStatus(
           "Please review and approve the Terms of Service and Privacy Policy.<br><span style='color:var(--text-medium);font-weight:600;'>Click each link to approve.</span>",
@@ -1142,6 +1115,12 @@
         const nextTarget = getNextTarget();
         localStorage.setItem('tep_post_login_redirect', nextTarget);
 
+        // ✅ FIX: send confirmed users to sign-in page (not homepage, not auth-callback)
+        const signInRedirect = new URL('sign-in.html', window.location.origin);
+        signInRedirect.searchParams.set('confirmed', '1');
+        signInRedirect.searchParams.set('next', nextTarget);
+        signInRedirect.searchParams.set('email', email);
+
         const { data, error } = await supabaseClient.auth.signUp({
           email,
           password,
@@ -1150,12 +1129,11 @@
               first_name: firstName,
               last_name: lastName,
               newsletter_opt_in: newsletterOptIn,
-              // Optional: store explicit policy approvals (simple signal)
               terms_approved: approved.terms,
               privacy_approved: approved.privacy,
               policy_approved_at: new Date().toISOString()
             },
-            emailRedirectTo: window.location.origin + '/auth-callback.html'
+            emailRedirectTo: signInRedirect.toString()
           }
         });
 
