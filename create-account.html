@@ -63,7 +63,7 @@
       display:flex;
       min-height:620px;
       max-height:88vh;
-      position:relative; /* ✅ for modal stacking context */
+      position:relative;
     }
 
     /* LEFT */
@@ -325,7 +325,7 @@
     .auth-footer a:hover{ text-decoration:underline; }
 
     /* =========================
-       ✅ MODAL: What happens next
+       ✅ MODAL BASE (re-used)
     ========================== */
     .modal-overlay{
       position:fixed;
@@ -335,7 +335,7 @@
       justify-content:center;
       padding:18px;
       z-index:9999;
-      background:rgba(10, 10, 10, 0.22); /* soft dim */
+      background:rgba(10, 10, 10, 0.22);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
@@ -346,7 +346,7 @@
       max-width:520px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,0.38);
-      background:rgba(255,255,255,0.72); /* ✅ frosted */
+      background:rgba(255,255,255,0.72);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       box-shadow:0 18px 50px rgba(0,0,0,0.18);
@@ -470,6 +470,80 @@
     }
     .micro-help.show{ display:block; }
 
+    /* ✅ Policy modal content styling */
+    .policy-meta{
+      color:var(--text-muted);
+      font-size:12.5px;
+      line-height:1.4;
+      margin:8px 0 10px;
+    }
+    .policy-scroll{
+      border:1px solid rgba(0,0,0,0.08);
+      background:rgba(255,255,255,0.6);
+      border-radius:12px;
+      padding:12px;
+      max-height:300px;
+      overflow:auto;
+      color:var(--text-medium);
+      font-size:13.5px;
+      line-height:1.55;
+    }
+    .policy-scroll h3{
+      margin:10px 0 6px;
+      font-size:13.5px;
+      color:var(--text-dark);
+      font-weight:800;
+    }
+    .policy-scroll p{ margin:0 0 10px; }
+    .policy-scroll ul{ margin:0 0 10px 18px; }
+    .policy-scroll li{ margin:0 0 6px; }
+
+    .policy-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .policy-btn{
+      border:none;
+      cursor:pointer;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:800;
+      font-size:13px;
+      transition:all .15s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+    }
+    .policy-btn.primary{
+      background:rgba(123,95,196,0.95);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.18);
+      box-shadow:0 10px 18px rgba(123,95,196,0.18);
+    }
+    .policy-btn.primary:hover{
+      transform:translateY(-1px);
+      background:rgba(106,79,176,0.98);
+      box-shadow:0 14px 26px rgba(123,95,196,0.24);
+    }
+    .policy-btn.ghost{
+      background:transparent;
+      color:var(--text-medium);
+      border:1px solid rgba(0,0,0,0.10);
+    }
+    .policy-btn.ghost:hover{
+      background:rgba(0,0,0,0.04);
+      color:var(--text-dark);
+    }
+    .policy-hint{
+      margin-top:8px;
+      color:var(--text-muted);
+      font-size:12.5px;
+      line-height:1.4;
+    }
+
     @media (max-width:980px){
       .auth-container{ flex-direction:column; max-height:none; }
       .left-column{ padding:36px 24px; }
@@ -482,6 +556,7 @@
       .form-header h2{ font-size:22px; }
       .logo-img{ height:56px; }
       .modal-card{ max-width: 94vw; }
+      .policy-scroll{ max-height: 50vh; }
     }
   </style>
 </head>
@@ -571,10 +646,14 @@
           <div id="passwordMatch" class="password-strength"></div>
         </div>
 
+        <!-- ✅ Updated: links now open approval popups -->
         <div class="form-checkbox">
           <input type="checkbox" id="terms" class="checkbox-input" required>
           <label for="terms" class="checkbox-label">
-            I agree to the <a href="terms-and-conditions.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>
+            I agree to the
+            <a href="#" id="openTermsLink">Terms of Service</a>
+            and
+            <a href="#" id="openPrivacyLink">Privacy Policy</a>
           </label>
         </div>
 
@@ -597,7 +676,7 @@
     </div>
   </div>
 
-  <!-- ✅ Modal Overlay -->
+  <!-- ✅ Modal Overlay: What happens next -->
   <div class="modal-overlay" id="nextModal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-label="What happens next">
       <div class="modal-head">
@@ -611,10 +690,10 @@
       </div>
 
       <div class="modal-body">
+        <!-- ✅ Updated: removed step 1 and replaced step 3 with click link to sign in -->
         <ol>
-          <li>Create your account.</li>
           <li>We’ll email a secure verification link to confirm it’s really you.</li>
-          <li>Open the link, then come back and sign in.</li>
+          <li>Open the link, then come back and click <strong>Sign in</strong>.</li>
         </ol>
 
         <div class="modal-note" id="modalEmailNote">
@@ -639,6 +718,59 @@
     </div>
   </div>
 
+  <!-- ✅ Modal Overlay: Policy Approval (Terms/Privacy) -->
+  <div class="modal-overlay" id="policyModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Policy">
+      <div class="modal-head">
+        <div class="modal-title" id="policyTitle">
+          <i class="fa-solid fa-file-signature" aria-hidden="true"></i>
+          Policy
+        </div>
+        <button class="modal-close" id="closePolicyModal" type="button" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="policy-meta" id="policyMeta">
+          Please read and approve to continue.
+        </div>
+
+        <!-- NOTE: Replace the placeholder content below with your real Terms / Privacy text (or fetch from your HTML pages). -->
+        <div class="policy-scroll" id="policyContent" tabindex="0">
+          <h3>Placeholder content</h3>
+          <p>
+            This is a short placeholder so the popup works immediately.
+            Replace this with your full Terms of Service / Privacy Policy text.
+          </p>
+          <p>
+            If you prefer to load the text from existing pages (terms-and-conditions.html / privacy.html),
+            you can add a fetch() call in the script (works best when hosted, not via local file).
+          </p>
+          <h3>Key points</h3>
+          <ul>
+            <li>You must be at least 18 to create an account.</li>
+            <li>We use your data to provide the service and improve it.</li>
+            <li>We do not sell your personal data.</li>
+          </ul>
+        </div>
+
+        <div class="policy-actions">
+          <button class="policy-btn ghost" id="policyDeclineBtn" type="button">
+            Not now
+          </button>
+          <button class="policy-btn primary" id="policyApproveBtn" type="button">
+            I’ve read and approve <i class="fa-solid fa-check"></i>
+          </button>
+        </div>
+
+        <div class="policy-hint" id="policyHint">
+          Tip: scroll if needed, then approve. Closing this popup won’t tick the agreement box.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/supabaseClient.js"></script>
@@ -653,7 +785,7 @@
     const submitText = document.getElementById('submitText');
     const submitIcon = document.getElementById('submitIcon');
 
-    // Modal elements
+    // Modal elements: Next
     const nextModal = document.getElementById('nextModal');
     const closeNextModal = document.getElementById('closeNextModal');
     const modalEmailNote = document.getElementById('modalEmailNote');
@@ -661,7 +793,25 @@
     const modalNoEmail = document.getElementById('modalNoEmail');
     const modalHelpBox = document.getElementById('modalHelpBox');
 
-    // ✅ track whether modal was opened due to successful signup
+    // ✅ Policy modal elements
+    const policyModal = document.getElementById('policyModal');
+    const policyTitle = document.getElementById('policyTitle');
+    const policyMeta = document.getElementById('policyMeta');
+    const policyContent = document.getElementById('policyContent');
+    const closePolicyModal = document.getElementById('closePolicyModal');
+    const policyApproveBtn = document.getElementById('policyApproveBtn');
+    const policyDeclineBtn = document.getElementById('policyDeclineBtn');
+
+    const openTermsLink = document.getElementById('openTermsLink');
+    const openPrivacyLink = document.getElementById('openPrivacyLink');
+
+    const termsCheckbox = document.getElementById('terms');
+
+    // ✅ track which policy is being shown, so "approve" is explicit
+    let activePolicy = null; // 'terms' | 'privacy'
+    let approved = { terms: false, privacy: false };
+
+    // ✅ track whether next modal was opened due to successful signup
     let shouldRedirectOnModalClose = false;
 
     function setLoading(isLoading) {
@@ -732,7 +882,7 @@
     }
 
     // =========================
-    // ✅ Modal open/close behaviour
+    // ✅ Modal open/close behaviour: What happens next
     // =========================
     function openNextModal(email, nextTarget){
       modalEmailNote.innerHTML =
@@ -744,10 +894,7 @@
       nextModal.classList.add('show');
       nextModal.setAttribute('aria-hidden', 'false');
 
-      // ✅ if they dismiss the modal, send them to sign-in
       shouldRedirectOnModalClose = true;
-
-      // lock scroll (optional but feels premium)
       document.body.style.overflow = 'hidden';
     }
 
@@ -756,23 +903,117 @@
       nextModal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
 
-      // ✅ NEW: when user clicks off / closes, go to sign-in
       if (redirect && shouldRedirectOnModalClose) {
         window.location.href = modalGoSignIn.href || 'sign-in.html';
       }
     }
 
-    // Close button -> redirect to sign in
     closeNextModal.addEventListener('click', () => closeModal({ redirect: true }));
-
-    // Click anywhere outside card -> redirect to sign in
     nextModal.addEventListener('click', (e) => {
       if (e.target === nextModal) closeModal({ redirect: true });
     });
 
-    // Esc -> redirect to sign in
+    // =========================
+    // ✅ Policy modal open/close behaviour (Terms / Privacy)
+    // =========================
+    function openPolicyModal(which){
+      activePolicy = which;
+
+      // Update title/meta + content (placeholder content here)
+      if (which === 'terms') {
+        policyTitle.innerHTML = `<i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Terms of Service`;
+        policyMeta.textContent = "Please review the Terms of Service and approve to continue.";
+        policyContent.innerHTML = `
+          <h3>Terms of Service (placeholder)</h3>
+          <p>Replace this with your real Terms of Service content.</p>
+          <p><strong>Summary:</strong> You agree to use the service lawfully and keep your login secure.</p>
+          <h3>Use of service</h3>
+          <ul>
+            <li>Do not misuse the platform or attempt unauthorised access.</li>
+            <li>Content is guidance and templates — not legal advice.</li>
+            <li>We may update the service and policies over time.</li>
+          </ul>
+        `;
+      } else {
+        policyTitle.innerHTML = `<i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy Policy`;
+        policyMeta.textContent = "Please review the Privacy Policy and approve to continue.";
+        policyContent.innerHTML = `
+          <h3>Privacy Policy (placeholder)</h3>
+          <p>Replace this with your real Privacy Policy content.</p>
+          <p><strong>Summary:</strong> We use your data to provide the service and keep it secure.</p>
+          <h3>What we collect</h3>
+          <ul>
+            <li>Account info (name, email) and sign-in metadata.</li>
+            <li>Optional newsletter preference.</li>
+            <li>Usage signals to improve product experience.</li>
+          </ul>
+        `;
+      }
+
+      // Show modal
+      policyModal.classList.add('show');
+      policyModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      // Focus content for accessibility
+      setTimeout(() => policyContent.focus(), 50);
+    }
+
+    function closePolicy({ keepScroll = false } = {}){
+      policyModal.classList.remove('show');
+      policyModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      activePolicy = null;
+
+      if (!keepScroll) policyContent.scrollTop = 0;
+    }
+
+    function syncTermsCheckbox(){
+      // Only tick the checkbox once BOTH have been approved
+      const allApproved = approved.terms && approved.privacy;
+      termsCheckbox.checked = allApproved;
+
+      // Optional: tiny status hint in main status area (only when they interact with policies)
+      if (allApproved) {
+        // Keep it subtle; don't overwrite errors while user is filling form
+        if (!formStatus.classList.contains('error')) {
+          showStatus("Policies approved.<br><span style='color:var(--text-medium);font-weight:600;'>You can now create your account.</span>", "info");
+          setTimeout(() => {
+            // Don't clear if an error replaced it
+            if (formStatus.classList.contains('info')) clearStatus();
+          }, 2000);
+        }
+      }
+    }
+
+    // Intercept link clicks -> open modal (no navigation)
+    openTermsLink.addEventListener('click', (e) => { e.preventDefault(); openPolicyModal('terms'); });
+    openPrivacyLink.addEventListener('click', (e) => { e.preventDefault(); openPolicyModal('privacy'); });
+
+    // Approve / Decline buttons
+    policyApproveBtn.addEventListener('click', () => {
+      if (!activePolicy) return;
+      approved[activePolicy] = true;
+      syncTermsCheckbox();
+      closePolicy();
+    });
+
+    policyDeclineBtn.addEventListener('click', () => {
+      closePolicy();
+    });
+
+    // Close policy modal (X / click outside / Esc) -> no auto-approve
+    closePolicyModal.addEventListener('click', () => closePolicy());
+    policyModal.addEventListener('click', (e) => {
+      if (e.target === policyModal) closePolicy();
+    });
+
+    // Global Esc handling (closes whichever modal is open)
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && nextModal.classList.contains('show')) closeModal({ redirect: true });
+      if (e.key === 'Escape') {
+        if (policyModal.classList.contains('show')) closePolicy();
+        else if (nextModal.classList.contains('show')) closeModal({ redirect: true });
+      }
     });
 
     // "Didn't get the email?" (no redirect)
@@ -862,8 +1103,13 @@
         showStatus("Please choose a stronger password.<br><span style='color:var(--text-medium);font-weight:600;'>Use at least 8 characters.</span>", "error");
         return;
       }
+
+      // ✅ Updated: require BOTH policy approvals (checkbox will only tick once both are approved)
       if (!document.getElementById('terms').checked) {
-        showStatus("Please confirm you agree to the Terms of Service and Privacy Policy.", "error");
+        showStatus(
+          "Please review and approve the Terms of Service and Privacy Policy.<br><span style='color:var(--text-medium);font-weight:600;'>Click each link to approve.</span>",
+          "error"
+        );
         return;
       }
 
@@ -881,7 +1127,11 @@
             data: {
               first_name: firstName,
               last_name: lastName,
-              newsletter_opt_in: newsletterOptIn
+              newsletter_opt_in: newsletterOptIn,
+              // Optional: store explicit policy approvals (simple signal)
+              terms_approved: approved.terms,
+              privacy_approved: approved.privacy,
+              policy_approved_at: new Date().toISOString()
             },
             emailRedirectTo: window.location.origin + '/auth-callback.html'
           }
@@ -896,7 +1146,6 @@
         const needsEmailConfirm = !data?.session;
 
         if (needsEmailConfirm) {
-          // ✅ show frosted modal AFTER submission success
           openNextModal(email, nextTarget);
 
           showStatus(
