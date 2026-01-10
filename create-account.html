@@ -266,7 +266,7 @@
     .reveal-toggle:not(:checked) ~ .password-row .icon-eye-slash { display:none; }
     .reveal-toggle:checked ~ .password-row .icon-eye { display:none; }
 
-    /* Updated: guidance without "12+" line */
+    /* Guidance + Strength */
     .pw-guidance{
       margin-top:6px;
       font-size:12.5px;
@@ -275,6 +275,86 @@
       font-weight:600;
     }
     .pw-guidance strong{ color:var(--text-dark); font-weight:800; }
+
+    .pw-strength{
+      margin-top:6px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .pw-strength-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-size:12.5px;
+      color:var(--text-muted);
+      font-weight:700;
+    }
+    .pw-strength-row span{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-width: 0;
+    }
+    .pw-strength-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,0.10);
+      background:rgba(0,0,0,0.03);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.02em;
+      white-space:nowrap;
+    }
+    .pw-strength-pill.weak{
+      border-color:rgba(192,57,43,0.28);
+      background:rgba(192,57,43,0.08);
+      color:var(--danger);
+    }
+    .pw-strength-pill.fair{
+      border-color:rgba(183,121,31,0.30);
+      background:rgba(183,121,31,0.10);
+      color:var(--warning);
+    }
+    .pw-strength-pill.good{
+      border-color:rgba(47,111,214,0.26);
+      background:rgba(47,111,214,0.08);
+      color:var(--info);
+    }
+    .pw-strength-pill.strong{
+      border-color:rgba(31,143,74,0.28);
+      background:rgba(31,143,74,0.10);
+      color:var(--success);
+    }
+
+    .pw-meter{
+      width:100%;
+      height:8px;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,0.08);
+      background:rgba(0,0,0,0.04);
+    }
+    .pw-meter-fill{
+      height:100%;
+      width:0%;
+      transition:width .16s ease;
+      background:rgba(192,57,43,0.65);
+    }
+    .pw-meter-fill.fair{ background:rgba(183,121,31,0.75); }
+    .pw-meter-fill.good{ background:rgba(47,111,214,0.70); }
+    .pw-meter-fill.strong{ background:rgba(31,143,74,0.70); }
+
+    .pw-hint{
+      font-size:12.5px;
+      line-height:1.35;
+      color:var(--text-muted);
+      font-weight:600;
+    }
 
     .form-checkbox{
       display:flex;
@@ -632,7 +712,7 @@
               type="text"
               id="password"
               class="form-input secure-input"
-              placeholder="Create a secure password"
+              placeholder="Password (minimum 8 characters)"
               required
               autocomplete="new-password"
               minlength="8"
@@ -645,7 +725,21 @@
           </div>
 
           <div class="pw-guidance" id="pwGuidance">
-            Minimum <strong>8</strong> characters. 
+            Password (minimum <strong>8</strong> characters)
+          </div>
+
+          <!-- NEW: strength + meter -->
+          <div class="pw-strength" aria-live="polite">
+            <div class="pw-strength-row">
+              <span>Password strength</span>
+              <span id="pwStrengthPill" class="pw-strength-pill weak">Weak</span>
+            </div>
+            <div class="pw-meter" aria-hidden="true">
+              <div id="pwMeterFill" class="pw-meter-fill"></div>
+            </div>
+            <div id="pwStrengthHint" class="pw-hint">
+              Aim for 12+ characters, with a mix of upper/lowercase, numbers, and symbols.
+            </div>
           </div>
         </div>
 
@@ -695,7 +789,10 @@
         </button>
 
         <div class="auth-footer">
-          <p>Already have an account? <a href="sign-in.html">Sign in</a></p>
+          <p>Already have an account?
+            <!-- UPDATED: always goes to sign-in.html -->
+            <a href="sign-in.html">Sign in</a>
+          </p>
         </div>
       </form>
     </div>
@@ -725,6 +822,7 @@
         </div>
 
         <div class="modal-actions">
+          <!-- UPDATED: set via JS and guaranteed to route to sign-in.html -->
           <a class="primary-link" id="modalGoSignIn" href="sign-in.html">
             Go to Sign In <i class="fa-solid fa-arrow-right"></i>
           </a>
@@ -870,13 +968,93 @@
     }
 
     // =========================
+    // Password strength (NEW)
+    // =========================
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+
+    const pwStrengthPill = document.getElementById('pwStrengthPill');
+    const pwMeterFill = document.getElementById('pwMeterFill');
+    const pwStrengthHint = document.getElementById('pwStrengthHint');
+
+    function computeStrength(pw){
+      const p = String(pw || '');
+      const len = p.length;
+
+      if (!p) return { label:'Weak', level:'weak', score:0, hint:'Use at least 8 characters.' };
+
+      const hasLower = /[a-z]/.test(p);
+      const hasUpper = /[A-Z]/.test(p);
+      const hasDigit = /\d/.test(p);
+      const hasSymbol = /[^A-Za-z0-9]/.test(p);
+
+      let variety = 0;
+      if (hasLower) variety++;
+      if (hasUpper) variety++;
+      if (hasDigit) variety++;
+      if (hasSymbol) variety++;
+
+      // Simple, predictable scoring (no false precision)
+      let score = 0;
+
+      // length contributes most
+      if (len >= 8) score += 30;
+      if (len >= 12) score += 20;
+      if (len >= 16) score += 10;
+
+      // variety
+      score += variety * 10;
+
+      // penalty for very short
+      if (len < 8) score = Math.max(5, len * 3);
+
+      // cap
+      score = Math.min(100, score);
+
+      // labels
+      let label = 'Weak';
+      let level = 'weak';
+      let hint = 'Use 12+ characters and add variety (numbers/symbols).';
+
+      if (len < 8){
+        label = 'Weak'; level='weak'; hint='Minimum is 8 characters.';
+      } else if (score < 55){
+        label = 'Fair'; level='fair'; hint='Add length and at least 3 character types (upper/lower/number/symbol).';
+      } else if (score < 80){
+        label = 'Good'; level='good'; hint='Strong base. Make it longer (12–16+) for extra resilience.';
+      } else {
+        label = 'Strong'; level='strong'; hint='Great — long and varied. Keep it unique (not reused elsewhere).';
+      }
+
+      return { label, level, score, hint };
+    }
+
+    function renderStrength(){
+      const pw = passwordInput.value || '';
+      const s = computeStrength(pw);
+
+      pwStrengthPill.textContent = s.label;
+      pwStrengthPill.className = 'pw-strength-pill ' + s.level;
+
+      pwMeterFill.style.width = `${Math.max(0, Math.min(100, s.score))}%`;
+      pwMeterFill.className = 'pw-meter-fill ' + (s.level === 'fair' ? 'fair' : s.level === 'good' ? 'good' : s.level === 'strong' ? 'strong' : '');
+
+      pwStrengthHint.textContent = s.hint;
+    }
+
+    passwordInput.addEventListener('input', renderStrength);
+    // run once on load (in case browser autofills)
+    renderStrength();
+
+    // =========================
     // Next modal open/close
     // =========================
     function openNextModal(email, nextTarget){
       modalEmailNote.innerHTML =
         `We’ve sent a verification link to <strong>${escapeHtml(email)}</strong>. If you don’t see it within a few minutes, check spam/junk.`;
 
-      const signInUrl = new URL('/sign-in.html', window.location.origin);
+      // GUARANTEE sign-in page
+      const signInUrl = new URL('sign-in.html', window.location.origin);
       signInUrl.searchParams.set('check_email','1');
       signInUrl.searchParams.set('next', nextTarget);
       signInUrl.searchParams.set('email', email);
@@ -897,7 +1075,8 @@
       document.body.style.overflow = '';
 
       if (redirect && shouldRedirectOnModalClose) {
-        window.location.href = modalGoSignIn.href || (new URL('/sign-in.html', window.location.origin)).toString();
+        // GUARANTEE sign-in page
+        window.location.href = modalGoSignIn.href || (new URL('sign-in.html', window.location.origin)).toString();
       }
     }
 
@@ -906,8 +1085,9 @@
 
     modalGoSignIn.addEventListener('click', (e) => {
       e.preventDefault();
+      // GUARANTEE sign-in page
       const href = modalGoSignIn.getAttribute('href');
-      window.location.href = href || (new URL('/sign-in.html', window.location.origin)).toString();
+      window.location.href = href || (new URL('sign-in.html', window.location.origin)).toString();
     });
 
     modalNoEmail.addEventListener('click', () => {
@@ -999,8 +1179,6 @@
     // =========================
     // Submit
     // =========================
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
     const createAccountForm = document.getElementById('createAccountForm');
 
     createAccountForm.addEventListener('submit', async (e) => {
@@ -1035,7 +1213,8 @@
         const nextTarget = getNextTarget();
         localStorage.setItem('tep_post_login_redirect', nextTarget);
 
-        const signInRedirect = new URL('/sign-in.html', window.location.origin);
+        // GUARANTEE sign-in redirect (relative, same origin)
+        const signInRedirect = new URL('sign-in.html', window.location.origin);
         signInRedirect.searchParams.set('confirmed', '1');
         signInRedirect.searchParams.set('next', nextTarget);
         signInRedirect.searchParams.set('email', email);
@@ -1086,4 +1265,3 @@
   </script>
 </body>
 </html>
-
