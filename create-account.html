@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
@@ -138,11 +138,7 @@
     .logo-img{ height:77px; width:auto; }
     .logo-fallback{ display:none; font-weight:800; letter-spacing:.08em; font-size:14px; }
 
-    .form-header{
-      margin-top:0px;
-      margin-bottom:8px;
-    }
-
+    .form-header{ margin-top:0px; margin-bottom:8px; }
     .form-header h2{
       font-size:25px;
       font-weight:700;
@@ -150,14 +146,13 @@
       letter-spacing:-0.02em;
       margin-bottom:4px;
     }
-
     .form-header p{
       color:var(--text-muted);
       font-size:14px;
       line-height:1.35;
     }
 
-    /* Toast status */
+    /* Toast */
     .toast{
       position:fixed;
       top:16px;
@@ -196,9 +191,10 @@
       color:var(--text-dark);
     }
 
+    /* CHANGE #3: reduce height of all input boxes by ~5% (padding reduced) */
     .form-input{
       width:100%;
-      padding:9px 12px;
+      padding:8.5px 10px; /* was 9px 10px */
       border:1px solid var(--panel-border);
       border-radius:var(--radius-10);
       font-size:14.5px;
@@ -213,7 +209,7 @@
     }
     .form-input::placeholder{ color:#b2b2b2; }
 
-    /* Password */
+    /* Password fields */
     .secure-input{ -webkit-text-security: disc; }
     .reveal-toggle:checked ~ .password-row .secure-input{ -webkit-text-security:none; }
 
@@ -226,55 +222,60 @@
       height:1px;
     }
 
-    /* Label + input inline */
     .inline-pw-row{
       display:flex;
       align-items:center;
-      gap:12px;
+      gap:14px;
     }
 
-    /* UPDATED: make label narrower so input is wider */
     .inline-pw-label{
-      flex:0 0 165px;              /* was 210px */
+      flex:0 0 135px; /* label column */
       margin:0;
+      color:var(--text-dark);
+      line-height:1.12;
+    }
+    .inline-pw-label .pw-title{
+      display:block;
       font-weight:800;
       font-size:13px;
-      color:var(--text-dark);
-      line-height:1.25;
       white-space:nowrap;
     }
-
-    /* NEW: smaller/lighter "(Minimum 8 characters)" */
-    .pw-min{
-      font-size:12px;              /* smaller */
-      font-weight:600;             /* lighter (down from 800) */
+    .inline-pw-label .pw-min{
+      display:block;
+      margin-top:5px;
+      font-size:11.5px;
+      font-weight:500;
       color:var(--text-muted);
-      margin-left:6px;
+      white-space:normal; /* allow wrap if needed */
     }
 
+    /* BOTH password boxes same size + wider on desktop */
     .password-row{
       display:flex;
+      flex:1;
       width:100%;
       border:1px solid var(--panel-border);
       border-radius:var(--radius-10);
       overflow:hidden;
       background:var(--primary-white);
       transition:all .15s ease;
-      flex:1;
-      min-width:0;
+      min-width:300px; /* wider input area on desktop */
     }
     .password-row:focus-within{
       border-color:rgba(123,95,196,0.55);
       box-shadow:0 0 0 4px rgba(123,95,196,0.14);
     }
+
+    /* CHANGE #3 (continued): reduce password input padding too */
     .password-row .form-input{
       border:none;
       border-radius:0;
       box-shadow:none !important;
       flex:1;
-      padding:9px 12px;
+      padding:8.5px 12px; /* was 9px 12px */
       min-width:0;
     }
+
     .toggle-label{
       width:46px;
       display:inline-flex;
@@ -362,15 +363,13 @@
     .pw-meter-fill.good{ background:rgba(47,111,214,0.70); }
     .pw-meter-fill.strong{ background:rgba(31,143,74,0.70); }
 
-    /* UPDATED: hint smaller + slightly lighter */
     .pw-hint{
-      font-size:12px;              /* smaller */
+      font-size:12px;
       line-height:1.35;
       color:var(--text-muted);
-      font-weight:500;             /* lighter */
+      font-weight:500;
     }
 
-    /* NEW: extra strong note (only shown on strong) */
     .pw-strong-note{
       display:none;
       margin-top:2px;
@@ -384,10 +383,11 @@
     .form-checkbox{
       display:flex;
       align-items:flex-start;
+      margin-top:5px;
       gap:10px;
       margin:8px 0 6px;
     }
-    .checkbox-input{ margin-top:3px; accent-color:var(--accent-purple); }
+    .checkbox-input{ margin-top:5px; accent-color:var(--accent-purple); }
     .checkbox-label{
       font-size:12.5px;
       color:var(--text-medium);
@@ -395,6 +395,18 @@
     }
     .checkbox-label a{ color:var(--accent-purple); text-decoration:none; font-weight:700; }
     .checkbox-label a:hover{ text-decoration:underline; }
+
+    /* CHANGE #1: move ONLY the terms sentence down by 3px */
+    .terms-label{
+      position:relative;
+      top:3px;
+    }
+
+    /* CHANGE #2: nudge "Confirm Password" down so it visually centres with the input box */
+    .confirm-inline-label .pw-title{
+      position:relative;
+      top:2px;
+    }
 
     .submit-button{
       width:100%;
@@ -506,6 +518,7 @@
     }
 
     .modal-body{ padding:12px 16px 14px; }
+
     .modal-body ol{
       margin:0 0 10px 18px;
       color:var(--text-medium);
@@ -654,11 +667,13 @@
       .left-column{ padding:36px 24px; }
       .left-column h1{ font-size:32px; }
       .right-column{ padding:18px 18px; }
+      .password-row{ min-width:0; } /* let it shrink on smaller screens */
     }
 
-    @media (max-width:680px){
+    @media (max-width:720px){
       .inline-pw-row{ flex-direction:column; align-items:stretch; gap:8px; }
-      .inline-pw-label{ flex:0 0 auto; width:100%; white-space:normal; }
+      .inline-pw-label{ flex:0 0 auto; width:100%; }
+      .password-row{ min-width:0; }
     }
 
     @media (max-width:520px){
@@ -728,11 +743,12 @@
           <input type="email" id="email" class="form-input" placeholder="your.email@example.com" required>
         </div>
 
-        <!-- PASSWORD (label inline) -->
+        <!-- PASSWORD -->
         <div class="form-group password-wrap">
           <div class="inline-pw-row">
             <label for="password" class="inline-pw-label">
-              Password <span class="pw-min">(Minimum 8 characters)</span>
+              <span class="pw-title">Password</span>
+              <span class="pw-min">Minimum 8 characters</span>
             </label>
 
             <input type="checkbox" id="pwReveal" class="reveal-toggle">
@@ -742,7 +758,7 @@
                 type="text"
                 id="password"
                 class="form-input secure-input"
-                placeholder="Password (minimum 8 characters)"
+                placeholder="Create a secure password"
                 required
                 autocomplete="new-password"
                 minlength="8"
@@ -755,7 +771,7 @@
             </div>
           </div>
 
-          <!-- strength + meter -->
+          <!-- Strength -->
           <div class="pw-strength" aria-live="polite">
             <div class="pw-strength-row">
               <span>Password strength</span>
@@ -765,7 +781,6 @@
               <div id="pwMeterFill" class="pw-meter-fill"></div>
             </div>
             <div id="pwStrengthHint" class="pw-hint">
-              Aim for 12+ characters, with a mix of upper/lowercase, numbers, and symbols.
             </div>
             <div id="pwStrongNote" class="pw-strong-note">
               Keep it unique (not reused elsewhere).
@@ -773,10 +788,14 @@
           </div>
         </div>
 
-        <!-- CONFIRM PASSWORD (label inline) -->
+        <!-- CONFIRM PASSWORD -->
         <div class="form-group password-wrap">
           <div class="inline-pw-row">
-            <label for="confirmPassword" class="inline-pw-label">Confirm Password</label>
+            <!-- CHANGE #2: added class confirm-inline-label -->
+            <label for="confirmPassword" class="inline-pw-label confirm-inline-label">
+              <span class="pw-title">Confirm Password</span>
+              <span class="pw-min">&nbsp;</span>
+            </label>
 
             <input type="checkbox" id="cpwReveal" class="reveal-toggle">
 
@@ -801,7 +820,8 @@
 
         <div class="form-checkbox">
           <input type="checkbox" id="terms" class="checkbox-input" required>
-          <label for="terms" class="checkbox-label">
+          <!-- CHANGE #1: added class terms-label -->
+          <label for="terms" class="checkbox-label terms-label">
             I agree to the
             <a href="#" id="openTermsLink">Terms of Service</a>
             and
@@ -933,6 +953,16 @@
     const openPrivacyLink = document.getElementById('openPrivacyLink');
     const termsCheckbox = document.getElementById('terms');
 
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const createAccountForm = document.getElementById('createAccountForm');
+
+    // Strength elements
+    const pwStrengthPill = document.getElementById('pwStrengthPill');
+    const pwMeterFill = document.getElementById('pwMeterFill');
+    const pwStrengthHint = document.getElementById('pwStrengthHint');
+    const pwStrongNote = document.getElementById('pwStrongNote');
+
     let activePolicy = null; // 'terms' | 'privacy'
     let approved = { terms: false, privacy: false };
     let shouldRedirectOnModalClose = false;
@@ -997,19 +1027,11 @@
     }
 
     // Password strength
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-
-    const pwStrengthPill = document.getElementById('pwStrengthPill');
-    const pwMeterFill = document.getElementById('pwMeterFill');
-    const pwStrengthHint = document.getElementById('pwStrengthHint');
-    const pwStrongNote = document.getElementById('pwStrongNote');
-
     function computeStrength(pw){
       const p = String(pw || '');
       const len = p.length;
 
-      if (!p) return { label:'Weak', level:'weak', score:0, hint:'Use at least 8 characters.' };
+      if (!p) return { label:'Weak', level:'weak', score:0, hint:'' };
 
       const hasLower = /[a-z]/.test(p);
       const hasUpper = /[A-Z]/.test(p);
@@ -1024,31 +1046,33 @@
 
       let score = 0;
       if (len >= 8) score += 30;
-      if (len >= 12) score += 20;
+      if (len >= 12) score += 25;
       if (len >= 16) score += 10;
       score += variety * 10;
 
       if (len < 8) score = Math.max(5, len * 3);
       score = Math.min(100, score);
 
-      let label = 'Weak', level = 'weak', hint = 'Use 12+ characters and add variety (numbers/symbols).';
+      let label = 'Weak', level = 'weak', hint = '';
 
       if (len < 8){
-        label = 'Weak'; level='weak'; hint='Minimum is 8 characters.';
+        label = 'Weak'; level='weak';
       } else if (score < 55){
-        label = 'Fair'; level='fair'; hint='Add length and at least 3 character types (upper/lower/number/symbol).';
+        label = 'Fair'; level='fair';
+        hint = 'Add length and include letters, numbers, and special characters.';
       } else if (score < 80){
-        label = 'Good'; level='good'; hint='Strong base. Make it longer (12–16+) for extra resilience.';
+        label = 'Good'; level='good';
+        hint = 'Good. Make it longer (12+), and keep letters + numbers + special characters.';
       } else {
-        label = 'Strong'; level='strong'; hint='Strong password — long and varied.';
+        label = 'Strong'; level='strong';
+        hint = 'Strong. Long and varied, with letters, numbers, and special characters.';
       }
 
       return { label, level, score, hint };
     }
 
     function renderStrength(){
-      const pw = passwordInput.value || '';
-      const s = computeStrength(pw);
+      const s = computeStrength(passwordInput.value || '');
 
       pwStrengthPill.textContent = s.label;
       pwStrengthPill.className = 'pw-strength-pill ' + s.level;
@@ -1058,14 +1082,14 @@
 
       pwStrengthHint.textContent = s.hint;
 
-      // Only show the "keep it unique" note on Strong
       if (s.level === 'strong') pwStrongNote.classList.add('show');
       else pwStrongNote.classList.remove('show');
     }
+
     passwordInput.addEventListener('input', renderStrength);
     renderStrength();
 
-    // Next modal
+    // Next modal open/close
     function openNextModal(email, nextTarget){
       modalEmailNote.innerHTML =
         `We’ve sent a verification link to <strong>${escapeHtml(email)}</strong>. If you don’t see it within a few minutes, check spam/junk.`;
@@ -1100,15 +1124,14 @@
 
     modalGoSignIn.addEventListener('click', (e) => {
       e.preventDefault();
-      const href = modalGoSignIn.getAttribute('href');
-      window.location.href = href || (new URL('sign-in.html', window.location.origin)).toString();
+      window.location.href = modalGoSignIn.href || 'sign-in.html';
     });
 
     modalNoEmail.addEventListener('click', () => {
       modalHelpBox.classList.toggle('show');
     });
 
-    // Policy modal
+    // Policy modal open/close
     function openPolicyModal(which){
       activePolicy = which;
 
@@ -1161,10 +1184,7 @@
     function syncTermsCheckbox(){
       const allApproved = approved.terms && approved.privacy;
       termsCheckbox.checked = allApproved;
-
-      if (allApproved) {
-        showToast("Policies approved — you can now create your account.", "info", 2400);
-      }
+      if (allApproved) showToast("Policies approved — you can now create your account.", "info", 2400);
     }
 
     openTermsLink.addEventListener('click', (e) => { e.preventDefault(); openPolicyModal('terms'); });
@@ -1189,8 +1209,6 @@
     });
 
     // Submit
-    const createAccountForm = document.getElementById('createAccountForm');
-
     createAccountForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       clearToast();
