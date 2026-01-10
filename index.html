@@ -4242,17 +4242,6 @@
             createAccountForm.style.display = 'none';
         });
 
-        // Show create account form (for demonstration)
-        document.querySelectorAll('.header-cta, .mobile-sign-up, .cta-button').forEach(button => {
-            button.addEventListener('click', function(e) {
-                if (this.getAttribute('href') === 'create-account.html') {
-                    e.preventDefault();
-                    createAccountForm.style.display = 'block';
-                    createAccountForm.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
         // Smooth scrolling with offset for fixed header
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
