@@ -226,19 +226,30 @@
       height:1px;
     }
 
-    /* NEW: label + input inline */
+    /* Label + input inline */
     .inline-pw-row{
       display:flex;
       align-items:center;
       gap:12px;
     }
+
+    /* UPDATED: make label narrower so input is wider */
     .inline-pw-label{
-      flex:0 0 210px;              /* tweak width here if you want tighter/looser */
-      margin:0;                    /* override form-label default margin */
+      flex:0 0 165px;              /* was 210px */
+      margin:0;
       font-weight:800;
       font-size:13px;
       color:var(--text-dark);
       line-height:1.25;
+      white-space:nowrap;
+    }
+
+    /* NEW: smaller/lighter "(Minimum 8 characters)" */
+    .pw-min{
+      font-size:12px;              /* smaller */
+      font-weight:600;             /* lighter (down from 800) */
+      color:var(--text-muted);
+      margin-left:6px;
     }
 
     .password-row{
@@ -351,12 +362,24 @@
     .pw-meter-fill.good{ background:rgba(47,111,214,0.70); }
     .pw-meter-fill.strong{ background:rgba(31,143,74,0.70); }
 
+    /* UPDATED: hint smaller + slightly lighter */
     .pw-hint{
-      font-size:12.5px;
+      font-size:12px;              /* smaller */
       line-height:1.35;
       color:var(--text-muted);
-      font-weight:600;
+      font-weight:500;             /* lighter */
     }
+
+    /* NEW: extra strong note (only shown on strong) */
+    .pw-strong-note{
+      display:none;
+      margin-top:2px;
+      font-size:11.5px;
+      line-height:1.3;
+      font-weight:500;
+      color:var(--text-muted);
+    }
+    .pw-strong-note.show{ display:block; }
 
     .form-checkbox{
       display:flex;
@@ -633,10 +656,9 @@
       .right-column{ padding:18px 18px; }
     }
 
-    /* NEW: stack the password label above input on small screens */
     @media (max-width:680px){
       .inline-pw-row{ flex-direction:column; align-items:stretch; gap:8px; }
-      .inline-pw-label{ flex:0 0 auto; width:100%; }
+      .inline-pw-label{ flex:0 0 auto; width:100%; white-space:normal; }
     }
 
     @media (max-width:520px){
@@ -709,7 +731,9 @@
         <!-- PASSWORD (label inline) -->
         <div class="form-group password-wrap">
           <div class="inline-pw-row">
-            <label for="password" class="inline-pw-label">Password (Minimum 8 characters)</label>
+            <label for="password" class="inline-pw-label">
+              Password <span class="pw-min">(Minimum 8 characters)</span>
+            </label>
 
             <input type="checkbox" id="pwReveal" class="reveal-toggle">
 
@@ -742,6 +766,9 @@
             </div>
             <div id="pwStrengthHint" class="pw-hint">
               Aim for 12+ characters, with a mix of upper/lowercase, numbers, and symbols.
+            </div>
+            <div id="pwStrongNote" class="pw-strong-note">
+              Keep it unique (not reused elsewhere).
             </div>
           </div>
         </div>
@@ -976,6 +1003,7 @@
     const pwStrengthPill = document.getElementById('pwStrengthPill');
     const pwMeterFill = document.getElementById('pwMeterFill');
     const pwStrengthHint = document.getElementById('pwStrengthHint');
+    const pwStrongNote = document.getElementById('pwStrongNote');
 
     function computeStrength(pw){
       const p = String(pw || '');
@@ -1012,7 +1040,7 @@
       } else if (score < 80){
         label = 'Good'; level='good'; hint='Strong base. Make it longer (12–16+) for extra resilience.';
       } else {
-        label = 'Strong'; level='strong'; hint='Great — long and varied. Keep it unique (not reused elsewhere).';
+        label = 'Strong'; level='strong'; hint='Strong password — long and varied.';
       }
 
       return { label, level, score, hint };
@@ -1029,6 +1057,10 @@
       pwMeterFill.className = 'pw-meter-fill ' + (s.level === 'fair' ? 'fair' : s.level === 'good' ? 'good' : s.level === 'strong' ? 'strong' : '');
 
       pwStrengthHint.textContent = s.hint;
+
+      // Only show the "keep it unique" note on Strong
+      if (s.level === 'strong') pwStrongNote.classList.add('show');
+      else pwStrongNote.classList.remove('show');
     }
     passwordInput.addEventListener('input', renderStrength);
     renderStrength();
