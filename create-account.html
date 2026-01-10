@@ -157,7 +157,7 @@
       line-height:1.35;
     }
 
-    /* Toast status (so it never pushes the button away) */
+    /* Toast status (single-line preference) */
     .toast{
       position:fixed;
       top:16px;
@@ -167,18 +167,21 @@
       z-index:10050;
       display:none;
       border-radius:14px;
-      padding:12px 14px;
+      padding:10px 14px;
       font-size:13.5px;
-      line-height:1.45;
+      line-height:1.3;
       border:1px solid var(--panel-border);
       background:rgba(255,255,255,0.92);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       box-shadow:0 18px 50px rgba(0,0,0,0.14);
       color:var(--text-medium);
+
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .toast.show{ display:block; }
-    .toast.success{ border-color:rgba(31,143,74,0.25); background:rgba(31,143,74,0.08); color:var(--success); }
     .toast.error{ border-color:rgba(192,57,43,0.25); background:rgba(192,57,43,0.08); color:var(--danger); }
     .toast.info{ border-color:rgba(47,111,214,0.22); background:rgba(47,111,214,0.08); color:var(--info); }
 
@@ -263,7 +266,7 @@
     .reveal-toggle:not(:checked) ~ .password-row .icon-eye-slash { display:none; }
     .reveal-toggle:checked ~ .password-row .icon-eye { display:none; }
 
-    /* New: password guidance line (static, does not shift layout) */
+    /* Updated: guidance without "12+" line */
     .pw-guidance{
       margin-top:6px;
       font-size:12.5px;
@@ -328,7 +331,7 @@
     .auth-footer a:hover{ text-decoration:underline; }
 
     /* =========================
-       MODAL BASE (re-used)
+       MODAL BASE
     ========================== */
     .modal-overlay{
       position:fixed;
@@ -566,7 +569,7 @@
 
 <body>
 
-  <!-- Toast (never shifts layout) -->
+  <!-- Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <div class="auth-container">
@@ -641,9 +644,8 @@
             </label>
           </div>
 
-          <!-- ✅ New: explicit strong + max guidance -->
           <div class="pw-guidance" id="pwGuidance">
-            Minimum <strong>8</strong> characters. “Strong” starts at <strong>12+</strong>. Maximum <strong>72</strong>.
+            Minimum <strong>8</strong> characters. Maximum <strong>72</strong>.
           </div>
         </div>
 
@@ -699,7 +701,7 @@
     </div>
   </div>
 
-  <!-- ✅ Modal Overlay: What happens next -->
+  <!-- Next steps modal -->
   <div class="modal-overlay" id="nextModal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-label="What happens next">
       <div class="modal-head">
@@ -723,7 +725,6 @@
         </div>
 
         <div class="modal-actions">
-          <!-- ✅ default safe href -->
           <a class="primary-link" id="modalGoSignIn" href="sign-in.html">
             Go to Sign In <i class="fa-solid fa-arrow-right"></i>
           </a>
@@ -741,7 +742,7 @@
     </div>
   </div>
 
-  <!-- ✅ Modal Overlay: Policy Approval (Terms/Privacy) -->
+  <!-- Policy modal -->
   <div class="modal-overlay" id="policyModal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-label="Policy">
       <div class="modal-head">
@@ -768,31 +769,6 @@
           </button>
         </div>
 
-      </div>
-    </div>
-  </div>
-
-  <!-- ✅ Modal Overlay: Password / validation messages -->
-  <div class="modal-overlay" id="pwModal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Password message">
-      <div class="modal-head">
-        <div class="modal-title" id="pwModalTitle">
-          <i class="fa-solid fa-shield" aria-hidden="true"></i>
-          Password check
-        </div>
-        <button class="modal-close" id="closePwModal" type="button" aria-label="Close">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-note" id="pwModalText" style="margin-bottom:0;">
-          Message
-        </div>
-        <div class="modal-actions" style="padding-top:10px;">
-          <button class="primary-link" id="pwModalOk" type="button" style="border:none; cursor:pointer;">
-            OK <i class="fa-solid fa-check"></i>
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -830,13 +806,6 @@
     const openPrivacyLink = document.getElementById('openPrivacyLink');
     const termsCheckbox = document.getElementById('terms');
 
-    // Password modal
-    const pwModal = document.getElementById('pwModal');
-    const closePwModal = document.getElementById('closePwModal');
-    const pwModalOk = document.getElementById('pwModalOk');
-    const pwModalTitle = document.getElementById('pwModalTitle');
-    const pwModalText = document.getElementById('pwModalText');
-
     let activePolicy = null; // 'terms' | 'privacy'
     let approved = { terms: false, privacy: false };
     let shouldRedirectOnModalClose = false;
@@ -852,38 +821,21 @@
       }
     }
 
-    function showToast(html, type, autoHideMs = 4200) {
-      toast.innerHTML = html;
+    function showToast(text, type, autoHideMs = 4200) {
+      toast.textContent = text;
       toast.className = 'toast show ' + (type || '');
       if (autoHideMs) {
         window.clearTimeout(showToast._t);
         showToast._t = window.setTimeout(() => {
           toast.className = 'toast';
-          toast.innerHTML = '';
+          toast.textContent = '';
         }, autoHideMs);
       }
     }
     function clearToast() {
       toast.className = 'toast';
-      toast.innerHTML = '';
+      toast.textContent = '';
     }
-
-    function openPwModal({ title = "Password check", html = "" } = {}) {
-      pwModalTitle.innerHTML = `<i class="fa-solid fa-shield" aria-hidden="true"></i> ${title}`;
-      pwModalText.innerHTML = html;
-      pwModal.classList.add('show');
-      pwModal.setAttribute('aria-hidden','false');
-      document.body.style.overflow = 'hidden';
-      setTimeout(() => pwModalOk.focus(), 40);
-    }
-    function closePwModalFn() {
-      pwModal.classList.remove('show');
-      pwModal.setAttribute('aria-hidden','true');
-      document.body.style.overflow = '';
-    }
-    closePwModal.addEventListener('click', closePwModalFn);
-    pwModalOk.addEventListener('click', closePwModalFn);
-    pwModal.addEventListener('click', (e) => { if (e.target === pwModal) closePwModalFn(); });
 
     function escapeHtml(str){
       return String(str || '').replace(/[&<>"']/g, (m) => ({
@@ -903,33 +855,18 @@
       const msg = raw.toLowerCase();
 
       if (msg.includes('already registered') || msg.includes('already exists') || msg.includes('user already registered')) {
-        return {
-          type:'error',
-          html:"This email is already linked to an account.<br><span style='color:var(--text-medium);font-weight:600;'>Please sign in — or reset your password if you’ve forgotten it.</span>"
-        };
+        return "This email is already linked to an account — please sign in.";
       }
       if (msg.includes('password') && (msg.includes('weak') || msg.includes('least') || msg.includes('min'))) {
-        return {
-          type:'error',
-          html:"Please choose a stronger password.<br><span style='color:var(--text-medium);font-weight:600;'>Minimum 8. “Strong” starts at 12+. Maximum 72.</span>"
-        };
+        return "Password not accepted — please use at least 8 characters (max 72).";
       }
       if (msg.includes('rate limit') || msg.includes('too many requests')) {
-        return {
-          type:'error',
-          html:"Too many attempts in a short time.<br><span style='color:var(--text-medium);font-weight:600;'>Please wait a moment and try again.</span>"
-        };
+        return "Too many attempts — please wait a moment and try again.";
       }
       if (msg.includes('fetch') || msg.includes('network') || msg.includes('failed to fetch')) {
-        return {
-          type:'error',
-          html:"We couldn’t reach the service just now.<br><span style='color:var(--text-medium);font-weight:600;'>Check your connection and try again.</span>"
-        };
+        return "Connection issue — please check your internet and try again.";
       }
-      return {
-        type:'error',
-        html:"We couldn’t create your account right now.<br><span style='color:var(--text-medium);font-weight:600;'>Please try again — if it continues, contact support.</span>"
-      };
+      return "We couldn’t create your account — please try again.";
     }
 
     // =========================
@@ -939,7 +876,6 @@
       modalEmailNote.innerHTML =
         `We’ve sent a verification link to <strong>${escapeHtml(email)}</strong>. If you don’t see it within a few minutes, check spam/junk.`;
 
-      // ✅ Force an absolute URL so it can’t fall back to homepage due to routing/base href quirks
       const signInUrl = new URL('/sign-in.html', window.location.origin);
       signInUrl.searchParams.set('check_email','1');
       signInUrl.searchParams.set('next', nextTarget);
@@ -968,12 +904,10 @@
     closeNextModal.addEventListener('click', () => closeNextModalFn({ redirect: true }));
     nextModal.addEventListener('click', (e) => { if (e.target === nextModal) closeNextModalFn({ redirect: true }); });
 
-    // ✅ Hard-force click navigation (prevents any SPA/router weirdness sending to "/")
     modalGoSignIn.addEventListener('click', (e) => {
       e.preventDefault();
       const href = modalGoSignIn.getAttribute('href');
-      if (href) window.location.href = href;
-      else window.location.href = (new URL('/sign-in.html', window.location.origin)).toString();
+      window.location.href = href || (new URL('/sign-in.html', window.location.origin)).toString();
     });
 
     modalNoEmail.addEventListener('click', () => {
@@ -1037,11 +971,7 @@
       termsCheckbox.checked = allApproved;
 
       if (allApproved) {
-        showToast(
-          "Policies approved.<br><span style='color:var(--text-medium);font-weight:600;'>You can now create your account.</span>",
-          "info",
-          2500
-        );
+        showToast("Policies approved — you can now create your account.", "info", 2400);
       }
     }
 
@@ -1061,67 +991,16 @@
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (pwModal.classList.contains('show')) closePwModalFn();
-        else if (policyModal.classList.contains('show')) closePolicy();
+        if (policyModal.classList.contains('show')) closePolicy();
         else if (nextModal.classList.contains('show')) closeNextModalFn({ redirect: true });
-      }
-    });
-
-    // =========================
-    // Password rules (modal feedback)
-    // =========================
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-
-    function pwStrengthLabel(pw){
-      if (!pw) return '';
-      if (pw.length < 8) return 'weak';
-      if (pw.length < 12) return 'medium';
-      return 'strong';
-    }
-
-    passwordInput.addEventListener('blur', () => {
-      const pw = passwordInput.value || '';
-      if (!pw) return;
-
-      if (pw.length > 72) {
-        openPwModal({
-          title: "Password too long",
-          html: "Please shorten your password.<br><span style='color:var(--text-medium);font-weight:600;'>Maximum length is 72 characters.</span>"
-        });
-        return;
-      }
-
-      if (pw.length > 0 && pw.length < 8) {
-        openPwModal({
-          title: "Password too short",
-          html: "Please choose a stronger password.<br><span style='color:var(--text-medium);font-weight:600;'>Minimum 8 characters. “Strong” starts at 12+.</span>"
-        });
-        return;
-      }
-
-      const label = pwStrengthLabel(pw);
-      if (label === 'medium') {
-        openPwModal({
-          title: "You’re nearly there",
-          html: "Your password is acceptable, but you can make it stronger.<br><span style='color:var(--text-medium);font-weight:600;'>Strong starts at 12+ characters.</span>"
-        });
-      }
-    });
-
-    confirmPasswordInput.addEventListener('blur', () => {
-      if (!confirmPasswordInput.value) return;
-      if (passwordInput.value !== confirmPasswordInput.value) {
-        openPwModal({
-          title: "Passwords don’t match",
-          html: "Please make sure both password fields match exactly."
-        });
       }
     });
 
     // =========================
     // Submit
     // =========================
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
     const createAccountForm = document.getElementById('createAccountForm');
 
     createAccountForm.addEventListener('submit', async (e) => {
@@ -1129,10 +1008,7 @@
       clearToast();
 
       if (!supabaseClient || !supabaseClient.auth) {
-        showToast(
-          "We couldn’t initialise the sign-up service.<br><span style='color:var(--text-medium);font-weight:600;'>Please refresh and try again.</span>",
-          "error"
-        );
+        showToast("Sign-up service not available — please refresh and try again.", "error", 5200);
         return;
       }
 
@@ -1142,40 +1018,13 @@
       const password = passwordInput.value;
       const confirmPassword = confirmPasswordInput.value;
 
-      if (!firstName || !lastName) {
-        showToast("Please enter your first and last name.", "error");
-        return;
-      }
-
-      if (password.length > 72) {
-        openPwModal({
-          title: "Password too long",
-          html: "Please shorten your password.<br><span style='color:var(--text-medium);font-weight:600;'>Maximum length is 72 characters.</span>"
-        });
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        openPwModal({
-          title: "Passwords don’t match",
-          html: "Please retype both password fields so they match exactly."
-        });
-        return;
-      }
-
-      if (password.length < 8) {
-        openPwModal({
-          title: "Password too short",
-          html: "Please choose a stronger password.<br><span style='color:var(--text-medium);font-weight:600;'>Minimum 8 characters. “Strong” starts at 12+.</span>"
-        });
-        return;
-      }
+      if (!firstName || !lastName) { showToast("Please enter your first and last name.", "error"); return; }
+      if (password.length > 72) { showToast("Password too long — maximum is 72 characters.", "error"); return; }
+      if (password.length < 8) { showToast("Password too short — minimum is 8 characters.", "error"); return; }
+      if (password !== confirmPassword) { showToast("Passwords don’t match — please try again.", "error"); return; }
 
       if (!document.getElementById('terms').checked) {
-        showToast(
-          "Please review and approve the Terms of Service and Privacy Policy.<br><span style='color:var(--text-medium);font-weight:600;'>Click each link to approve.</span>",
-          "error"
-        );
+        showToast("Please approve the Terms and Privacy Policy to continue.", "error", 5200);
         return;
       }
 
@@ -1186,7 +1035,6 @@
         const nextTarget = getNextTarget();
         localStorage.setItem('tep_post_login_redirect', nextTarget);
 
-        // ✅ absolute sign-in redirect for confirmed emails
         const signInRedirect = new URL('/sign-in.html', window.location.origin);
         signInRedirect.searchParams.set('confirmed', '1');
         signInRedirect.searchParams.set('next', nextTarget);
@@ -1202,7 +1050,7 @@
               first_name: firstName,
               last_name: lastName,
               full_name: fullName,
-              display_name: firstName,     // ✅ for header initial + greeting
+              display_name: firstName,
               newsletter_opt_in: newsletterOptIn,
               terms_approved: approved.terms,
               privacy_approved: approved.privacy,
@@ -1213,8 +1061,7 @@
         });
 
         if (error) {
-          const mapped = premiumMessageForError(error);
-          showToast(mapped.html, mapped.type, 6000);
+          showToast(premiumMessageForError(error), "error", 6000);
           return;
         }
 
@@ -1222,29 +1069,15 @@
 
         if (needsEmailConfirm) {
           openNextModal(email, nextTarget);
-
-          showToast(
-            "Account created.<br><span style='color:var(--text-medium);font-weight:600;'>Please confirm your email to continue.</span>",
-            "success",
-            4500
-          );
         } else {
-          showToast(
-            "Welcome — your account is ready.<br><span style='color:var(--text-medium);font-weight:600;'>Redirecting you now…</span>",
-            "success",
-            2200
-          );
+          // Logged in instantly (rare, depending on settings)
           localStorage.removeItem('tep_post_login_redirect');
-          setTimeout(() => window.location.href = nextTarget, 700);
+          window.location.href = nextTarget;
         }
 
       } catch (err) {
         console.error(err);
-        showToast(
-          "Something went wrong.<br><span style='color:var(--text-medium);font-weight:600;'>Please try again in a moment.</span>",
-          "error",
-          6000
-        );
+        showToast("Something went wrong — please try again.", "error", 6000);
       } finally {
         setLoading(false);
       }
