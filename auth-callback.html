@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signing you in… | The Employee Playbook</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- THEME PRELOAD (prevents flash across pages) -->
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem('theme'); // "dark" | "light" | null
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const useDark = saved ? saved === 'dark' : prefersDark;
+        if (useDark) document.documentElement.classList.add('dark-mode');
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    :root{
+      --bg:#F5F5F5;
+      --panel:#FFFFFF;
+      --border:#E7E7E7;
+      --text:#1B1B1B;
+      --muted:#5A5A5A;
+
+      --purple:#7B5FC4;
+      --purple-2:#9d86e9;
+
+      --shadow: 0 18px 55px rgba(17, 12, 46, 0.10);
+      --radius: 18px;
+    }
+
+    .dark-mode:root{
+      --bg:#0B0B0F;
+      --panel:#12121A;
+      --border:rgba(255,255,255,0.10);
+      --text:#F2F2F6;
+      --muted:rgba(242,242,246,0.72);
+      --shadow: 0 18px 60px rgba(0,0,0,0.45);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 28px;
+    }
+
+    .wrap{
+      width: min(720px, 100%);
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(123,95,196,0.10), rgba(123,95,196,0.04)) , var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      position: relative;
+      overflow:hidden;
+    }
+
+    .top{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+
+    .badge{
+      width:46px;
+      height:46px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 30% 30%, rgba(157,134,233,0.75), rgba(123,95,196,0.35));
+      border: 1px solid rgba(123,95,196,0.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+
+    .badge i{
+      color: var(--text);
+      opacity: 0.9;
+      font-size: 18px;
+    }
+
+    h1{
+      margin:0;
+      font-size: 18px;
+      letter-spacing: -0.2px;
+      line-height: 1.2;
+    }
+
+    p{
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .status{
+      margin-top: 18px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.55);
+    }
+    .dark-mode .status{ background: rgba(255,255,255,0.06); }
+
+    .dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 99px;
+      background: var(--purple);
+      box-shadow: 0 0 0 6px rgba(123,95,196,0.16);
+      animation: pulse 1.2s ease-in-out infinite;
+      flex: 0 0 auto;
+    }
+
+    @keyframes pulse{
+      0%{ transform: scale(1); opacity: 1; }
+      60%{ transform: scale(1.25); opacity: 0.75; }
+      100%{ transform: scale(1); opacity: 1; }
+    }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px dashed var(--border);
+      background: rgba(0,0,0,0.03);
+      overflow:auto;
+      max-height: 200px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .dark-mode .mono{ background: rgba(255,255,255,0.04); }
+
+    .btnRow{
+      margin-top: 16px;
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+    }
+
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(123,95,196,0.35);
+      background: linear-gradient(180deg, rgba(123,95,196,0.18), rgba(123,95,196,0.10));
+      color: var(--text);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-weight: 650;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(123,95,196,0.55); }
+
+    .btn.secondary{
+      border-color: var(--border);
+      background: transparent;
+      color: var(--text);
+    }
+
+    .hidden{ display:none !important; }
+  </style>
+
+  <!-- Your config (must set window.TEP_SUPABASE_URL + window.TEP_SUPABASE_ANON_KEY) -->
+  <script src="assets/supabase-config.js"></script>
+
+  <!-- Supabase JS v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="top">
+        <div class="badge"><i class="fa-solid fa-shield-halved"></i></div>
+        <div>
+          <h1 id="title">Signing you in…</h1>
+          <p id="subtitle">Just a moment — we’re securely confirming your link.</p>
+        </div>
+      </div>
+
+      <div class="status" id="statusBox">
+        <div class="dot" id="dot"></div>
+        <div>
+          <div style="font-weight:650; font-size:13px;" id="statusLine">Working…</div>
+          <div style="color:var(--muted); font-size:12.5px; margin-top:2px;" id="statusHint">Do not close this tab.</div>
+        </div>
+      </div>
+
+      <div class="mono hidden" id="debugBox"></div>
+
+      <div class="btnRow hidden" id="btnRow">
+        <button class="btn" id="goBtn">Continue</button>
+        <button class="btn secondary" id="signInBtn">Go to Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== CONFIG YOU MAY WANT TO CHANGE ======
+    const DEFAULT_SUCCESS_REDIRECT = "dashboard.html"; // where to send a user after successful auth (if no "next" stored)
+    const DEFAULT_FAIL_REDIRECT = "sign-in.html";      // where to send a user if auth fails
+    const SHOW_DEBUG = false;                          // set true if you want users to see callback params (dev only)
+
+    // Optional: honour an intended destination stored before auth
+    // Store like: localStorage.setItem("tep_post_auth_redirect", "toolkit.html");
+    const NEXT_KEY = "tep_post_auth_redirect";
+
+    // ====== UI HELPERS ======
+    const $ = (id) => document.getElementById(id);
+
+    function setUI({ title, subtitle, statusLine, statusHint, done=false, error=false }) {
+      if (title) $("title").textContent = title;
+      if (subtitle) $("subtitle").textContent = subtitle;
+      if (statusLine) $("statusLine").textContent = statusLine;
+      if (statusHint) $("statusHint").textContent = statusHint;
+
+      if (done) {
+        $("dot").style.animation = "none";
+        $("dot").style.boxShadow = error
+          ? "0 0 0 6px rgba(239, 68, 68, 0.18)"
+          : "0 0 0 6px rgba(16, 185, 129, 0.18)";
+        $("dot").style.background = error ? "#ef4444" : "#10b981";
+        $("btnRow").classList.remove("hidden");
+      }
+    }
+
+    function showDebug(text) {
+      if (!SHOW_DEBUG) return;
+      const box = $("debugBox");
+      box.textContent = text;
+      box.classList.remove("hidden");
+    }
+
+    function safeRedirect(to, fallback) {
+      const target = (to && typeof to === "string") ? to : fallback;
+      window.location.replace(target);
+    }
+
+    // ====== SUPABASE INIT ======
+    const SUPABASE_URL = window.TEP_SUPABASE_URL;
+    const SUPABASE_ANON_KEY = window.TEP_SUPABASE_ANON_KEY;
+
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      setUI({
+        title: "Configuration missing",
+        subtitle: "Your Supabase keys aren’t loading. Check assets/supabase-config.js.",
+        statusLine: "Cannot continue",
+        statusHint: "Fix config, then refresh this page.",
+        done: true,
+        error: true
+      });
+      showDebug("Missing SUPABASE_URL / SUPABASE_ANON_KEY from window.\nExpected window.TEP_SUPABASE_URL and window.TEP_SUPABASE_ANON_KEY.");
+      $("goBtn").onclick = () => safeRedirect(DEFAULT_FAIL_REDIRECT, "sign-in.html");
+      $("signInBtn").onclick = () => safeRedirect("sign-in.html", "sign-in.html");
+      throw new Error("Supabase config missing.");
+    }
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ====== CALLBACK HANDLER ======
+    (async function handleAuthCallback() {
+      // Parse query + hash
+      const url = new URL(window.location.href);
+      const query = Object.fromEntries(url.searchParams.entries());
+
+      const hashParams = {};
+      if (url.hash && url.hash.length > 1) {
+        const h = new URLSearchParams(url.hash.slice(1));
+        for (const [k,v] of h.entries()) hashParams[k] = v;
+      }
+
+      showDebug(
+        "Query params:\n" + JSON.stringify(query, null, 2) +
+        "\n\nHash params:\n" + JSON.stringify(hashParams, null, 2)
+      );
+
+      // 1) If Supabase returns an error in query or hash
+      const errDesc = query.error_description || hashParams.error_description;
+      const err = query.error || hashParams.error;
+
+      if (err || errDesc) {
+        setUI({
+          title: "Link expired or invalid",
+          subtitle: "Your sign-in link didn’t complete. This can happen if the link was already used or timed out.",
+          statusLine: "Authentication failed",
+          statusHint: "Use Sign In to request a fresh link.",
+          done: true,
+          error: true
+        });
+
+        $("goBtn").textContent = "Try again";
+        $("goBtn").onclick = () => safeRedirect(DEFAULT_FAIL_REDIRECT, "sign-in.html");
+        $("signInBtn").onclick = () => safeRedirect("sign-in.html", "sign-in.html");
+        return;
+      }
+
+      try {
+        // 2) Code flow (most common for email confirm / OAuth in Supabase v2)
+        if (query.code) {
+          setUI({
+            statusLine: "Confirming your session…",
+            statusHint: "Almost there."
+          });
+
+          const { data, error } = await supabase.auth.exchangeCodeForSession(query.code);
+
+          if (error) throw error;
+
+          // Success
+          const next = localStorage.getItem(NEXT_KEY);
+          if (next) localStorage.removeItem(NEXT_KEY);
+
+          setUI({
+            title: "You’re confirmed ✅",
+            subtitle: "Your account is ready. Redirecting you now…",
+            statusLine: "Success",
+            statusHint: "If you’re not redirected, use Continue.",
+            done: true,
+            error: false
+          });
+
+          const destination = next || DEFAULT_SUCCESS_REDIRECT;
+
+          $("goBtn").textContent = "Continue";
+          $("goBtn").onclick = () => safeRedirect(destination, DEFAULT_SUCCESS_REDIRECT);
+          $("signInBtn").onclick = () => safeRedirect("sign-in.html", "sign-in.html");
+
+          // Auto redirect (short delay so users see success state)
+          setTimeout(() => safeRedirect(destination, DEFAULT_SUCCESS_REDIRECT), 900);
+          return;
+        }
+
+        // 3) Hash token flow (legacy / some providers)
+        // If access_token is present, Supabase usually auto-detects it, but we can set session explicitly.
+        if (hashParams.access_token && hashParams.refresh_token) {
+          setUI({
+            statusLine: "Finalising your sign-in…",
+            statusHint: "One more step."
+          });
+
+          const { error } = await supabase.auth.setSession({
+            access_token: hashParams.access_token,
+            refresh_token: hashParams.refresh_token
+          });
+
+          if (error) throw error;
+
+          const next = localStorage.getItem(NEXT_KEY);
+          if (next) localStorage.removeItem(NEXT_KEY);
+
+          setUI({
+            title: "Signed in ✅",
+            subtitle: "Redirecting you now…",
+            statusLine: "Success",
+            statusHint: "If you’re not redirected, use Continue.",
+            done: true,
+            error: false
+          });
+
+          const destination = next || DEFAULT_SUCCESS_REDIRECT;
+
+          $("goBtn").textContent = "Continue";
+          $("goBtn").onclick = () => safeRedirect(destination, DEFAULT_SUCCESS_REDIRECT);
+          $("signInBtn").onclick = () => safeRedirect("sign-in.html", "sign-in.html");
+
+          setTimeout(() => safeRedirect(destination, DEFAULT_SUCCESS_REDIRECT), 900);
+          return;
+        }
+
+        // 4) If we get here, there’s no usable auth payload
+        setUI({
+          title: "Nothing to confirm",
+          subtitle: "This page is only used after clicking a secure sign-in or confirmation link.",
+          statusLine: "No auth payload found",
+          statusHint: "Go to Sign In and request a fresh link.",
+          done: true,
+          error: true
+        });
+
+        $("goBtn").textContent = "Go to Sign In";
+        $("goBtn").onclick = () => safeRedirect("sign-in.html", "sign-in.html");
+        $("signInBtn").onclick = () => safeRedirect("sign-in.html", "sign-in.html");
+
+      } catch (e) {
+        console.error(e);
+
+        setUI({
+          title: "We couldn’t complete the sign-in",
+          subtitle: "This link may have expired or already been used. Request a new one and try again.",
+          statusLine: "Authentication error",
+          statusHint: "Go to Sign In to resend the link.",
+          done: true,
+          error: true
+        });
+
+        $("goBtn").textContent = "Try again";
+        $("goBtn").onclick = () => safeRedirect(DEFAULT_FAIL_REDIRECT, "sign-in.html");
+        $("signInBtn").onclick = () => safeRedirect("sign-in.html", "sign-in.html");
+
+        showDebug("Caught error:\n" + (e?.message || String(e)));
+      }
+    })();
+  </script>
+</body>
+</html>
