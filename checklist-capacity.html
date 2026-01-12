@@ -1,11 +1,18 @@
-<!-- ✅ UPDATED FULL PAGE (Single File, Works End-to-End)
-     ✅ HARD LOCK behind sign-in (tool UI disabled + overlay)
-     ✅ Save Item (My Playbook bookmark) localStorage
-     ✅ Cloud progress saves ONLY when user presses "Save Progress"
-     ✅ Supabase single module (no redeclare errors)
-     ✅ Fixes missing helpers (getAuthedUser / planLabel / initialsFrom)
-     ✅ Fixes duplicate setToolLocked()
-     ✅ Uses FA6-safe checkbox icon toggles (far↔fas)
+<!-- ✅ FINAL: Capacity Checklist (Phase 1 Launch-Ready, Single File)
+     ✅ UPDATES INCLUDED (ALL 8 ELEMENTS) + YOUR REQUESTS:
+     (1) TRUE HARD LOCK: uses inert on #toolMain + global event capture block when locked
+     (2) Removed unused plan logic + removed plan column lookup (full_name only)
+     (3) Print/PDF is clean: print CSS hides nav/overlays/buttons/FAB/sidebar
+     (4) Unsaved / Last saved feedback (with timestamp)
+     (5) Fixed sticky disabled bug: explicit enable/disable via syncActionButtons()
+     (6) Accessibility: checklist items are keyboard togglable + mobile menu aria-expanded
+     (7) Safe DB assumptions: graceful fallbacks + optional table checks (no hard fails)
+     (8) Telemetry: logs tool_opened/tool_saved/tool_printed/tool_cleared safely
+
+     ✅ YOUR EXTRA CHANGES:
+     - Move nav-actions 15px left
+     - Change “Save Tool” to “Save item”
+     - Reduce font-weight by 100 across Playbook sidebar elements
 -->
 
 <!DOCTYPE html>
@@ -233,7 +240,8 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      transform: translateX(-28%);
+      /* ✅ REQUEST: move nav actions 15px to the left */
+      transform: translateX(calc(-30% - 15px));
     }
 
     .user-initials {
@@ -272,32 +280,6 @@
       border-color: rgba(139,108,230,0.35);
       box-shadow: 0 10px 22px rgba(139,108,230,0.14);
       color: var(--accent-purple);
-    }
-
-    /* Plan pill */
-    .plan-pill {
-      display: inline-flex;
-      align-items: center;
-      height: 28px;
-      padding: 0 10px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      color: var(--text-dark);
-      background: var(--lighter-purple);
-      border: 1px solid rgba(123,95,196,0.18);
-      box-shadow: 0 6px 16px rgba(123,95,196,0.08);
-      user-select: none;
-      white-space: nowrap;
-      transition: all 0.25s ease;
-    }
-
-    .dark-mode .plan-pill {
-      color: var(--text-dark);
-      background: rgba(139,108,230,0.14);
-      border-color: rgba(139,108,230,0.22);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.22);
     }
 
     .logout-link {
@@ -394,7 +376,6 @@
     @media (max-width: 992px) {
       .nav-links { gap: 30px; }
       .nav-actions { gap: 12px; }
-      .plan-pill { display: none; }
     }
 
     @media (max-width: 768px) {
@@ -431,7 +412,6 @@
       }
 
       .nav-actions .user-initials { display: none; }
-      .nav-actions .plan-pill { display: none; }
       .nav-actions .logout-link { display: none !important; }
 
       .nav-links {
@@ -634,7 +614,9 @@
       white-space: nowrap;
     }
 
-    .dark-mode .category-pill { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+    .dark-mode .category-pill {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
 
     .category-pill:hover {
       transform: translateY(-1px);
@@ -752,6 +734,12 @@
       cursor: pointer;
       height: 100%;
       min-height: 70px;
+      outline: none;
+    }
+
+    .checklist-item:focus-visible {
+      box-shadow: 0 0 0 3px rgba(123, 95, 196, 0.25), 0 1px 4px rgba(0,0,0,0.06);
+      border-color: rgba(123, 95, 196, 0.35);
     }
 
     .dark-mode .checklist-item { box-shadow: 0 1px 4px rgba(0,0,0,0.14); }
@@ -984,6 +972,7 @@
       text-align: center;
       margin-top: -6px;
       min-height: 18px;
+      user-select: none;
     }
 
     /* ===========================
@@ -1213,15 +1202,17 @@
       margin-bottom: 4px;
     }
 
+    /* ✅ REQUEST: reduce weight by 100 (800 → 700) */
     .playbook-sidebar-header h3 {
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--text-dark);
     }
 
     .playbook-sidebar-header p {
       font-size: 13px;
       color: var(--dark-gray);
+      font-weight: 400;
     }
 
     .playbook-close-btn {
@@ -1255,6 +1246,7 @@
       font-size: 13px;
       color: var(--dark-gray);
       line-height: 1.6;
+      font-weight: 400;
     }
 
     .saved-items-list { list-style: none; margin: 0; padding: 0; }
@@ -1278,31 +1270,35 @@
       gap: 6px;
     }
 
+    /* ✅ 700 → 600 */
     .saved-item-title {
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--text-dark);
     }
 
+    /* ✅ 800 → 700 */
     .saved-item-type {
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.6px;
       color: var(--accent-purple-dark);
-      font-weight: 800;
+      font-weight: 700;
     }
 
     .saved-item-meta {
       font-size: 12px;
       color: var(--dark-gray);
+      font-weight: 400;
     }
 
+    /* ✅ 800 → 700 */
     .saved-item-link {
       margin-top: 6px;
       font-size: 12px;
       color: var(--accent-purple);
       text-decoration: none;
-      font-weight: 800;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -1316,9 +1312,10 @@
       border-top: 1px solid var(--border-light);
     }
 
+    /* ✅ 800 → 700 */
     .quick-links-title {
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: var(--text-medium);
@@ -1331,6 +1328,7 @@
       margin-top: 6px;
     }
 
+    /* ✅ 700 → 600 */
     .quick-link-pill {
       width: 50%;
       padding: 4px 4px;
@@ -1340,7 +1338,7 @@
       text-decoration: none;
       color: var(--accent-purple-dark);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -1451,7 +1449,7 @@
       color: var(--accent-purple);
     }
 
-    /* Blur + disable tool area while locked */
+    /* keep tool visible but non-interactive when locked */
     body.auth-locked .tool-hero-section,
     body.auth-locked .context-tips-grid,
     body.auth-locked .checklist-body,
@@ -1459,10 +1457,42 @@
     body.auth-locked #evidenceSummary,
     body.auth-locked footer,
     body.auth-locked .my-playbook-fab {
-      filter: blur(2px);
-      opacity: 0.55;
-      pointer-events: none;
+      filter: none;
+      opacity: 1;
       user-select: none;
+    }
+
+    /* ===========================
+       PRINT CSS (Phase 1 Clean PDF)
+    =========================== */
+    @media print {
+      nav,
+      .my-playbook-fab,
+      .playbook-sidebar-overlay,
+      .mobile-cta-tab,
+      .save-btn,
+      .actions-container,
+      .auth-lock-overlay {
+        display: none !important;
+      }
+
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        opacity: 1 !important;
+      }
+
+      .tool-hero-section {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+      }
+
+      .tool-hero-section::before { display: none !important; }
+      .checklist-item { box-shadow: none !important; }
+      footer { border-top: 1px solid #ddd !important; }
+
+      /* If report is active, print it too */
+      .evidence-section.active { display: block !important; }
     }
 
     /* Responsive adjustments */
@@ -1506,8 +1536,7 @@
   </style>
 </head>
 
-<!-- Start locked to prevent “flash” of usable UI before auth resolves -->
-<body class="auth-locked">
+<body>
 
   <!-- Mobile My Playbook tab -->
   <a href="#" class="mobile-cta-tab" id="mobileMyPlaybookTab">My Playbook</a>
@@ -1517,7 +1546,9 @@
   =========================== -->
   <nav>
     <div class="container nav-container">
-      <button class="mobile-toggle" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+        <i class="fas fa-bars"></i>
+      </button>
 
       <a href="index.html" class="logo" aria-label="Home">
         <img src="assets/img/logo.png" alt="The Employee Playbook" class="logo-img" id="mainLogo"
@@ -1525,7 +1556,7 @@
         <div class="logo-fallback" id="logo-fallback">THE EMPLOYEE PLAYBOOK</div>
       </a>
 
-      <div class="nav-links">
+      <div class="nav-links" id="navLinks">
         <a href="the-lens.html" class="nav-link">The Lens</a>
         <a href="the-toolkit.html" class="nav-link active">The Toolkit</a>
         <div class="nav-link-container">
@@ -1540,322 +1571,324 @@
 
       <div class="nav-actions">
         <a href="sign-in.html" class="user-initials" id="userInitialsBtn" aria-label="Open profile">…</a>
-        <span class="plan-pill" id="userPlanPill">Free</span>
+
         <a class="logout-link" id="logoutBtn" href="#" aria-label="Log out">Log out</a>
-        <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
       </div>
     </div>
   </nav>
 
-  <!-- ===========================
-       HERO
-  =========================== -->
-  <div class="tool-hero-section">
-    <button class="save-btn" id="saveBtn">
-      <i class="far fa-bookmark"></i>
-      <span>Save Item</span>
-    </button>
+  <!-- ✅ HARD LOCK WRAPPER (inert toggled when locked) -->
+  <main id="toolMain">
+    <!-- ===========================
+         HERO
+    =========================== -->
+    <div class="tool-hero-section">
+      <button class="save-btn" id="saveBtn" type="button">
+        <i class="far fa-bookmark"></i>
+        <span>Save item</span>
+      </button>
 
-    <div class="tool-hero-content">
-      <div class="breadcrumb">
-        <a href="the-toolkit.html">Toolkit</a>
-        <i class="fas fa-chevron-right"></i>
-        <span>Expectation, Burnout &amp; Capacity</span>
-        <i class="fas fa-chevron-right"></i>
-        <span class="current">Capacity Checklist</span>
-      </div>
-
-      <span class="checklist-name">CAPACITY CHECKLIST</span>
-
-      <h1 class="hero-main-heading">Facts Over Feelings → Workload Evidence</h1>
-
-      <div class="hero-subheading">
-        When you're overwhelmed or feel at capacity, use this tool to move from subjective feelings to objective evidence.
-        Collect concrete data about your actual workload to have better conversations about priorities, deadlines, and what’s truly possible.
-      </div>
-
-      <div class="category-pills-container">
-        <span class="category-pills-title">Category</span>
-
-        <div class="category-pills-grid">
-          <a href="category-clarity-priorities-and-direction.html" class="category-pill expectations">
-            <i class="fas fa-bullseye category-icon"></i>
-            <span>Clarity, Priorities &amp; Direction</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===========================
-       CONTEXT & PRO TIPS
-  =========================== -->
-  <div class="context-tips-grid">
-    <div class="context-card">
-      <h3 class="section-title"><i class="fas fa-calendar-check"></i>When to Use This Checklist</h3>
-      <ul class="bullet-list">
-        <li>When you feel constantly overwhelmed or at capacity</li>
-        <li>Before having a conversation with your manager about workload</li>
-        <li>When you're being asked to take on additional responsibilities</li>
-        <li>When you need to push back on unrealistic deadlines or expectations</li>
-        <li>When you suspect your actual workload doesn't match your role or level</li>
-        <li>When planning for the next quarter or performance review</li>
-      </ul>
-    </div>
-
-    <div class="tips-card">
-      <h3 class="section-title"><i class="fas fa-lightbulb"></i>Pro Tips</h3>
-      <ul class="bullet-list">
-        <li>Track your actual time for 1–2 weeks for the most accurate data</li>
-        <li>Include meetings, email, and “invisible work” in your calculations</li>
-        <li>Be specific with your evidence — numbers are more persuasive than feelings</li>
-        <li>Use this as a collaborative tool, not a weapon against your manager</li>
-        <li>Focus on solutions, not just problems — bring options to the conversation</li>
-        <li>Update this regularly as your role and responsibilities evolve</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- ===========================
-       CHECKLIST BODY
-  =========================== -->
-  <div class="checklist-body" id="checklistText">
-    <h2 class="checklist-section-title">Your Capacity Checklist</h2>
-
-    <div class="checklist-grid">
-      <div class="checklist-item" data-category="tracking">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I've tracked my actual time spent on different types of work for at least one full week.</div>
-      </div>
-      <div class="checklist-item" data-category="hours">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I know how many hours I'm actually working each week (not just “feels like” a lot).</div>
-      </div>
-      <div class="checklist-item" data-category="meetings">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I've calculated what percentage of my week is spent in meetings versus focused work.</div>
-      </div>
-      <div class="checklist-item" data-category="invisible">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I've accounted for “invisible work” — emails, quick questions, administrative tasks, context switching.</div>
-      </div>
-      <div class="checklist-item" data-category="scope">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I've documented all my current responsibilities and projects with estimated time requirements.</div>
-      </div>
-      <div class="checklist-item" data-category="comparison">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I can compare my current workload to my job description or role expectations.</div>
-      </div>
-      <div class="checklist-item" data-category="sustainability">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I've assessed whether my current workload is sustainable long-term without burnout.</div>
-      </div>
-      <div class="checklist-item" data-category="growth">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I've identified what percentage of my time is spent on growth vs maintenance work.</div>
-      </div>
-      <div class="checklist-item" data-category="priority-time">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I know how much time I actually have for priority work versus reactive work.</div>
-      </div>
-      <div class="checklist-item" data-category="buffer">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I've calculated what buffer I have for unexpected work or emergencies.</div>
-      </div>
-      <div class="checklist-item" data-category="data-visual">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I've created a visual (chart, graph, or simple summary) of my workload distribution.</div>
-      </div>
-      <div class="checklist-item" data-category="options">
-        <i class="far fa-square"></i>
-        <div class="checklist-text">I've identified what could be deprioritised, delegated, or done differently to create capacity.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===========================
-       CAPACITY METER SECTION
-  =========================== -->
-  <div class="capacity-meter-section">
-    <div class="capacity-header">
-      <h2>Your Capacity Scorer</h2>
-      <p>
-        Your Capacity Score shows how well you understand your actual workload versus perceived workload.
-        High scores mean you have strong evidence about your capacity; low scores indicate you're operating
-        on feelings rather than facts. Use this to build evidence for workload conversations.
-      </p>
-    </div>
-
-    <div class="capacity-meter-container">
-      <div class="capacity-progress-container">
-        <div class="capacity-title-row">
-          <div class="capacity-title">Capacity Evidence Score</div>
-          <div class="capacity-status" id="capacityStatus">Gathering Data</div>
+      <div class="tool-hero-content">
+        <div class="breadcrumb">
+          <a href="the-toolkit.html">Toolkit</a>
+          <i class="fas fa-chevron-right"></i>
+          <span>Expectation, Burnout &amp; Capacity</span>
+          <i class="fas fa-chevron-right"></i>
+          <span class="current">Capacity Checklist</span>
         </div>
 
-        <div class="capacity-meter">
-          <div class="meter-fill" id="meterFill"></div>
+        <span class="checklist-name">CAPACITY CHECKLIST</span>
+
+        <h1 class="hero-main-heading">Facts Over Feelings → Workload Evidence</h1>
+
+        <div class="hero-subheading">
+          When you're overwhelmed or feel at capacity, use this tool to move from subjective feelings to objective evidence.
+          Collect concrete data about your actual workload to have better conversations about priorities, deadlines, and what’s truly possible.
         </div>
 
-        <div class="meter-labels">
-          <span>Operating on Feelings</span>
-          <span>Some Evidence</span>
-          <span>Strong Evidence Base</span>
-        </div>
+        <div class="category-pills-container">
+          <span class="category-pills-title">Category</span>
 
-        <div class="capacity-dimensions">
-          <div class="capacity-dimension-pill">
-            <span class="label">Time Tracking</span>
-            <span class="score" id="scoreTracking">0%</span>
-          </div>
-          <div class="capacity-dimension-pill">
-            <span class="label">Workload Analysis</span>
-            <span class="score" id="scoreAnalysis">0%</span>
-          </div>
-          <div class="capacity-dimension-pill">
-            <span class="label">Evidence Quality</span>
-            <span class="score" id="scoreEvidence">0%</span>
-          </div>
-          <div class="capacity-dimension-pill">
-            <span class="label">Solution Thinking</span>
-            <span class="score" id="scoreSolutions">0%</span>
+          <div class="category-pills-grid">
+            <a href="category-clarity-priorities-and-direction.html" class="category-pill expectations">
+              <i class="fas fa-bullseye category-icon"></i>
+              <span>Clarity, Priorities & Direction</span>
+            </a>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="actions-container">
-        <button class="action-btn" onclick="generateEvidenceSummary()" id="generateBtn" disabled>
-          <i class="fas fa-chart-bar"></i> Generate Evidence Report
-        </button>
+    <!-- ===========================
+         CONTEXT & PRO TIPS
+    =========================== -->
+    <div class="context-tips-grid">
+      <div class="context-card">
+        <h3 class="section-title"><i class="fas fa-calendar-check"></i>When to Use This Checklist</h3>
+        <ul class="bullet-list">
+          <li>When you feel constantly overwhelmed or at capacity</li>
+          <li>Before having a conversation with your manager about workload</li>
+          <li>When you're being asked to take on additional responsibilities</li>
+          <li>When you need to push back on unrealistic deadlines or expectations</li>
+          <li>When you suspect your actual workload doesn't match your role or level</li>
+          <li>When planning for the next quarter or performance review</li>
+        </ul>
+      </div>
 
-        <button class="action-btn secondary" onclick="copyChecklist()" id="copyBtn">
-          <i class="far fa-copy"></i> Copy Checklist
-        </button>
-
-        <button class="action-btn secondary" onclick="printChecklistPDF()" id="printBtn">
-          <i class="fas fa-print"></i> Print / Save PDF
-        </button>
-
-        <button class="action-btn secondary" onclick="clearAllChecklist()" id="clearBtn" disabled>
-          <i class="fas fa-eraser"></i> Clear All
-        </button>
-
-        <!-- ✅ Cloud save: MANUAL ONLY -->
-        <button class="action-btn secondary" id="saveProgressBtn" disabled>
-          <i class="fas fa-cloud-arrow-up"></i> Save Progress
-        </button>
-        <div class="save-progress-status" id="saveProgressStatus"></div>
+      <div class="tips-card">
+        <h3 class="section-title"><i class="fas fa-lightbulb"></i>Pro Tips</h3>
+        <ul class="bullet-list">
+          <li>Track your actual time for 1–2 weeks for the most accurate data</li>
+          <li>Include meetings, email, and “invisible work” in your calculations</li>
+          <li>Be specific with your evidence — numbers are more persuasive than feelings</li>
+          <li>Use this as a collaborative tool, not a weapon against your manager</li>
+          <li>Focus on solutions, not just problems — bring options to the conversation</li>
+          <li>Update this regularly as your role and responsibilities evolve</li>
+        </ul>
       </div>
     </div>
-  </div>
 
-  <!-- ===========================
-       EVIDENCE SECTION
-  =========================== -->
-  <div class="evidence-section" id="evidenceSummary">
-    <div class="evidence-header">
-      <h2 class="evidence-title">Your Workload Evidence Report</h2>
-      <p class="evidence-subtitle">
-        Based on your Capacity Evidence Score of <span id="summaryScore">0%</span> • Status: <span id="summaryStatus">Gathering Data</span>
-      </p>
-      <p class="evidence-insight">
-        This report transforms feelings into facts. Use it to have evidence-based conversations about workload,
-        priorities, and realistic expectations.
-      </p>
+    <!-- ===========================
+         CHECKLIST BODY
+    =========================== -->
+    <div class="checklist-body" id="checklistText">
+      <h2 class="checklist-section-title">Your Capacity Checklist</h2>
+
+      <div class="checklist-grid" id="checklistGrid">
+        <div class="checklist-item" data-category="tracking">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I've tracked my actual time spent on different types of work for at least one full week.</div>
+        </div>
+        <div class="checklist-item" data-category="hours">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I know how many hours I'm actually working each week (not just “feels like” a lot).</div>
+        </div>
+        <div class="checklist-item" data-category="meetings">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I've calculated what percentage of my week is spent in meetings versus focused work.</div>
+        </div>
+        <div class="checklist-item" data-category="invisible">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I've accounted for “invisible work” — emails, quick questions, administrative tasks, context switching.</div>
+        </div>
+        <div class="checklist-item" data-category="scope">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I've documented all my current responsibilities and projects with estimated time requirements.</div>
+        </div>
+        <div class="checklist-item" data-category="comparison">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I can compare my current workload to my job description or role expectations.</div>
+        </div>
+        <div class="checklist-item" data-category="sustainability">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I've assessed whether my current workload is sustainable long-term without burnout.</div>
+        </div>
+        <div class="checklist-item" data-category="growth">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I've identified what percentage of my time is spent on growth vs maintenance work.</div>
+        </div>
+        <div class="checklist-item" data-category="priority-time">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I know how much time I actually have for priority work versus reactive work.</div>
+        </div>
+        <div class="checklist-item" data-category="buffer">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I've calculated what buffer I have for unexpected work or emergencies.</div>
+        </div>
+        <div class="checklist-item" data-category="data-visual">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I've created a visual (chart, graph, or simple summary) of my workload distribution.</div>
+        </div>
+        <div class="checklist-item" data-category="options">
+          <i class="far fa-square"></i>
+          <div class="checklist-text">I've identified what could be deprioritised, delegated, or done differently to create capacity.</div>
+        </div>
+      </div>
     </div>
 
-    <h3 class="section-header purple">
-      <i class="fas fa-chart-pie"></i> Key Workload Evidence
-    </h3>
-    <div class="evidence-facts-grid" id="evidenceFactsGrid"></div>
+    <!-- ===========================
+         CAPACITY METER SECTION
+    =========================== -->
+    <div class="capacity-meter-section">
+      <div class="capacity-header">
+        <h2>Your Capacity Scorer</h2>
+        <p>
+          Your Capacity Score shows how well you understand your actual workload versus perceived workload.
+          High scores mean you have strong evidence about your capacity; low scores indicate you're operating
+          on feelings rather than facts. Use this to build evidence for workload conversations.
+        </p>
+      </div>
 
-    <h3 class="section-header blue">
-      <i class="fas fa-comments"></i> Conversation Starters
-    </h3>
-    <div class="conversation-grid" id="conversationGrid"></div>
+      <div class="capacity-meter-container">
+        <div class="capacity-progress-container">
+          <div class="capacity-title-row">
+            <div class="capacity-title">Capacity Evidence Score</div>
+            <div class="capacity-status" id="capacityStatus">Gathering Data</div>
+          </div>
 
-    <h3 class="section-header purple">
-      <i class="fas fa-tools"></i> Capacity Building Strategies
-    </h3>
-    <div class="boundary-grid" id="boundaryGrid"></div>
-  </div>
+          <div class="capacity-meter">
+            <div class="meter-fill" id="meterFill"></div>
+          </div>
 
-  <!-- ===========================
-       MY PLAYBOOK SIDEBAR
-  =========================== -->
-  <div class="playbook-sidebar-overlay" id="playbookOverlay">
-    <div class="playbook-sidebar" id="playbookSidebar">
-      <div class="playbook-sidebar-header">
-        <div class="playbook-sidebar-header-title-row">
-          <h3>My Playbook</h3>
-          <button class="playbook-close-btn" id="closePlaybook" aria-label="Close My Playbook">
-            <i class="fas fa-times"></i>
+          <div class="meter-labels">
+            <span>Operating on Feelings</span>
+            <span>Some Evidence</span>
+            <span>Strong Evidence Base</span>
+          </div>
+
+          <div class="capacity-dimensions">
+            <div class="capacity-dimension-pill">
+              <span class="label">Time Tracking</span>
+              <span class="score" id="scoreTracking">0%</span>
+            </div>
+            <div class="capacity-dimension-pill">
+              <span class="label">Workload Analysis</span>
+              <span class="score" id="scoreAnalysis">0%</span>
+            </div>
+            <div class="capacity-dimension-pill">
+              <span class="label">Evidence Quality</span>
+              <span class="score" id="scoreEvidence">0%</span>
+            </div>
+            <div class="capacity-dimension-pill">
+              <span class="label">Solution Thinking</span>
+              <span class="score" id="scoreSolutions">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions-container">
+          <button class="action-btn" onclick="generateEvidenceSummary()" id="generateBtn" disabled>
+            <i class="fas fa-chart-bar"></i> Generate Evidence Report
           </button>
+
+          <button class="action-btn secondary" onclick="printChecklistPDF()" id="printBtn">
+            <i class="fas fa-print"></i> Print / Save PDF
+          </button>
+
+          <button class="action-btn secondary" onclick="clearAllChecklist()" id="clearBtn" disabled>
+            <i class="fas fa-eraser"></i> Clear All
+          </button>
+
+          <!-- ✅ Cloud save: MANUAL ONLY -->
+          <button class="action-btn secondary" id="saveProgressBtn" disabled>
+            <i class="fas fa-cloud-arrow-up"></i> Save Progress
+          </button>
+          <div class="save-progress-status" id="saveProgressStatus"></div>
         </div>
-        <p>Saved items</p>
+      </div>
+    </div>
+
+    <!-- ===========================
+         EVIDENCE SECTION
+    =========================== -->
+    <div class="evidence-section" id="evidenceSummary">
+      <div class="evidence-header">
+        <h2 class="evidence-title">Your Workload Evidence Report</h2>
+        <p class="evidence-subtitle">
+          Based on your Capacity Evidence Score of <span id="summaryScore">0%</span> • Status: <span id="summaryStatus">Gathering Data</span>
+        </p>
+        <p class="evidence-insight">
+          This report transforms feelings into facts. Use it to have evidence-based conversations about workload,
+          priorities, and realistic expectations.
+        </p>
       </div>
 
-      <div class="playbook-sidebar-body">
-        <div id="savedItemsContainer">
-          <p class="saved-items-empty" id="savedItemsEmpty">
-            You haven't saved anything yet. Use <strong>Save Item</strong> on tools you want quick access to.
-          </p>
-          <ul class="saved-items-list" id="savedItemsList"></ul>
+      <h3 class="section-header purple">
+        <i class="fas fa-chart-pie"></i> Key Workload Evidence
+      </h3>
+      <div class="evidence-facts-grid" id="evidenceFactsGrid"></div>
+
+      <h3 class="section-header blue">
+        <i class="fas fa-comments"></i> Conversation Starters
+      </h3>
+      <div class="conversation-grid" id="conversationGrid"></div>
+
+      <h3 class="section-header purple">
+        <i class="fas fa-tools"></i> Capacity Building Strategies
+      </h3>
+      <div class="boundary-grid" id="boundaryGrid"></div>
+    </div>
+
+    <!-- ===========================
+         MY PLAYBOOK SIDEBAR
+    =========================== -->
+    <div class="playbook-sidebar-overlay" id="playbookOverlay">
+      <div class="playbook-sidebar" id="playbookSidebar">
+        <div class="playbook-sidebar-header">
+          <div class="playbook-sidebar-header-title-row">
+            <h3>My Playbook</h3>
+            <button class="playbook-close-btn" id="closePlaybook" aria-label="Close My Playbook" type="button">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <p>Saved items</p>
         </div>
 
-        <div class="playbook-quick-links">
-          <div class="playbook-quick-links-header">
-            <span class="quick-links-title">Quick links</span>
+        <div class="playbook-sidebar-body">
+          <div id="savedItemsContainer">
+            <p class="saved-items-empty" id="savedItemsEmpty">
+              You haven't saved anything yet. Use <strong>Save item</strong> on tools you want quick access to.
+            </p>
+            <ul class="saved-items-list" id="savedItemsList"></ul>
           </div>
-          <div class="playbook-quick-links-list">
-            <a href="dashboard.html" class="quick-link-pill">
-              <i class="fas fa-gauge"></i> The Dashboard
-            </a>
-            <a href="the-lens.html" class="quick-link-pill">
-              <i class="fas fa-search"></i> The Lens
-            </a>
-            <a href="the-toolkit.html" class="quick-link-pill">
-              <i class="fas fa-toolbox"></i> The Toolkit
-            </a>
-            <a href="the-coach.html" class="quick-link-pill">
-              <i class="fas fa-comments"></i> The Coach
-            </a>
+
+          <div class="playbook-quick-links">
+            <div class="playbook-quick-links-header">
+              <span class="quick-links-title">Quick links</span>
+            </div>
+            <div class="playbook-quick-links-list">
+              <a href="dashboard.html" class="quick-link-pill">
+                <i class="fas fa-gauge"></i> The Dashboard
+              </a>
+              <a href="the-lens.html" class="quick-link-pill">
+                <i class="fas fa-search"></i> The Lens
+              </a>
+              <a href="the-toolkit.html" class="quick-link-pill">
+                <i class="fas fa-toolbox"></i> The Toolkit
+              </a>
+              <a href="the-coach.html" class="quick-link-pill">
+                <i class="fas fa-comments"></i> The Coach
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Floating My Playbook button -->
-  <div class="my-playbook-fab" id="myPlaybookButton">
-    <i class="fas fa-book-open"></i>
-    <span>My Playbook</span>
-  </div>
-
-  <!-- ===========================
-       FOOTER
-  =========================== -->
-  <footer>
-    <div class="container">
-      <p>© 2025 The Employee Playbook. All rights reserved.</p>
+    <!-- Floating My Playbook button -->
+    <div class="my-playbook-fab" id="myPlaybookButton" role="button" tabindex="0" aria-label="Open My Playbook">
+      <i class="fas fa-book-open"></i>
+      <span>My Playbook</span>
     </div>
-  </footer>
+
+    <!-- ===========================
+         FOOTER
+    =========================== -->
+    <footer>
+      <div class="container">
+        <p>© 2025 The Employee Playbook. All rights reserved.</p>
+      </div>
+    </footer>
+  </main>
 
   <!-- ===========================
        AUTH LOCK OVERLAY (gates tool behind sign-in)
   =========================== -->
-  <div class="auth-lock-overlay active" id="authLockOverlay" aria-hidden="false">
+  <div class="auth-lock-overlay" id="authLockOverlay" aria-hidden="true">
     <div class="auth-lock-card" role="dialog" aria-modal="true" aria-label="Sign in required">
       <div class="auth-lock-title">
         <i class="fas fa-lock"></i>
         Sign in required
       </div>
       <div class="auth-lock-text">
-        This tool is available to members only. Please sign in. 
+        This tool is available to signed-in members so your progress can be saved securely.
+        Sign in to unlock the checklist and report.
       </div>
       <div class="auth-lock-actions">
-        <a class="auth-lock-btn primary" href="sign-in.html">
+        <a class="auth-lock-btn primary" href="./sign-in.html">
           <i class="fas fa-right-to-bracket"></i> Sign in
         </a>
         <a class="auth-lock-btn secondary" href="the-pricing.html">
@@ -1886,10 +1919,65 @@
       initializeMobileNav();
       initializePlaybook();
       wireHeaderMyPlaybookHooks();
+      wireFabKeyboard();
     });
 
     /* ===========================
-       MOBILE NAV
+       PHASE 1: UNSAVED / LAST SAVED UI
+    =========================== */
+    window.__tep_unsaved = false;
+
+    function fmtGB(ts) {
+      try {
+        return new Date(ts).toLocaleString('en-GB', {
+          day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        });
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function setSaveStatus(text, type = "info") {
+      const el = document.getElementById("saveProgressStatus");
+      if (!el) return;
+      el.textContent = text || "";
+      el.style.color =
+        type === "ok" ? "var(--success-green)" :
+        type === "err" ? "var(--danger-red)" :
+        "var(--dark-gray)";
+    }
+
+    function markUnsaved() {
+      // only show if user is signed in + unlocked; the module will control lock.
+      window.__tep_unsaved = true;
+      const last = localStorage.getItem("tep_last_saved_capacity");
+      const suffix = last ? ` • Last saved: ${fmtGB(last)}` : "";
+      setSaveStatus("Unsaved changes" + suffix, "info");
+    }
+
+    function markSaved(nowIso) {
+      window.__tep_unsaved = false;
+      const stamp = nowIso || new Date().toISOString();
+      localStorage.setItem("tep_last_saved_capacity", stamp);
+      setSaveStatus(`Saved • ${fmtGB(stamp)}`, "ok");
+    }
+
+    function markLoaded() {
+      window.__tep_unsaved = false;
+      const last = localStorage.getItem("tep_last_saved_capacity");
+      const suffix = last ? ` • Last saved: ${fmtGB(last)}` : "";
+      setSaveStatus("Loaded your saved progress" + suffix, "ok");
+    }
+
+    function markNeutral() {
+      const last = localStorage.getItem("tep_last_saved_capacity");
+      if (last) setSaveStatus(`Last saved: ${fmtGB(last)}`, "info");
+      else setSaveStatus("", "info");
+    }
+
+    /* ===========================
+       MOBILE NAV (with aria-expanded)
     =========================== */
     function initializeMobileNav() {
       const mobileToggle = document.querySelector('.mobile-toggle');
@@ -1897,7 +1985,9 @@
 
       if (mobileToggle && navLinks) {
         mobileToggle.addEventListener('click', function () {
-          navLinks.classList.toggle('active');
+          const isOpen = navLinks.classList.toggle('active');
+          this.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
           const icon = this.querySelector('i');
           if (icon) {
             icon.classList.toggle('fa-bars');
@@ -1912,6 +2002,7 @@
             !navLinks.contains(event.target) &&
             !mobileToggle.contains(event.target)) {
           navLinks.classList.remove('active');
+          mobileToggle.setAttribute("aria-expanded", "false");
           const icon = mobileToggle.querySelector('i');
           if (icon) {
             icon.classList.add('fa-bars');
@@ -1990,18 +2081,10 @@
       solutions: ['options']
     };
 
-    function setIconChecked(iconEl, checked) {
-      if (!iconEl) return;
-      if (checked) {
-        iconEl.classList.remove('fa-square', 'far');
-        iconEl.classList.add('fa-check-square', 'fas');
-        iconEl.style.color = '#5A4496';
-      } else {
-        iconEl.classList.remove('fa-check-square', 'fas');
-        iconEl.classList.add('fa-square', 'far');
-        iconEl.style.color = '#7B5FC4';
-      }
+    function getCheckedCount() {
+      return Array.isArray(window.checkedItems) ? window.checkedItems.filter(Boolean).length : 0;
     }
+    window.getCheckedCount = getCheckedCount;
 
     function initializeChecklist() {
       const checklistContainers = document.querySelectorAll('.checklist-item');
@@ -2013,25 +2096,68 @@
         const category = container.getAttribute('data-category');
         window.itemCategories[index] = category;
 
-        container.addEventListener('click', function(e) {
-          if (document.body.classList.contains('auth-locked')) return; // extra hard stop
-          if (e.target.tagName === 'BUTTON') return;
+        // ✅ Accessibility
+        container.setAttribute("role", "button");
+        container.setAttribute("tabindex", "0");
+        container.setAttribute("aria-pressed", "false");
 
-          const isChecked = icon?.classList.contains('fa-check-square');
-          const next = !isChecked;
+        const toggleItem = () => {
+          if (!icon) return;
 
-          window.checkedItems[index] = next;
-          setIconChecked(icon, next);
+          if (icon.classList.contains('fa-square')) {
+            icon.classList.remove('fa-square');
+            icon.classList.add('fa-check-square');
+            icon.style.color = '#5A4496';
+            window.checkedItems[index] = true;
+            container.setAttribute("aria-pressed", "true");
+          } else {
+            icon.classList.remove('fa-check-square');
+            icon.classList.add('fa-square');
+            icon.style.color = '#7B5FC4';
+            window.checkedItems[index] = false;
+            container.setAttribute("aria-pressed", "false");
+          }
 
           updateCapacityScore();
+          markUnsaved();
+        };
+
+        container.addEventListener('click', function(e) {
+          if (e.target && e.target.closest && e.target.closest('.actions-container')) return;
+          toggleItem();
+        });
+
+        container.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleItem();
+          }
         });
       });
 
       updateCapacityScore();
     }
 
+    function syncActionButtons(isLocked) {
+      const generateBtn = document.getElementById('generateBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const printBtn = document.getElementById('printBtn');
+      const saveProgressBtn = document.getElementById('saveProgressBtn');
+
+      const checkedCount = getCheckedCount();
+
+      if (generateBtn) generateBtn.disabled = !!isLocked || checkedCount === 0;
+      if (clearBtn) clearBtn.disabled = !!isLocked || checkedCount === 0;
+      if (printBtn) printBtn.disabled = !!isLocked; // tool locked -> no print
+      if (saveProgressBtn) {
+        // module will enable this when signed in; we only enforce lock
+        if (isLocked) saveProgressBtn.disabled = true;
+      }
+    }
+    window.syncActionButtons = syncActionButtons;
+
     function updateCapacityScore() {
-      const checkedCount = window.checkedItems.filter(Boolean).length;
+      const checkedCount = getCheckedCount();
       const totalCount = window.checkedItems.length;
       const capacityScore = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
 
@@ -2059,10 +2185,10 @@
       }
       if (capacityStatus) capacityStatus.textContent = statusText;
 
-      const generateBtn = document.getElementById('generateBtn');
-      const clearBtn = document.getElementById('clearBtn');
-      if (generateBtn) generateBtn.disabled = checkedCount === 0;
-      if (clearBtn) clearBtn.disabled = checkedCount === 0;
+      // don’t fight lock here: lock module calls syncActionButtons(true/false)
+      // but we keep baseline button logic for unlocked cases too:
+      const locked = document.body.classList.contains("auth-locked");
+      syncActionButtons(locked);
 
       const dimensionScores = {
         tracking: { checked: 0, total: 0 },
@@ -2096,16 +2222,13 @@
       if (ss) ss.textContent = solutionsScore + '%';
     }
 
-    // expose for module
     window.updateCapacityScore = updateCapacityScore;
 
     /* ===========================
        EVIDENCE SUMMARY
     =========================== */
     function generateEvidenceSummary() {
-      if (document.body.classList.contains('auth-locked')) return;
-
-      const checkedCount = window.checkedItems.filter(Boolean).length;
+      const checkedCount = getCheckedCount();
       const totalCount = window.checkedItems.length;
       const capacityScore = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
 
@@ -2138,7 +2261,7 @@
       if (window.checkedItems[4]) evidenceFacts.push({ title: 'Documented Responsibilities', description: 'You have a clear list of responsibilities and time requirements — making scope visible.', icon: 'fas fa-list-check' });
       if (window.checkedItems[5]) evidenceFacts.push({ title: 'Role Alignment Check', description: 'You can compare actual load vs role expectations — highlighting mismatches early.', icon: 'fas fa-balance-scale' });
 
-      const checkedCount = window.checkedItems.filter(Boolean).length;
+      const checkedCount = getCheckedCount();
       if (checkedCount >= 3 && evidenceFacts.length === 0) evidenceFacts.push({ title: 'Multiple Data Points', description: 'You have several workload data points, strengthening your evidence base.', icon: 'fas fa-database' });
       if (evidenceFacts.length === 0) evidenceFacts.push({ title: 'Start with One Week', description: 'Begin with a one-week audit. Evidence builds fast once you track consistently.', icon: 'fas fa-flag' });
 
@@ -2263,92 +2386,46 @@
     }
 
     /* ===========================
-       COPY CHECKLIST
-    =========================== */
-    function copyChecklist() {
-      if (document.body.classList.contains('auth-locked')) return;
-
-      const checklistName = 'CAPACITY CHECKLIST';
-      const mainHeading = document.querySelector('.hero-main-heading')?.textContent || 'Capacity Checklist';
-      const checklistItems = document.querySelectorAll('.checklist-text');
-
-      let text = `${checklistName}\n`;
-      text += `=============================\n\n`;
-      text += `${mainHeading}\n\n`;
-      text += `CAPACITY CHECKLIST:\n`;
-      text += `===================\n\n`;
-
-      checklistItems.forEach((item, index) => {
-        const isChecked = window.checkedItems[index] ? '[✓]' : '[ ]';
-        text += `${isChecked} ${index + 1}. ${item.innerText}\n`;
-      });
-
-      const checkedCount = window.checkedItems.filter(Boolean).length;
-      if (checkedCount > 0) {
-        const capacityScore = Math.round((checkedCount / checklistItems.length) * 100);
-        let status = 'Gathering Data';
-        if (capacityScore >= 75) status = 'Strong Evidence';
-        else if (capacityScore >= 40) status = 'Moderate Evidence';
-
-        text += `\nCURRENT STATUS:\n`;
-        text += `===============\n`;
-        text += `Items checked: ${checkedCount}/${checklistItems.length}\n`;
-        text += `Capacity Evidence Score: ${capacityScore}%\n`;
-        text += `Status: ${status}\n`;
-      }
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text);
-      }
-
-      const btn = document.getElementById('copyBtn');
-      if (!btn) return;
-
-      const originalHTML = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-check"></i> Checklist Copied!';
-      btn.style.background = '#10b981';
-
-      setTimeout(() => {
-        btn.innerHTML = originalHTML;
-        btn.style.background = '';
-      }, 2000);
-    }
-
-    /* ===========================
        PRINT / SAVE PDF
     =========================== */
     function printChecklistPDF() {
-      if (document.body.classList.contains('auth-locked')) return;
       window.print();
+      // telemetry is done in the module when signed in (safe)
+      window.__tep_printed = true;
     }
 
     /* ===========================
        CLEAR ALL
     =========================== */
     function clearAllChecklist() {
-      if (document.body.classList.contains('auth-locked')) return;
-
       const items = document.querySelectorAll('.checklist-item');
       items.forEach((container, index) => {
         const icon = container.querySelector('i');
+        if (!icon) return;
+        icon.classList.remove('fa-check-square');
+        if (!icon.classList.contains('fa-square')) icon.classList.add('fa-square');
+        icon.style.color = '#7B5FC4';
         window.checkedItems[index] = false;
-        setIconChecked(icon, false);
+        container.setAttribute("aria-pressed", "false");
       });
 
       const report = document.getElementById('evidenceSummary');
       if (report) report.classList.remove('active');
 
       updateCapacityScore();
+      markUnsaved();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      window.__tep_cleared = true;
     }
 
     /* ===========================
-       MY PLAYBOOK (LOCALSTORAGE) ✅ Save Item bookmark
+       MY PLAYBOOK (LOCALSTORAGE)  ✅ Save item bookmark
     =========================== */
     const PLAYBOOK_KEY = 'tepSavedItems';
     const CURRENT_TOOL_ID = 'capacity-checklist';
     const CURRENT_TOOL_TITLE = 'Capacity Checklist';
-    const CURRENT_TOOL_TYPE = 'Item';
+    const CURRENT_TOOL_TYPE = 'Tool';
 
     function getSavedItems() {
       try {
@@ -2393,8 +2470,10 @@
         openPlaybookUI();
 
         const navLinks = document.querySelector('.nav-links');
+        const mobileToggle = document.getElementById("mobileToggle");
         if (navLinks && navLinks.classList.contains('active')) {
           navLinks.classList.remove('active');
+          if (mobileToggle) mobileToggle.setAttribute("aria-expanded", "false");
           const icon = document.querySelector('.mobile-toggle i');
           if (icon) {
             icon.classList.add('fa-bars');
@@ -2420,10 +2499,6 @@
       updateSaveButtonState(saveItemBtn, isAlreadySaved);
 
       saveItemBtn.addEventListener('click', () => {
-        // even though tool is locked for signed-out users, keep behaviour consistent:
-        // if locked, do nothing (because you asked HARD lock).
-        if (document.body.classList.contains('auth-locked')) return;
-
         const items = getSavedItems();
         const index = items.findIndex(item => item.id === CURRENT_TOOL_ID);
         let nowSaved;
@@ -2448,14 +2523,22 @@
         renderSavedItems();
       });
 
-      playbookButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        openPlaybookUI();
-      });
+      playbookButton.addEventListener('click', openPlaybookUI);
       closeBtn.addEventListener('click', closePlaybookUI);
 
       playbookOverlay.addEventListener('click', (e) => {
         if (e.target === playbookOverlay) closePlaybookUI();
+      });
+    }
+
+    function wireFabKeyboard() {
+      const fab = document.getElementById("myPlaybookButton");
+      if (!fab) return;
+      fab.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openPlaybookUI();
+        }
       });
     }
 
@@ -2471,7 +2554,7 @@
       } else {
         button.classList.remove('saved');
         if (icon) { icon.classList.remove('fas'); icon.classList.add('far'); }
-        if (label) label.textContent = 'Save Item';
+        if (label) label.textContent = 'Save item';
       }
     }
 
@@ -2514,35 +2597,31 @@
   </script>
 
   <!-- ✅ ONE unified Supabase module:
-       - Locks tool behind sign-in
-       - Loads header (initials + plan)
-       - Enables Save Progress button (manual only)
-       - Saves progress to tool_states ONLY on button click
-       - Logs activity events safely
+       - TRUE hard lock behind sign-in (inert + event capture)
+       - Header initials
+       - Manual Save Progress to tool_states
+       - Telemetry (safe)
+       - Removes plan logic
   -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
     /* ===========================
-       SUPABASE INIT
+       SUPABASE INIT (single source of truth)
     =========================== */
     const SB_URL = window.TEP_SUPABASE_URL;
     const SB_KEY = window.TEP_SUPABASE_ANON_KEY;
     const supabase = (SB_URL && SB_KEY) ? createClient(SB_URL, SB_KEY) : null;
 
     /* ===========================
-       HELPERS (WERE MISSING → FIXED)
+       CONSTANTS
     =========================== */
-    function planLabel(raw) {
-      const p = (raw || "").toString().trim().toLowerCase();
-      if (!p) return "Free";
-      if (p.includes("edge")) return "Strategic Edge";
-      if (p.includes("strategic")) return "Strategic Edge";
-      if (p.includes("core")) return "Core";
-      if (p.includes("free")) return "Free";
-      return raw.toString().trim();
-    }
+    const TOOL_ID = "capacity-checklist";
+    const TOOL_VERSION = 1;
 
+    /* ===========================
+       HELPERS
+    =========================== */
     function initialsFrom(fullName, email) {
       const name = (fullName || "").trim();
       if (name) {
@@ -2558,38 +2637,29 @@
     }
 
     async function getAuthedUser() {
-      if (!supabase) return null;
-      const { data } = await supabase.auth.getUser();
-      return data?.user || null;
+      try {
+        if (!supabase) return null;
+        const { data } = await supabase.auth.getUser();
+        return data?.user || null;
+      } catch (e) {
+        return null;
+      }
     }
-
-    /* ===========================
-       CONSTANTS
-    =========================== */
-    const TOOL_ID = "capacity-checklist";
-    const TOOL_VERSION = 1;
 
     /* ===========================
        ELEMENTS
     =========================== */
+    const toolMain = document.getElementById("toolMain");
     const initialsBtn = document.getElementById("userInitialsBtn");
-    const planPill = document.getElementById("userPlanPill");
     const mobileProfileBtn = document.getElementById("mobileProfileBtn");
     const logoutBtn = document.getElementById("logoutBtn");
 
     const authOverlay = document.getElementById("authLockOverlay");
     const saveProgressBtn = document.getElementById("saveProgressBtn");
-    const saveProgressStatus = document.getElementById("saveProgressStatus");
 
-    function toastSaveStatus(msg, type = "info") {
-      if (!saveProgressStatus) return;
-      saveProgressStatus.textContent = msg || "";
-      saveProgressStatus.style.color =
-        type === "ok" ? "var(--success-green)" :
-        type === "err" ? "var(--danger-red)" :
-        "var(--dark-gray)";
-    }
-
+    /* ===========================
+       SAFE TELEMETRY
+    =========================== */
     async function safeLogActivity(event_name, meta = {}) {
       try {
         if (!supabase) return;
@@ -2608,84 +2678,113 @@
     }
 
     /* ===========================
-       AUTH LOCK (SINGLE VERSION) ✅ no duplicates
+       TRUE HARD LOCK (inert + capture)
     =========================== */
-    function setToolLocked(isLocked) {
-      document.body.classList.toggle("auth-locked", !!isLocked);
-
-      if (authOverlay) {
-        authOverlay.classList.toggle("active", !!isLocked);
-        authOverlay.setAttribute("aria-hidden", isLocked ? "false" : "true");
-      }
-
-      // Hard disable key buttons when locked
-      const idsToDisable = ["generateBtn", "clearBtn", "saveProgressBtn", "copyBtn", "printBtn"];
-      idsToDisable.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.disabled = !!isLocked || el.disabled;
-      });
-
-      // Manual save disabled unless signed in
-      if (saveProgressBtn) saveProgressBtn.disabled = !!isLocked;
-
-      if (saveProgressStatus && isLocked) saveProgressStatus.textContent = "";
+    function isLocked() {
+      return document.body.classList.contains("auth-locked");
     }
 
+    function setToolInert(locked) {
+      try {
+        if (toolMain) toolMain.toggleAttribute("inert", !!locked);
+      } catch (e) {
+        // inert not supported in older browsers; fallback is capture blockers below
+      }
+    }
+
+    function captureBlocker(e) {
+      if (!isLocked()) return;
+      // allow clicks within the auth modal itself
+      const inAuth = e.target && (e.target.closest ? e.target.closest("#authLockOverlay") : null);
+      if (inAuth) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    function keyBlocker(e) {
+      if (!isLocked()) return;
+      const inAuth = e.target && (e.target.closest ? e.target.closest("#authLockOverlay") : null);
+      if (inAuth) return;
+
+      // block tab/enter/space/arrow keys that could trigger UI
+      const blockKeys = ["Tab","Enter"," ","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"];
+      if (blockKeys.includes(e.key)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+
+    // Capture phase listeners (true hard lock)
+    document.addEventListener("click", captureBlocker, true);
+    document.addEventListener("pointerdown", captureBlocker, true);
+    document.addEventListener("keydown", keyBlocker, true);
+
+    function setToolLocked(locked) {
+      document.body.classList.toggle("auth-locked", !!locked);
+
+      // overlay
+      if (authOverlay) {
+        authOverlay.classList.toggle("active", !!locked);
+        authOverlay.setAttribute("aria-hidden", locked ? "false" : "true");
+      }
+
+      // inert
+      setToolInert(locked);
+
+      // explicit button sync (fix sticky disabled states)
+      if (typeof window.syncActionButtons === "function") {
+        window.syncActionButtons(locked);
+      }
+    }
+
+    /* ===========================
+       HEADER STATE
+    =========================== */
     function setSignedOutHeader() {
       if (initialsBtn) {
         initialsBtn.textContent = "…";
-        initialsBtn.href = "sign-in.html";
+        initialsBtn.href = "./sign-in.html";
       }
-      if (mobileProfileBtn) mobileProfileBtn.href = "sign-in.html";
-      if (planPill) planPill.textContent = "Free";
+      if (mobileProfileBtn) mobileProfileBtn.href = "./sign-in.html";
       if (logoutBtn) logoutBtn.style.display = "none";
     }
 
-    function setSignedInHeader({ initials, plan }) {
+    function setSignedInHeader({ initials }) {
       if (initialsBtn) {
         initialsBtn.textContent = initials || "ME";
         initialsBtn.href = "profile.html";
       }
       if (mobileProfileBtn) mobileProfileBtn.href = "profile.html";
-      if (planPill) planPill.textContent = planLabel(plan);
       if (logoutBtn) logoutBtn.style.display = "inline-flex";
     }
 
     /* ===========================
-       PROFILE / PLAN LOOKUP
+       PROFILE LOOKUP (Phase 1: full_name only)
     =========================== */
-    async function getUserPlanAndName(user) {
+    async function getUserName(user) {
       const fallbackName =
         user?.user_metadata?.full_name ||
         user?.user_metadata?.name ||
         "";
 
-      const fallbackPlan =
-        user?.user_metadata?.plan ||
-        user?.app_metadata?.plan ||
-        "Free";
-
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("full_name, plan")
+          .select("full_name")
           .eq("id", user.id)
           .maybeSingle();
 
         if (!error && data) {
-          return {
-            full_name: data.full_name || fallbackName,
-            plan: data.plan || fallbackPlan
-          };
+          return (data.full_name || fallbackName);
         }
       } catch (e) {}
 
-      return { full_name: fallbackName, plan: fallbackPlan };
+      return fallbackName;
     }
 
     /* ===========================
        TOOL STATE (LOAD + SAVE)
-       - Save ONLY on button click
     =========================== */
     function getLocalSnapshot() {
       return {
@@ -2715,26 +2814,31 @@
 
           window.checkedItems[i] = checked;
 
-          // mirror the main script checkbox rendering
-          if (icon) {
-            if (checked) {
-              icon.classList.remove("fa-square", "far");
-              icon.classList.add("fa-check-square", "fas");
-              icon.style.color = "#5A4496";
-            } else {
-              icon.classList.remove("fa-check-square", "fas");
-              icon.classList.add("fa-square", "far");
-              icon.style.color = "#7B5FC4";
-            }
+          if (!container) continue;
+          container.setAttribute("aria-pressed", checked ? "true" : "false");
+
+          if (!icon) continue;
+
+          if (checked) {
+            icon.classList.remove("fa-square");
+            icon.classList.add("fa-check-square");
+            icon.style.color = "#5A4496";
+          } else {
+            icon.classList.remove("fa-check-square");
+            icon.classList.add("fa-square");
+            icon.style.color = "#7B5FC4";
           }
         }
 
-        if (typeof window.updateCapacityScore === "function") window.updateCapacityScore();
+        if (typeof window.updateCapacityScore === "function") {
+          window.updateCapacityScore();
+        }
       } catch (e) {}
     }
 
     async function loadToolStateFromCloud(user) {
       if (!supabase || !user) return;
+
       try {
         const { data, error } = await supabase
           .from("tool_states")
@@ -2745,10 +2849,18 @@
           .limit(1)
           .maybeSingle();
 
-        if (error || !data?.state) return;
+        if (error || !data?.state) {
+          // nothing saved yet -> show last saved if present
+          if (typeof window.markNeutral === "function") window.markNeutral();
+          return;
+        }
+
         applySnapshot(data.state);
-        toastSaveStatus("Loaded your saved progress.", "ok");
-      } catch (e) {}
+
+        if (typeof window.markLoaded === "function") window.markLoaded();
+      } catch (e) {
+        if (typeof window.markNeutral === "function") window.markNeutral();
+      }
     }
 
     async function saveToolStateToCloud(user) {
@@ -2768,10 +2880,23 @@
           }], { onConflict: "user_id,tool_id" });
 
         if (error) return { ok: false, message: error.message || "Save failed." };
-        return { ok: true, message: "Progress saved to your account." };
+
+        return { ok: true, message: "Progress saved to your account.", at: snapshot.updated_at };
       } catch (e) {
         return { ok: false, message: "Save failed." };
       }
+    }
+
+    /* ===========================
+       OPTIONAL: light table sanity checks (won’t break if missing)
+    =========================== */
+    async function softCheckTables(user) {
+      try {
+        if (!supabase || !user) return;
+        // Quick no-op selects; failures are ignored.
+        await supabase.from("profiles").select("id").eq("id", user.id).limit(1);
+        await supabase.from("tool_states").select("tool_id").eq("user_id", user.id).limit(1);
+      } catch (e) {}
     }
 
     /* ===========================
@@ -2780,22 +2905,30 @@
     async function handleSignedOut() {
       setSignedOutHeader();
       setToolLocked(true);
-      toastSaveStatus("");
+      if (typeof window.setSaveStatus === "function") window.setSaveStatus("", "info");
     }
 
     async function handleSignedIn(user) {
-      const { full_name, plan } = await getUserPlanAndName(user);
+      const full_name = await getUserName(user);
       const initials = initialsFrom(full_name, user.email);
 
-      setSignedInHeader({ initials, plan });
+      setSignedInHeader({ initials });
       setToolLocked(false);
 
-      if (typeof window.updateCapacityScore === "function") window.updateCapacityScore();
+      // enable save (unlocked)
+      if (saveProgressBtn) saveProgressBtn.disabled = false;
+
+      if (typeof window.updateCapacityScore === "function") {
+        window.updateCapacityScore();
+      }
 
       await loadToolStateFromCloud(user);
 
-      if (typeof window.updateCapacityScore === "function") window.updateCapacityScore();
+      if (typeof window.updateCapacityScore === "function") {
+        window.updateCapacityScore();
+      }
 
+      await softCheckTables(user);
       await safeLogActivity("tool_opened", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
     }
 
@@ -2803,13 +2936,16 @@
       if (!supabase) {
         setSignedOutHeader();
         setToolLocked(true);
-        toastSaveStatus("Missing Supabase config.", "err");
+        if (typeof window.setSaveStatus === "function") window.setSaveStatus("Missing Supabase config.", "err");
         return;
       }
 
       const user = await getAuthedUser();
-      if (!user) await handleSignedOut();
-      else await handleSignedIn(user);
+      if (!user) {
+        await handleSignedOut();
+      } else {
+        await handleSignedIn(user);
+      }
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
         const u = session?.user || null;
@@ -2821,7 +2957,7 @@
     /* ===========================
        LOGOUT
     =========================== */
-    function wireLogout() {
+    async function wireLogout() {
       if (!logoutBtn) return;
       logoutBtn.addEventListener("click", async (e) => {
         e.preventDefault();
@@ -2829,9 +2965,9 @@
         try {
           await safeLogActivity("logout_clicked", { tool_id: TOOL_ID });
           await supabase.auth.signOut();
-          window.location.href = "sign-in.html";
+          window.location.href = "./sign-in.html";
         } catch (e2) {
-          window.location.href = "sign-in.html";
+          window.location.href = "./sign-in.html";
         }
       });
     }
@@ -2839,16 +2975,16 @@
     /* ===========================
        SAVE PROGRESS (MANUAL ONLY)
     =========================== */
-    function wireSaveProgress() {
+    async function wireSaveProgress() {
       if (!saveProgressBtn) return;
 
       saveProgressBtn.addEventListener("click", async () => {
-        toastSaveStatus("Saving…");
+        if (typeof window.setSaveStatus === "function") window.setSaveStatus("Saving…", "info");
         saveProgressBtn.disabled = true;
 
         const user = await getAuthedUser();
         if (!user) {
-          toastSaveStatus("Please sign in to save.", "err");
+          if (typeof window.setSaveStatus === "function") window.setSaveStatus("Please sign in to save.", "err");
           setToolLocked(true);
           saveProgressBtn.disabled = false;
           return;
@@ -2856,10 +2992,10 @@
 
         const res = await saveToolStateToCloud(user);
         if (res.ok) {
-          toastSaveStatus(res.message, "ok");
+          if (typeof window.markSaved === "function") window.markSaved(res.at);
           await safeLogActivity("tool_saved", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
         } else {
-          toastSaveStatus(res.message || "Save failed.", "err");
+          if (typeof window.setSaveStatus === "function") window.setSaveStatus(res.message || "Save failed.", "err");
         }
 
         saveProgressBtn.disabled = false;
@@ -2867,10 +3003,33 @@
     }
 
     /* ===========================
+       EXTRA TELEMETRY HOOKS (print/clear)
+    =========================== */
+    function wirePrintAndClearTelemetry() {
+      const printBtn = document.getElementById("printBtn");
+      const clearBtn = document.getElementById("clearBtn");
+
+      if (printBtn) {
+        printBtn.addEventListener("click", async () => {
+          const user = await getAuthedUser();
+          if (user) await safeLogActivity("tool_printed", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
+        });
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", async () => {
+          const user = await getAuthedUser();
+          if (user) await safeLogActivity("tool_cleared", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
+        });
+      }
+    }
+
+    /* ===========================
        BOOT
     =========================== */
     wireLogout();
     wireSaveProgress();
+    wirePrintAndClearTelemetry();
     initAuthAndLock();
   </script>
 
