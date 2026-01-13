@@ -15,6 +15,21 @@
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
+    <!-- THEME PRELOAD -->
+    <script>
+        (function () {
+            try {
+                const saved = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const useDark = saved ? saved === 'dark' : prefersDark;
+                if (useDark) document.documentElement.classList.add('preload-dark');
+            } catch (e) {}
+        })();
+    </script>
+
+    <!-- Supabase project config -->
+    <script src="assets/supabase-config.js"></script>
+
     <style>
         /* ===========================
            ROOT VARIABLES (From Homepage)
@@ -167,10 +182,11 @@
             line-height: 1.6;
             overflow-x: hidden;
             opacity: 0;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.4s ease, background-color 0.3s ease, color 0.3s ease;
             min-height: 100vh;
         }
 
+        html.preload-dark body { background-color: #1a1a1a; color: #e0e0e0; }
         body.loaded { opacity: 1; }
 
         .container {
@@ -180,7 +196,7 @@
         }
 
         /* ===========================
-           NAVIGATION (Pixel Perfect from Homepage)
+           NAVIGATION (POST-LOGIN HEADER)
         =========================== */
         nav {
             position: fixed;
@@ -204,6 +220,8 @@
             height: 100%;
         }
 
+        .logo { display: block; text-decoration: none; }
+
         .logo-img {
             height: 100px;
             width: auto;
@@ -214,23 +232,19 @@
             min-height: 100px;
         }
 
-        .logo-img.fallback {
-            width: 200px;
-            height: 50px;
-            background: var(--accent-purple);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .logo-fallback {
+            display: none;
+            font-size: 24px;
             font-weight: 700;
-            font-size: 16px;
-            border-radius: 4px;
-            transform: translateX(20%);
+            color: var(--text-dark);
+            text-decoration: none;
         }
 
+        /* TEMPLATE MATCH: move nav links left */
         .nav-links {
             display: flex;
             gap: 50px;
+            transform: translateX(-28px);
         }
 
         .nav-link {
@@ -239,16 +253,24 @@
             font-weight: 500;
             transition: color 0.3s ease;
             font-size: 17px;
-        }
-
-        .nav-link:hover {
-            color: var(--accent-purple);
-        }
-
-        .nav-link-container {
             position: relative;
-            display: inline-block;
         }
+
+        .nav-link:hover { color: var(--accent-purple); }
+
+        .nav-link.active { color: var(--text-dark); }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -7px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-purple);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .nav-link-container { position: relative; display: inline-block; }
 
         .new-tag {
             position: absolute;
@@ -265,47 +287,77 @@
             white-space: nowrap;
         }
 
-        .dark-mode .new-tag {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-        }
+        .dark-mode .new-tag { box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
 
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 24px;
-            transform: translateX(-20%);
+            gap: 14px;
+            transform: translateX(calc(-30% - 15px));
         }
 
-        .header-cta {
-            background: var(--accent-purple);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
+        .user-initials {
+            width: 38px;
+            height: 38px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(123, 95, 196, 0.3);
-        }
-
-        .header-cta:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(123, 95, 196, 0.35);
-        }
-
-        .dark-mode .header-cta {
-            box-shadow: 0 5px 15px rgba(123, 95, 196, 0.5);
-        }
-
-        .sign-in {
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.5px;
             color: var(--text-dark);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 17px;
+            background: var(--primary-white);
+            border: 1px solid var(--border-light);
+            transition: all 0.25s ease;
+            user-select: none;
+            flex: 0 0 auto;
         }
 
-        .sign-in:hover {
+        .user-initials:hover {
+            transform: translateY(-1px);
+            border-color: rgba(123, 95, 196, 0.35);
+            box-shadow: 0 8px 18px rgba(123, 95, 196, 0.12);
             color: var(--accent-purple);
+        }
+
+        .dark-mode .user-initials {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.12);
+            color: var(--text-dark);
+        }
+
+        .dark-mode .user-initials:hover {
+            border-color: rgba(139,108,230,0.35);
+            box-shadow: 0 10px 22px rgba(139,108,230,0.14);
+            color: var(--accent-purple);
+        }
+
+        .logout-link {
+            display: none;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-medium);
+            text-decoration: none;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border-light);
+            background: rgba(255,255,255,0.7);
+            transition: all .2s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+        .logout-link:hover {
+            transform: translateY(-1px);
+            border-color: rgba(123, 95, 196, 0.35);
+            color: var(--accent-purple-dark);
+            box-shadow: 0 8px 18px rgba(123, 95, 196, 0.10);
+        }
+        .dark-mode .logout-link {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.12);
+            color: var(--text-medium);
         }
 
         .theme-toggle {
@@ -322,10 +374,7 @@
             justify-content: center;
             transition: background-color 0.3s ease;
         }
-
-        .theme-toggle:hover {
-            background-color: var(--light-gray);
-        }
+        .theme-toggle:hover { background-color: var(--light-gray); }
 
         .mobile-toggle {
             display: none;
@@ -341,21 +390,48 @@
             justify-content: center;
             transition: background-color 0.3s ease;
         }
+        .mobile-toggle:hover { background-color: var(--light-gray); }
 
-        .mobile-toggle:hover {
-            background-color: var(--light-gray);
+        .mobile-profile {
+            display: none;
+            margin-top: 10px;
+            padding: 12px 20px;
+            background: var(--accent-purple);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            text-decoration: none;
         }
 
-        .mobile-sign-in,
-        .mobile-sign-up {
+        .mobile-cta-tab {
             display: none;
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: right bottom;
+            background: var(--accent-purple);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px 8px 0 0;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 5px 15px rgba(123, 95, 196, 0.4);
+            z-index: 998;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .mobile-cta-tab:hover { background: var(--accent-purple-dark); }
+
+        @media (max-width: 992px) {
+            .nav-links { gap: 30px; }
+            .nav-actions { gap: 12px; }
         }
 
         @media (max-width: 768px) {
-            .nav-container {
-                justify-content: center;
-                position: relative;
-            }
+            .nav-container { justify-content: center; position: relative; }
 
             .logo {
                 position: absolute;
@@ -381,16 +457,14 @@
 
             .nav-actions {
                 transform: none;
-                gap: 16px;
+                gap: 12px;
                 position: absolute;
                 right: 20px;
                 align-items: center;
             }
 
-            .nav-actions .sign-in,
-            .nav-actions .header-cta {
-                display: none;
-            }
+            .nav-actions .user-initials { display: none; }
+            .nav-actions .logout-link { display: none !important; }
 
             .nav-links {
                 display: none;
@@ -406,61 +480,108 @@
                 border-top: 1px solid var(--border-light);
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
                 gap: 20px;
+                transform: none;
             }
 
-            .nav-links.active {
-                display: flex;
-            }
+            .nav-links.active { display: flex; }
+            .nav-link-container { display: flex; width: 100%; }
+            .new-tag { position: static; margin-left: 8px; }
 
-            .nav-link-container {
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                width: 100%;
-            }
+            .mobile-profile { display: block !important; }
+            .mobile-cta-tab { display: block; }
+        }
 
-            .new-tag {
-                position: static;
-                margin-left: 8px;
-            }
+        /* ===========================
+           AUTH LOCK OVERLAY
+        =========================== */
+        .auth-lock-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1300;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
 
-            .mobile-sign-in {
-                display: block !important;
-                margin-top: 10px;
-                padding: 12px 20px;
-                background: var(--primary-white);
-                color: var(--accent-purple);
-                border-radius: 8px;
-                text-align: center;
-                font-weight: 600;
-                text-decoration: none;
-                border: 2px solid var(--accent-purple);
-                transition: all 0.3s ease;
-            }
+        .auth-lock-overlay.active { display: flex; }
 
-            .mobile-sign-in:hover {
-                background: var(--light-gray);
-                transform: translateY(-2px);
-            }
+        .auth-lock-card {
+            width: min(560px, 100%);
+            background: var(--primary-white);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 22px 22px 18px;
+            box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+        }
 
-            .mobile-sign-up {
-                display: block !important;
-                margin-top: 10px;
-                padding: 12px 20px;
-                background: var(--accent-purple);
-                color: white;
-                border-radius: 8px;
-                text-align: center;
-                font-weight: 600;
-                text-decoration: none;
-                border: 2px solid var(--accent-purple);
-                transition: all 0.3s ease;
-            }
+        .dark-mode .auth-lock-card {
+            background: rgba(18,18,18,0.96);
+            border-color: rgba(255,255,255,0.10);
+        }
 
-            .mobile-sign-up:hover {
-                background: var(--accent-purple-dark);
-                transform: translateY(-2px);
-            }
+        .auth-lock-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-lock-title i { color: var(--accent-purple); }
+
+        .auth-lock-text {
+            font-size: 14px;
+            color: var(--text-medium);
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        .auth-lock-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .auth-lock-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 800;
+            font-size: 13px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .auth-lock-btn.primary { background: var(--premium-gradient); color: #fff; }
+        .auth-lock-btn.secondary { background: var(--light-purple); color: var(--accent-purple-dark); }
+
+        .dark-mode .auth-lock-btn.secondary {
+            background: rgba(123, 95, 196, 0.21);
+            color: var(--accent-purple);
+        }
+
+        /* keep content visible but non-interactive when locked */
+        body.auth-locked .tool-hero-section,
+        body.auth-locked .context-tips-grid,
+        body.auth-locked .checklist-body,
+        body.auth-locked .clarity-score-section,
+        body.auth-locked #smartSummary,
+        body.auth-locked footer,
+        body.auth-locked .my-playbook-fab {
+            filter: none;
+            opacity: 1;
+            user-select: none;
         }
 
         /* ===========================
@@ -489,22 +610,6 @@
 
         .dark-mode .tool-hero-section::before {
             background: linear-gradient(135deg, rgba(42, 42, 42, 0.9) 0%, rgba(31, 31, 31, 0.7) 50%, rgba(26, 26, 26, 0.4) 100%);
-        }
-
-        .tool-hero-section::after {
-            content: '';
-            position: absolute;
-            bottom: -30px;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.06), transparent);
-            opacity: 0.25;
-            pointer-events: none;
-        }
-
-        .dark-mode .tool-hero-section::after {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
         }
 
         .tool-hero-content {
@@ -540,48 +645,9 @@
             transition: color 0.2s ease;
         }
 
-        .breadcrumb a:hover {
-            color: var(--accent-purple-dark);
-        }
-
-        .breadcrumb i {
-            color: var(--dark-gray);
-            opacity: 0.8;
-            font-size: 10px;
-        }
-
-        .breadcrumb .current {
-            color: var(--text-dark);
-            font-weight: 600;
-        }
-
-        .checklist-name {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--accent-purple);
-            text-transform: uppercase;
-            letter-spacing: 1.8px;
-            margin-bottom: 14px;
-            margin-top: 32px;
-            display: block;
-        }
-
-        .hero-main-heading {
-            font-size: 46px;
-            font-weight: 600;
-            color: var(--text-dark);
-            line-height: 1.1;
-            margin-bottom: 20px;
-            max-width: 720px;
-        }
-
-        .hero-subheading {
-            font-size: 16px;
-            color: var(--text-medium);
-            line-height: 1.6;
-            max-width: 780px;
-            margin-bottom: 30px;
-        }
+        .breadcrumb a:hover { color: var(--accent-purple-dark); }
+        .breadcrumb i { color: var(--dark-gray); opacity: 0.8; font-size: 10px; }
+        .breadcrumb .current { color: var(--text-dark); font-weight: 600; }
 
         /* Save Item button in hero (top-right of hero) */
         .save-btn {
@@ -616,6 +682,7 @@
         .dark-mode .save-btn {
             background: rgba(20, 20, 20, 0.9);
             border-color: rgba(157, 134, 233, 0.6);
+            color: var(--accent-purple);
         }
 
         .save-btn.saved {
@@ -626,12 +693,38 @@
 
         .save-btn.saved i { font-weight: 700; }
 
+        .checklist-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent-purple);
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            margin-bottom: 14px;
+            margin-top: 32px;
+            display: block;
+        }
+
+        .hero-main-heading {
+            font-size: 46px;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            max-width: 720px;
+        }
+
+        .hero-subheading {
+            font-size: 16px;
+            color: var(--text-medium);
+            line-height: 1.6;
+            max-width: 780px;
+            margin-bottom: 30px;
+        }
+
         /* ===========================
            CATEGORY PILLS (LOCKED COLOURS + ICONS)
         =========================== */
-        .category-pills-container {
-            margin-bottom: 30px;
-        }
+        .category-pills-container { margin-bottom: 30px; }
 
         .category-pills-title {
             font-size: 12px;
@@ -672,9 +765,7 @@
             text-decoration:none;
         }
 
-        .dark-mode .category-pill {
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
+        .dark-mode .category-pill { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
 
         .category-pill:hover {
             transform: translateY(-1px);
@@ -682,85 +773,23 @@
             text-decoration: none;
         }
 
-        .dark-mode .category-pill:hover {
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
-        }
+        .dark-mode .category-pill:hover { box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35); }
 
-        .category-icon {
-            font-size: 11px;
-            opacity: 0.9;
-            flex-shrink: 0;
-        }
+        .category-icon { font-size: 11px; opacity: 0.9; flex-shrink: 0; }
 
         .category-pill.clarity {
             color: var(--category-clarity);
             border-color: var(--pill-clarity-border);
             background: var(--pill-clarity-bg);
         }
-        .category-pill.clarity:hover {
-            background: var(--pill-clarity-hover-bg);
-            border-color: var(--pill-clarity-hover-border);
-        }
-
-        .category-pill.burnout {
-            color: var(--category-burnout);
-            border-color: var(--pill-burnout-border);
-            background: var(--pill-burnout-bg);
-        }
-        .category-pill.burnout:hover {
-            background: var(--pill-burnout-hover-bg);
-            border-color: var(--pill-burnout-hover-border);
-        }
-
-        .category-pill.manager {
-            color: var(--category-manager);
-            border-color: var(--pill-manager-border);
-            background: var(--pill-manager-bg);
-        }
-        .category-pill.manager:hover {
-            background: var(--pill-manager-hover-bg);
-            border-color: var(--pill-manager-hover-border);
-        }
-
-        .category-pill.politics {
-            color: var(--category-politics);
-            border-color: var(--pill-politics-border);
-            background: var(--pill-politics-bg);
-        }
-        .category-pill.politics:hover {
-            background: var(--pill-politics-hover-bg);
-            border-color: var(--pill-politics-hover-border);
-        }
-
-        .category-pill.hr {
-            color: var(--category-hr);
-            border-color: var(--pill-hr-border);
-            background: var(--pill-hr-bg);
-        }
-        .category-pill.hr:hover {
-            background: var(--pill-hr-hover-bg);
-            border-color: var(--pill-hr-hover-border);
-        }
-
-        .category-pill.confidence {
-            color: var(--category-confidence);
-            border-color: var(--pill-confidence-border);
-            background: var(--pill-confidence-bg);
-        }
-        .category-pill.confidence:hover {
-            background: var(--pill-confidence-hover-bg);
-            border-color: var(--pill-confidence-hover-border);
-        }
+        .category-pill.clarity:hover { background: var(--pill-clarity-hover-bg); border-color: var(--pill-clarity-hover-border); }
 
         .category-pill.career {
             color: var(--category-career);
             border-color: var(--pill-career-border);
             background: var(--pill-career-bg);
         }
-        .category-pill.career:hover {
-            background: var(--pill-career-hover-bg);
-            border-color: var(--pill-career-hover-border);
-        }
+        .category-pill.career:hover { background: var(--pill-career-hover-bg); border-color: var(--pill-career-hover-border); }
 
         /* ===========================
            CONTEXT & PRO TIPS SECTION
@@ -786,9 +815,7 @@
         }
 
         .dark-mode .context-card,
-        .dark-mode .tips-card {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.22);
-        }
+        .dark-mode .tips-card { box-shadow: 0 2px 8px rgba(0,0,0,0.22); }
 
         .section-title {
             font-size: 20px;
@@ -862,20 +889,22 @@
             cursor: pointer;
             height: 100%;
             min-height: 70px;
+            outline: none;
         }
 
-        .dark-mode .checklist-item {
-            box-shadow: 0 1px 4px rgba(0,0,0,0.14);
+        .checklist-item:focus-visible {
+            box-shadow: 0 0 0 3px rgba(123, 95, 196, 0.25), 0 1px 4px rgba(0,0,0,0.06);
+            border-color: rgba(123, 95, 196, 0.35);
         }
+
+        .dark-mode .checklist-item { box-shadow: 0 1px 4px rgba(0,0,0,0.14); }
 
         .checklist-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 3px 8px rgba(0,0,0,0.1);
         }
 
-        .dark-mode .checklist-item:hover {
-            box-shadow: 0 3px 8px rgba(0,0,0,0.28);
-        }
+        .dark-mode .checklist-item:hover { box-shadow: 0 3px 8px rgba(0,0,0,0.28); }
 
         .checklist-item i {
             color: var(--accent-purple);
@@ -964,9 +993,7 @@
             margin-bottom: 6px;
         }
 
-        .dark-mode .progress-container {
-            background: rgba(255, 255, 255, 0.12);
-        }
+        .dark-mode .progress-container { background: rgba(255, 255, 255, 0.12); }
 
         .progress-fill {
             height: 100%;
@@ -1007,15 +1034,8 @@
             border-color: rgba(255,255,255,0.1);
         }
 
-        .presence-dimension-pill span.label {
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .presence-dimension-pill span.score {
-            font-weight: 700;
-            color: var(--accent-purple);
-        }
+        .presence-dimension-pill span.label { font-weight: 600; color: var(--text-dark); }
+        .presence-dimension-pill span.score { font-weight: 700; color: var(--accent-purple); }
 
         .actions-container {
             display: flex;
@@ -1034,7 +1054,7 @@
             padding: 10px 18px;
             font-size: 13.5px;
             border-radius: 8px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -1051,24 +1071,21 @@
             box-shadow: 0 8px 20px rgba(123, 95, 196, 0.3);
         }
 
-        .dark-mode .action-btn:hover {
-            box-shadow: 0 8px 20px rgba(123, 95, 196, 0.4);
-        }
+        .dark-mode .action-btn:hover { box-shadow: 0 8px 20px rgba(123, 95, 196, 0.4); }
 
         .action-btn.secondary {
             background: var(--light-purple);
             color: var(--accent-purple-dark);
+            border: 1px solid rgba(123, 95, 196, 0.2);
         }
 
         .dark-mode .action-btn.secondary {
             background: rgba(123, 95, 196, 0.21);
             color: var(--accent-purple);
+            border-color: rgba(157, 134, 233, 0.22);
         }
 
-        .action-btn.secondary:hover {
-            background: var(--accent-purple);
-            color: white;
-        }
+        .action-btn.secondary:hover { background: var(--accent-purple); color: white; }
 
         .action-btn:disabled {
             opacity: 0.5;
@@ -1077,14 +1094,18 @@
             box-shadow: none !important;
         }
 
-        .progress-fill.high {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-        .progress-fill.medium {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-        .progress-fill.low {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        .progress-fill.high { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .progress-fill.medium { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .progress-fill.low { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+
+        /* Tiny status line under Save Progress (premium but minimal) */
+        .save-progress-status {
+            font-size: 12px;
+            color: var(--dark-gray);
+            text-align: center;
+            margin-top: -6px;
+            min-height: 18px;
+            user-select: none;
         }
 
         /* ===========================
@@ -1114,16 +1135,12 @@
 
         .summary-title {
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--accent-purple-dark);
             margin-bottom: 6px;
         }
 
-        .summary-subtitle {
-            color: var(--text-medium);
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
+        .summary-subtitle { color: var(--text-medium); font-size: 16px; margin-bottom: 8px; }
 
         .summary-insight {
             font-size: 14px;
@@ -1134,7 +1151,7 @@
 
         .section-header {
             font-size: 20px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 22px;
             display: flex;
             align-items: center;
@@ -1169,10 +1186,7 @@
             height: 100%;
         }
 
-        .dark-mode .red-flag-card {
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.18);
-            border: 1px solid rgba(239, 68, 68, 0.22);
-        }
+        .dark-mode .red-flag-card { box-shadow: 0 4px 12px rgba(239, 68, 68, 0.18); border: 1px solid rgba(239, 68, 68, 0.22); }
 
         .red-flag-card::before {
             content: '';
@@ -1201,7 +1215,7 @@
 
         .flag-title {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-dark);
             margin-bottom: 10px;
         }
@@ -1226,10 +1240,7 @@
             height: 100%;
         }
 
-        .dark-mode .next-step-card {
-            box-shadow: 0 4px 12px rgba(123, 95, 196, 0.21);
-            border: 1px solid rgba(123, 95, 196, 0.25);
-        }
+        .dark-mode .next-step-card { box-shadow: 0 4px 12px rgba(123, 95, 196, 0.21); border: 1px solid rgba(123, 95, 196, 0.25); }
 
         .next-step-card::before {
             content: '';
@@ -1258,7 +1269,7 @@
 
         .step-title {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-dark);
             margin-bottom: 10px;
         }
@@ -1284,10 +1295,7 @@
             transition: all 0.2s ease;
         }
 
-        .dark-mode .resource-card {
-            box-shadow: 0 4px 12px rgba(123, 95, 196, 0.21);
-            border: 1px solid rgba(123, 95, 196, 0.25);
-        }
+        .dark-mode .resource-card { box-shadow: 0 4px 12px rgba(123, 95, 196, 0.21); border: 1px solid rgba(123, 95, 196, 0.25); }
 
         .resource-card:hover {
             transform: translateY(-3px);
@@ -1321,7 +1329,7 @@
 
         .resource-title {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-dark);
             margin-bottom: 10px;
         }
@@ -1336,7 +1344,7 @@
 
         .resource-link {
             color: var(--accent-purple);
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
             font-size: 14px;
             display: flex;
@@ -1348,7 +1356,7 @@
         .resource-link:hover { text-decoration: underline; }
 
         /* ===========================
-           MY PLAYBOOK FLOATING BUTTON + SIDEBAR
+           MY PLAYBOOK FAB + SIDEBAR
         =========================== */
         .my-playbook-fab {
             position: fixed;
@@ -1364,7 +1372,7 @@
             gap: 8px;
             cursor: pointer;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             box-shadow: 0 10px 25px rgba(0,0,0,0.25);
             transition: all 0.25s ease;
         }
@@ -1437,6 +1445,7 @@
         .playbook-sidebar-header p {
             font-size: 13px;
             color: var(--dark-gray);
+            font-weight: 400;
         }
 
         .playbook-close-btn {
@@ -1470,13 +1479,10 @@
             font-size: 13px;
             color: var(--dark-gray);
             line-height: 1.6;
+            font-weight: 400;
         }
 
-        .saved-items-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
+        .saved-items-list { list-style: none; margin: 0; padding: 0; }
 
         .saved-item {
             padding: 10px 8px 10px;
@@ -1508,11 +1514,13 @@
             text-transform: uppercase;
             letter-spacing: 0.6px;
             color: var(--accent-purple-dark);
+            font-weight: 700;
         }
 
         .saved-item-meta {
             font-size: 12px;
             color: var(--dark-gray);
+            font-weight: 400;
         }
 
         .saved-item-link {
@@ -1520,7 +1528,7 @@
             font-size: 12px;
             color: var(--accent-purple);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -1528,20 +1536,15 @@
 
         .saved-item-link:hover { text-decoration: underline; }
 
-        /* ===========================
-           QUICK LINKS — CLEAN VERSION
-        =========================== */
         .playbook-quick-links {
             margin-top: 223px;
             padding-top: 10px;
             border-top: 1px solid var(--border-light);
         }
 
-        .playbook-quick-links-header { margin-bottom: 4px; }
-
         .quick-links-title {
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             color: var(--text-medium);
@@ -1563,7 +1566,7 @@
             text-decoration: none;
             color: var(--accent-purple-dark);
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -1594,101 +1597,72 @@
             color: var(--text-medium);
         }
 
+        /* PRINT CSS */
+        @media print {
+            nav,
+            .my-playbook-fab,
+            .playbook-sidebar-overlay,
+            .mobile-cta-tab,
+            .save-btn,
+            .actions-container,
+            .auth-lock-overlay {
+                display: none !important;
+            }
+
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                opacity: 1 !important;
+            }
+
+            .tool-hero-section {
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+            }
+
+            .tool-hero-section::before { display: none !important; }
+            .checklist-item { box-shadow: none !important; }
+            footer { border-top: 1px solid #ddd !important; }
+
+            .smart-summary-section.active { display: block !important; }
+        }
+
         /* RESPONSIVE ADJUSTMENTS */
         @media (max-width: 1024px) {
-            .context-tips-grid {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-
-            .red-flags-grid,
-            .next-steps-grid,
-            .resources-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
+            .context-tips-grid { grid-template-columns: 1fr; gap: 24px; }
+            .red-flags-grid, .next-steps-grid, .resources-grid { grid-template-columns: repeat(2, 1fr); }
             .checklist-grid { grid-template-columns: 1fr; }
-
             .checklist-section-title { margin-top: 50px !important; }
-
             .clarity-score-bar { flex-direction: column; }
-
-            .actions-container {
-                max-width: 100%;
-                flex-direction: row;
-            }
+            .actions-container { max-width: 100%; flex-direction: row; flex-wrap: wrap; }
         }
 
         @media (max-width: 768px) {
             .tool-hero-section { margin-top: 100px; }
-
-            .context-tips-grid {
-                padding: 20px 20px 10px;
-                margin-top: 5px;
-            }
-
+            .context-tips-grid { padding: 20px 20px 10px; margin-top: 5px; }
             .context-card, .tips-card { padding: 24px; }
-
-            .section-title {
-                font-size: 18px;
-                white-space: normal;
-            }
-
+            .section-title { font-size: 18px; white-space: normal; }
             .hero-main-heading { font-size: 36px; }
-
-            .hero-subheading {
-                font-size: 16px;
-                max-width: 100%;
-            }
-
+            .hero-subheading { font-size: 16px; max-width: 100%; }
             .clarity-score-bar { padding: 18px 18px 18px; }
-
-            .actions-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .red-flags-grid,
-            .next-steps-grid,
-            .resources-grid {
-                grid-template-columns: 1fr;
-            }
-
+            .actions-container { flex-direction: column; align-items: stretch; }
+            .red-flags-grid, .next-steps-grid, .resources-grid { grid-template-columns: 1fr; }
             .category-pills-grid { justify-content: flex-start; }
-
             .checklist-section-title { margin-top: 40px !important; }
-
             .save-btn { right: 18px; top: 10px; }
-
             .my-playbook-fab { bottom: 18px; right: 18px; }
         }
 
         @media (max-width: 480px) {
             .hero-main-heading { font-size: 32px; }
-
             .checklist-name { font-size: 18px; }
-
             .summary-title { font-size: 22px; }
-
             .section-header { font-size: 18px; }
-
             .clarity-percentage { font-size: 24px; }
-
-            .category-pill {
-                font-size: 11px;
-                padding: 5px 10px;
-                height: 30px;
-            }
-
-            .checklist-item {
-                padding: 12px 14px;
-                min-height: 65px;
-            }
-
+            .category-pill { font-size: 11px; padding: 5px 10px; height: 30px; }
+            .checklist-item { padding: 12px 14px; min-height: 65px; }
             .checklist-text { font-size: 14px; }
-
             .checklist-section-title { margin-top: 30px !important; }
-
             .presence-dimensions { grid-template-columns: 1fr; }
         }
     </style>
@@ -1696,1012 +1670,1612 @@
 
 <body>
 
+<!-- Mobile My Playbook tab -->
+<a href="#" class="mobile-cta-tab" id="mobileMyPlaybookTab">My Playbook</a>
+
 <!-- ===========================
-     NAVIGATION
+     NAVIGATION (POST-LOGIN)
 =========================== -->
 <nav>
     <div class="container nav-container">
-        <button class="mobile-toggle"><i class="fas fa-bars"></i></button>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+            <i class="fas fa-bars"></i>
+        </button>
 
-        <a href="index.html" class="logo">
-            <img src="./assets/img/logo.png" alt="The Employee Playbook" class="logo-img" id="mainLogo">
+        <a href="index.html" class="logo" aria-label="Home">
+            <img src="assets/img/logo.png" alt="The Employee Playbook" class="logo-img" id="mainLogo"
+                 onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+            <div class="logo-fallback" id="logo-fallback">THE EMPLOYEE PLAYBOOK</div>
         </a>
 
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
             <a href="the-lens.html" class="nav-link">The Lens</a>
-            <a href="the-toolkit.html" class="nav-link">The Toolkit</a>
+            <a href="the-toolkit.html" class="nav-link active">The Toolkit</a>
             <div class="nav-link-container">
                 <a href="the-coach.html" class="nav-link">The Coach</a>
                 <span class="new-tag">NEW</span>
             </div>
             <a href="the-shift.html" class="nav-link">The Shift</a>
             <a href="the-pricing.html" class="nav-link">The Pricing</a>
-            <a href="sign-in.html" class="mobile-sign-in">Sign In</a>
-            <a href="create-account.html" class="mobile-sign-up">Sign Up</a>
+
+            <a href="profile.html" class="mobile-profile" id="mobileProfileBtn">Profile</a>
         </div>
 
         <div class="nav-actions">
-            <a href="create-account.html" class="header-cta">Sign up</a>
-            <a href="sign-in.html" class="sign-in">Sign in</a>
-            <button class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i></button>
+            <a href="sign-in.html" class="user-initials" id="userInitialsBtn" aria-label="Open profile">…</a>
+
+            <a class="logout-link" id="logoutBtn" href="#" aria-label="Log out">Log out</a>
+            <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
     </div>
 </nav>
 
-<!-- ===========================
-     HERO
-=========================== -->
-<div class="tool-hero-section">
-    <button class="save-btn" id="saveBtn">
-        <i class="far fa-bookmark"></i>
-        <span>Save item</span>
-    </button>
+<!-- ✅ HARD LOCK WRAPPER (inert toggled when locked) -->
+<main id="toolMain">
+    <!-- ===========================
+         HERO
+    =========================== -->
+    <div class="tool-hero-section">
+        <button class="save-btn" id="saveBtn" type="button">
+            <i class="far fa-bookmark"></i>
+            <span>Save item</span>
+        </button>
 
-    <div class="tool-hero-content">
-        <div class="breadcrumb">
-            <a href="the-toolkit.html">Toolkit</a>
-            <i class="fas fa-chevron-right"></i>
-            <a href="clarity-priorities-and-direction.html">Clarity, Priorities &amp; Direction</a>
-            <i class="fas fa-chevron-right"></i>
-            <span class="current">Decision Clarity Checklist</span>
-        </div>
-
-        <span class="checklist-name">DECISION CLARITY CHECKLIST</span>
-
-        <h1 class="hero-main-heading">Untangle the situation <br> Pick the best move</h1>
-
-        <div class="hero-subheading">
-            When decisions feel rushed, political, overloaded with opinions, or buried in half-known facts 
-            this will help you define the decision properly, surface trade-offs and spot hidden assumptions
-        </div>
-
-        <div class="category-pills-container">
-            <span class="category-pills-title">Related Categories</span>
-            <div class="category-pills-grid">
-                <a href="category-clarity-priorities-and-direction.html" class="category-pill clarity">
-                    <i class="fas fa-bullseye category-icon"></i>
-                    <span>Clarity, Priorities &amp; Direction</span>
-                </a>
-                <a href="category-career-playbook.html" class="category-pill career">
-                    <i class="fas fa-briefcase category-icon"></i>
-                    <span>Career Playbook</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ===========================
-     CONTEXT & PRO TIPS
-=========================== -->
-<div class="context-tips-grid">
-    <div class="context-card">
-        <h3 class="section-title"><i class="fas fa-calendar-check"></i>When to Use This Checklist</h3>
-        <ul class="bullet-list">
-            <li>When you’re stuck between options and the “right answer” keeps shifting depending on who speaks last.</li>
-            <li>When decisions are being made without a clear owner, criteria, or definition of success.</li>
-            <li>When you feel pressure to choose quickly — but you know the downside will land on you later.</li>
-            <li>When stakeholders want different outcomes and you need a decision that survives scrutiny.</li>
-            <li>When you need to recommend a move to senior people without over-explaining or hand-waving risk.</li>
-        </ul>
-    </div>
-
-    <div class="tips-card">
-        <h3 class="section-title"><i class="fas fa-lightbulb"></i>Pro Tips</h3>
-        <ul class="bullet-list">
-            <li>If you can’t write the decision in one sentence, you don’t have a decision yet — you have a topic.</li>
-            <li>Strong decisions are rarely “perfect”. They’re clear, bounded, and revisitable under defined conditions.</li>
-            <li>Trade-offs don’t disappear. They just show up later as cost, risk, rework, or reputation damage.</li>
-            <li>Pre-wire the decision: speak to the 1–2 key stakeholders before the meeting so you don’t get blindsided live.</li>
-            <li>Decision clarity isn’t just logic — it’s ownership + criteria + a clean next step people can execute.</li>
-        </ul>
-    </div>
-</div>
-
-<!-- ===========================
-     CHECKLIST BODY
-=========================== -->
-<div class="checklist-body" id="checklistText">
-    <h2 class="checklist-section-title">Your Decision Clarity Checklist</h2>
-
-    <div class="checklist-grid">
-        <div class="checklist-item" data-category="framing">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I can write the decision in one sentence with a clear verb (approve / choose / stop / start / prioritise).</div>
-        </div>
-
-        <div class="checklist-item" data-category="criteria">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I know what “good” looks like: success criteria, constraints, and what we will not compromise.</div>
-        </div>
-
-        <div class="checklist-item" data-category="timing">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I’m clear why this decision matters now (and what happens if we delay or do nothing).</div>
-        </div>
-
-        <div class="checklist-item" data-category="evidence">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I’ve separated facts from assumptions — and I can name the top assumptions driving the decision.</div>
-        </div>
-
-        <div class="checklist-item" data-category="options">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I have at least two realistic options (including “do nothing” if that is truly on the table).</div>
-        </div>
-
-        <div class="checklist-item" data-category="tradeoffs">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I can explain the trade-offs clearly (cost / time / risk / people impact) without hiding the downside.</div>
-        </div>
-
-        <div class="checklist-item" data-category="ownership">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I know who owns the decision and what the decision-making path is (recommend / decide / approve).</div>
-        </div>
-
-        <div class="checklist-item" data-category="stakeholders">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I’ve identified the key stakeholders who can block, slow, or accelerate the decision — and what they care about.</div>
-        </div>
-
-        <div class="checklist-item" data-category="risk">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I’ve named the top risks (including reputational/political risk) and what would make each risk more likely.</div>
-        </div>
-
-        <div class="checklist-item" data-category="guardrails">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I’ve set guardrails and thresholds (what “good enough” looks like, and what triggers a rethink later).</div>
-        </div>
-
-        <div class="checklist-item" data-category="downstream">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I understand the downstream work created by the decision (dependencies, handoffs, and who absorbs the load).</div>
-        </div>
-
-        <div class="checklist-item" data-category="comms">
-            <i class="far fa-square"></i>
-            <div class="checklist-text">I can communicate the decision cleanly: what we decided, why, what changes, and what happens next.</div>
-        </div>
-    </div>
-</div>
-
-<!-- ===========================
-     SCORE
-=========================== -->
-<div class="clarity-score-section">
-    <div class="presence-snapshot-header">
-        <h2>Your Decision Clarity Snapshot</h2>
-        <p>
-            This score reflects how “decision-ready” your thinking is. High scores don’t mean the choice is easy — they mean the decision is
-            defined, bounded, and executable. Lower scores usually signal a missing definition, fuzzy criteria, hidden assumptions, or unhandled stakeholder risk.
-        </p>
-    </div>
-
-    <div class="clarity-score-bar">
-        <div class="clarity-progress-container">
-            <div class="clarity-header">
-                <div class="clarity-title">Decision Clarity Score</div>
-                <div class="clarity-percentage" id="clarityPercentage">0%</div>
-            </div>
-            <div class="progress-container">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-labels">
-                <span>Foggy</span>
-                <span>Mixed</span>
-                <span>Clear</span>
+        <div class="tool-hero-content">
+            <div class="breadcrumb">
+                <a href="the-toolkit.html">Toolkit</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="clarity-priorities-and-direction.html">Clarity, Priorities &amp; Direction</a>
+                <i class="fas fa-chevron-right"></i>
+                <span class="current">Decision Clarity Checklist</span>
             </div>
 
-            <div class="presence-dimensions">
-                <div class="presence-dimension-pill">
-                    <span class="label">Definition & Criteria</span>
-                    <span class="score" id="scoreFraming">0%</span>
-                </div>
-                <div class="presence-dimension-pill">
-                    <span class="label">Options & Evidence</span>
-                    <span class="score" id="scoreAnalysis">0%</span>
-                </div>
-                <div class="presence-dimension-pill">
-                    <span class="label">Alignment & Ownership</span>
-                    <span class="score" id="scoreAlignment">0%</span>
-                </div>
-                <div class="presence-dimension-pill">
-                    <span class="label">Risk & Guardrails</span>
-                    <span class="score" id="scoreRisk">0%</span>
+            <span class="checklist-name">DECISION CLARITY CHECKLIST</span>
+
+            <h1 class="hero-main-heading">Untangle the situation <br> Pick the best move</h1>
+
+            <div class="hero-subheading">
+                When decisions feel rushed, political, overloaded with opinions, or buried in half-known facts 
+                this will help you define the decision properly, surface trade-offs and spot hidden assumptions
+            </div>
+
+            <div class="category-pills-container">
+                <span class="category-pills-title">Related Categories</span>
+                <div class="category-pills-grid">
+                    <a href="category-clarity-priorities-and-direction.html" class="category-pill clarity">
+                        <i class="fas fa-bullseye category-icon"></i>
+                        <span>Clarity, Priorities &amp; Direction</span>
+                    </a>
+                    <a href="category-career-playbook.html" class="category-pill career">
+                        <i class="fas fa-briefcase category-icon"></i>
+                        <span>Career Playbook</span>
+                    </a>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="actions-container">
-            <button class="action-btn" onclick="generateSmartSummary()" id="generateBtn" disabled>
-                <i class="fas fa-magic"></i> Generate summary
-            </button>
-            <button class="action-btn secondary" onclick="copyChecklist()" id="copyBtn">
-                <i class="far fa-copy"></i> Copy checklist
-            </button>
+    <!-- ===========================
+         CONTEXT & PRO TIPS
+    =========================== -->
+    <div class="context-tips-grid">
+        <div class="context-card">
+            <h3 class="section-title"><i class="fas fa-calendar-check"></i>When to Use This Checklist</h3>
+            <ul class="bullet-list">
+                <li>When you're stuck between options and the "right answer" keeps shifting depending on who speaks last.</li>
+                <li>When decisions are being made without a clear owner, criteria, or definition of success.</li>
+                <li>When you feel pressure to choose quickly — but you know the downside will land on you later.</li>
+                <li>When stakeholders want different outcomes and you need a decision that survives scrutiny.</li>
+                <li>When you need to recommend a move to senior people without over-explaining or hand-waving risk.</li>
+            </ul>
+        </div>
+
+        <div class="tips-card">
+            <h3 class="section-title"><i class="fas fa-lightbulb"></i>Pro Tips</h3>
+            <ul class="bullet-list">
+                <li>If you can't write the decision in one sentence, you don't have a decision yet — you have a topic.</li>
+                <li>Strong decisions are rarely "perfect". They're clear, bounded, and revisitable under defined conditions.</li>
+                <li>Trade-offs don't disappear. They just show up later as cost, risk, rework, or reputation damage.</li>
+                <li>Pre-wire the decision: speak to the 1–2 key stakeholders before the meeting so you don't get blindsided live.</li>
+                <li>Decision clarity isn't just logic — it's ownership + criteria + a clean next step people can execute.</li>
+            </ul>
         </div>
     </div>
-</div>
 
-<!-- ===========================
-     SMART SUMMARY
-=========================== -->
-<div class="smart-summary-section" id="smartSummary">
-    <div class="summary-header">
-        <h2 class="summary-title">Your Smart Decision Summary</h2>
-        <p class="summary-subtitle">Based on your Decision Clarity Score of <span id="summaryScore">0%</span></p>
-        <p class="summary-insight">
-            Use this as signal, not judgement. It highlights what’s already decision-ready — and what will cause rework,
-            pushback, or “death by meeting” if left unresolved.
-        </p>
+    <!-- ===========================
+         CHECKLIST BODY
+    =========================== -->
+    <div class="checklist-body" id="checklistText">
+        <h2 class="checklist-section-title">Your Decision Clarity Checklist</h2>
+
+        <div class="checklist-grid" id="checklistGrid">
+            <div class="checklist-item" data-category="framing">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I can write the decision in one sentence with a clear verb (approve / choose / stop / start / prioritise).</div>
+            </div>
+
+            <div class="checklist-item" data-category="criteria">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I know what "good" looks like: success criteria, constraints, and what we will not compromise.</div>
+            </div>
+
+            <div class="checklist-item" data-category="timing">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I'm clear why this decision matters now (and what happens if we delay or do nothing).</div>
+            </div>
+
+            <div class="checklist-item" data-category="evidence">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I've separated facts from assumptions — and I can name the top assumptions driving the decision.</div>
+            </div>
+
+            <div class="checklist-item" data-category="options">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I have at least two realistic options (including "do nothing" if that is truly on the table).</div>
+            </div>
+
+            <div class="checklist-item" data-category="tradeoffs">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I can explain the trade-offs clearly (cost / time / risk / people impact) without hiding the downside.</div>
+            </div>
+
+            <div class="checklist-item" data-category="ownership">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I know who owns the decision and what the decision-making path is (recommend / decide / approve).</div>
+            </div>
+
+            <div class="checklist-item" data-category="stakeholders">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I've identified the key stakeholders who can block, slow, or accelerate the decision — and what they care about.</div>
+            </div>
+
+            <div class="checklist-item" data-category="risk">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I've named the top risks (including reputational/political risk) and what would make each risk more likely.</div>
+            </div>
+
+            <div class="checklist-item" data-category="guardrails">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I've set guardrails and thresholds (what "good enough" looks like, and what triggers a rethink later).</div>
+            </div>
+
+            <div class="checklist-item" data-category="downstream">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I understand the downstream work created by the decision (dependencies, handoffs, and who absorbs the load).</div>
+            </div>
+
+            <div class="checklist-item" data-category="comms">
+                <i class="far fa-square"></i>
+                <div class="checklist-text">I can communicate the decision cleanly: what we decided, why, what changes, and what happens next.</div>
+            </div>
+        </div>
     </div>
 
-    <h3 class="section-header red">
-        <i class="fas fa-exclamation-triangle"></i> Red Flags in Your Decision Pattern
-    </h3>
-    <div class="red-flags-grid" id="redFlagsGrid"></div>
+    <!-- ===========================
+         SCORE
+    =========================== -->
+    <div class="clarity-score-section">
+        <div class="presence-snapshot-header">
+            <h2>Your Decision Clarity Snapshot</h2>
+            <p>
+                This score reflects how "decision-ready" your thinking is. High scores don't mean the choice is easy — they mean the decision is
+                defined, bounded, and executable. Lower scores usually signal a missing definition, fuzzy criteria, hidden assumptions, or unhandled stakeholder risk.
+            </p>
+        </div>
 
-    <h3 class="section-header purple">
-        <i class="fas fa-forward"></i> Next Moves to Increase Clarity
-    </h3>
-    <div class="next-steps-grid" id="nextStepsGrid"></div>
+        <div class="clarity-score-bar">
+            <div class="clarity-progress-container">
+                <div class="clarity-header">
+                    <div class="clarity-title">Decision Clarity Score</div>
+                    <div class="clarity-percentage" id="clarityPercentage">0%</div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-labels">
+                    <span>Foggy</span>
+                    <span>Mixed</span>
+                    <span>Clear</span>
+                </div>
 
-    <h3 class="section-header blue">
-        <i class="fas fa-tools"></i> Recommended Tools to Support You
-    </h3>
-    <div class="resources-grid" id="resourcesGrid"></div>
-</div>
+                <div class="presence-dimensions">
+                    <div class="presence-dimension-pill">
+                        <span class="label">Definition & Criteria</span>
+                        <span class="score" id="scoreFraming">0%</span>
+                    </div>
+                    <div class="presence-dimension-pill">
+                        <span class="label">Options & Evidence</span>
+                        <span class="score" id="scoreAnalysis">0%</span>
+                    </div>
+                    <div class="presence-dimension-pill">
+                        <span class="label">Alignment & Ownership</span>
+                        <span class="score" id="scoreAlignment">0%</span>
+                    </div>
+                    <div class="presence-dimension-pill">
+                        <span class="label">Risk & Guardrails</span>
+                        <span class="score" id="scoreRisk">0%</span>
+                    </div>
+                </div>
+            </div>
 
-<!-- ===========================
-     MY PLAYBOOK SIDEBAR
-=========================== -->
-<div class="playbook-sidebar-overlay" id="playbookOverlay">
-    <div class="playbook-sidebar" id="playbookSidebar">
-        <div class="playbook-sidebar-header">
-            <div class="playbook-sidebar-header-title-row">
-                <h3>My Playbook</h3>
-                <button class="playbook-close-btn" id="closePlaybook" aria-label="Close My Playbook">
-                    <i class="fas fa-times"></i>
+            <div class="actions-container">
+                <button class="action-btn" onclick="generateSmartSummary()" id="generateBtn" disabled>
+                    <i class="fas fa-magic"></i> Generate summary
                 </button>
+                <button class="action-btn secondary" onclick="copyChecklist()" id="copyBtn">
+                    <i class="far fa-copy"></i> Copy checklist
+                </button>
+                <button class="action-btn secondary" onclick="printChecklistPDF()" id="printBtn">
+                    <i class="fas fa-print"></i> Print / Save PDF
+                </button>
+                <button class="action-btn secondary" onclick="clearAllChecklist()" id="clearBtn" disabled>
+                    <i class="fas fa-eraser"></i> Clear All
+                </button>
+
+                <!-- ✅ Cloud save: MANUAL ONLY -->
+                <button class="action-btn secondary" id="saveProgressBtn" disabled>
+                    <i class="fas fa-cloud-arrow-up"></i> Save Progress
+                </button>
+                <div class="save-progress-status" id="saveProgressStatus"></div>
             </div>
-            <p>Saved items</p>
+        </div>
+    </div>
+
+    <!-- ===========================
+         SMART SUMMARY
+    =========================== -->
+    <div class="smart-summary-section" id="smartSummary">
+        <div class="summary-header">
+            <h2 class="summary-title">Your Smart Decision Summary</h2>
+            <p class="summary-subtitle">Based on your Decision Clarity Score of <span id="summaryScore">0%</span></p>
+            <p class="summary-insight">
+                Use this as signal, not judgement. It highlights what's already decision-ready — and what will cause rework,
+                pushback, or "death by meeting" if left unresolved.
+            </p>
         </div>
 
-        <div class="playbook-sidebar-body">
-            <div id="savedItemsContainer">
-                <p class="saved-items-empty" id="savedItemsEmpty">
-                    You haven’t saved anything yet. Use <strong>Save item</strong> on tools you want quick access to.
-                </p>
-                <ul class="saved-items-list" id="savedItemsList"></ul>
+        <h3 class="section-header red">
+            <i class="fas fa-exclamation-triangle"></i> Red Flags in Your Decision Pattern
+        </h3>
+        <div class="red-flags-grid" id="redFlagsGrid"></div>
+
+        <h3 class="section-header purple">
+            <i class="fas fa-forward"></i> Next Moves to Increase Clarity
+        </h3>
+        <div class="next-steps-grid" id="nextStepsGrid"></div>
+
+        <h3 class="section-header blue">
+            <i class="fas fa-tools"></i> Recommended Tools to Support You
+        </h3>
+        <div class="resources-grid" id="resourcesGrid"></div>
+    </div>
+
+    <!-- ===========================
+         MY PLAYBOOK SIDEBAR
+    =========================== -->
+    <div class="playbook-sidebar-overlay" id="playbookOverlay">
+        <div class="playbook-sidebar" id="playbookSidebar">
+            <div class="playbook-sidebar-header">
+                <div class="playbook-sidebar-header-title-row">
+                    <h3>My Playbook</h3>
+                    <button class="playbook-close-btn" id="closePlaybook" aria-label="Close My Playbook" type="button">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p>Saved items</p>
             </div>
 
-            <div class="playbook-quick-links">
-                <div class="playbook-quick-links-header">
-                    <span class="quick-links-title">Quick links</span>
+            <div class="playbook-sidebar-body">
+                <div id="savedItemsContainer">
+                    <p class="saved-items-empty" id="savedItemsEmpty">
+                        You haven't saved anything yet. Use <strong>Save item</strong> on tools you want quick access to.
+                    </p>
+                    <ul class="saved-items-list" id="savedItemsList"></ul>
                 </div>
-                <div class="playbook-quick-links-list">
-                    <a href="dashboard.html" class="quick-link-pill">
-                        <i class="fas fa-gauge"></i> The Dashboard
-                    </a>
-                    <a href="the-lens.html" class="quick-link-pill">
-                        <i class="fas fa-search"></i> The Lens
-                    </a>
-                    <a href="the-toolkit.html" class="quick-link-pill">
-                        <i class="fas fa-toolbox"></i> The Toolkit
-                    </a>
-                    <a href="the-coach.html" class="quick-link-pill">
-                        <i class="fas fa-comments"></i> The Coach
-                    </a>
+
+                <div class="playbook-quick-links">
+                    <div class="playbook-quick-links-header">
+                        <span class="quick-links-title">Quick links</span>
+                    </div>
+                    <div class="playbook-quick-links-list">
+                        <a href="dashboard.html" class="quick-link-pill">
+                            <i class="fas fa-gauge"></i> The Dashboard
+                        </a>
+                        <a href="the-lens.html" class="quick-link-pill">
+                            <i class="fas fa-search"></i> The Lens
+                        </a>
+                        <a href="the-toolkit.html" class="quick-link-pill">
+                            <i class="fas fa-toolbox"></i> The Toolkit
+                        </a>
+                        <a href="the-coach.html" class="quick-link-pill">
+                            <i class="fas fa-comments"></i> The Coach
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="my-playbook-fab" id="myPlaybookButton">
-    <i class="fas fa-book-open"></i>
-    <span>My Playbook</span>
-</div>
+    <!-- Floating My Playbook button -->
+    <div class="my-playbook-fab" id="myPlaybookButton" role="button" tabindex="0" aria-label="Open My Playbook">
+        <i class="fas fa-book-open"></i>
+        <span>My Playbook</span>
+    </div>
+
+    <!-- ===========================
+         FOOTER
+    =========================== -->
+    <footer>
+        <div class="container">
+            <p>© 2025 The Employee Playbook. All rights reserved.</p>
+        </div>
+    </footer>
+</main>
 
 <!-- ===========================
-     FOOTER
+     AUTH LOCK OVERLAY
 =========================== -->
-<footer>
-    <div class="container">
-        <p>© 2025 The Employee Playbook. All rights reserved.</p>
+<div class="auth-lock-overlay" id="authLockOverlay" aria-hidden="true">
+    <div class="auth-lock-card" role="dialog" aria-modal="true" aria-label="Sign in required">
+        <div class="auth-lock-title">
+            <i class="fas fa-lock"></i>
+            Sign in required
+        </div>
+        <div class="auth-lock-text">
+            This tool is available to signed-in members so your progress can be saved securely.
+            Sign in to unlock the checklist and report.
+        </div>
+        <div class="auth-lock-actions">
+            <a class="auth-lock-btn primary" href="./sign-in.html">
+                <i class="fas fa-right-to-bracket"></i> Sign in
+            </a>
+            <a class="auth-lock-btn secondary" href="the-pricing.html">
+                <i class="fas fa-gem"></i> View plans
+            </a>
+        </div>
     </div>
-</footer>
+</div>
 
 <!-- ===========================
-     JAVASCRIPT
+     JAVASCRIPT (page logic)
 =========================== -->
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    document.body.classList.add('loaded');
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('loaded');
 
-    initializeChecklist();
-    initializeThemeToggle();
-    initializeMobileNav();
-    initializePlaybook();
-});
+        // Apply preload theme properly to body
+        try {
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const useDark = saved ? saved === 'dark' : prefersDark;
+            if (useDark) document.body.classList.add('dark-mode');
+            document.documentElement.classList.remove('preload-dark');
+        } catch (e) {}
 
-/* ===========================
-   MOBILE NAV
-=========================== */
-function initializeMobileNav() {
-    const mobileToggle = document.querySelector('.mobile-toggle');
-    const navLinks = document.querySelector('.nav-links');
-
-    if (!mobileToggle || !navLinks) return;
-
-    mobileToggle.addEventListener('click', function () {
-        navLinks.classList.toggle('active');
-        const icon = this.querySelector('i');
-        if (icon) {
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
-        }
+        initializeChecklist();
+        initializeThemeToggle();
+        initializeMobileNav();
+        initializePlaybook();
+        wireHeaderMyPlaybookHooks();
+        wireFabKeyboard();
     });
 
-    document.addEventListener('click', function(event) {
-        if (navLinks.classList.contains('active') &&
-            !navLinks.contains(event.target) &&
-            !mobileToggle.contains(event.target)) {
-            navLinks.classList.remove('active');
-            const icon = mobileToggle.querySelector('i');
-            if (icon) {
-                icon.classList.add('fa-bars');
-                icon.classList.remove('fa-times');
-            }
-        }
-    });
-}
+    /* ===========================
+       PHASE 1: UNSAVED / LAST SAVED UI
+    =========================== */
+    window.__tep_unsaved = false;
 
-/* ===========================
-   THEME TOGGLE
-=========================== */
-function initializeThemeToggle() {
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
-    if (!themeToggleBtn) return;
-
-    const themeIcon = themeToggleBtn.querySelector('i');
-    const logoImg = document.getElementById('mainLogo');
-
-    function getLogoPath(filename) {
-        if (window.location.protocol === 'file:') {
-            const currentPath = window.location.pathname;
-            const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
-            return basePath + 'assets/img/' + filename;
-        } else {
-            return './assets/img/' + filename;
+    function fmtGB(ts) {
+        try {
+            return new Date(ts).toLocaleString('en-GB', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        } catch (e) {
+            return '';
         }
     }
 
-    function createFallbackLogo() {
-        if (!logoImg) return;
-        logoImg.classList.add('fallback');
-
-        const logoText = document.createElement('div');
-        logoText.textContent = 'THE EMPLOYEE PLAYBOOK';
-        logoText.style.fontSize = '14px';
-        logoText.style.fontWeight = '700';
-        logoText.style.letterSpacing = '1px';
-
-        logoImg.src = '';
-        logoImg.alt = 'The Employee Playbook';
-        logoImg.style.display = 'flex';
-        logoImg.style.alignItems = 'center';
-        logoImg.style.justifyContent = 'center';
-        logoImg.innerHTML = '';
-        logoImg.appendChild(logoText);
+    function setSaveStatus(text, type = "info") {
+        const el = document.getElementById("saveProgressStatus");
+        if (!el) return;
+        el.textContent = text || "";
+        el.style.color =
+            type === "ok" ? "var(--success-green)" :
+            type === "err" ? "var(--danger-red)" :
+            "var(--dark-gray)";
     }
 
-    function updateLogoForTheme(isDarkMode) {
-        if (!logoImg) return;
-        logoImg.classList.remove('fallback');
-
-        if (isDarkMode) {
-            logoImg.src = getLogoPath('logo-dark.png');
-        } else {
-            logoImg.src = getLogoPath('logo.png');
-        }
-        logoImg.alt = 'The Employee Playbook';
+    function markUnsaved() {
+        window.__tep_unsaved = true;
+        const last = localStorage.getItem("tep_last_saved_decision");
+        const suffix = last ? ` • Last saved: ${fmtGB(last)}` : "";
+        setSaveStatus("Unsaved changes" + suffix, "info");
     }
 
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    const savedTheme = localStorage.getItem('theme');
-
-    if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
-        document.body.classList.add('dark-mode');
-        if (themeIcon) {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-        updateLogoForTheme(true);
-    } else {
-        document.body.classList.remove('dark-mode');
-        if (themeIcon) {
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-        }
-        updateLogoForTheme(false);
+    function markSaved(nowIso) {
+        window.__tep_unsaved = false;
+        const stamp = nowIso || new Date().toISOString();
+        localStorage.setItem("tep_last_saved_decision", stamp);
+        setSaveStatus(`Saved • ${fmtGB(stamp)}`, "ok");
     }
 
-    themeToggleBtn.addEventListener('click', function() {
-        const isDarkMode = document.body.classList.contains('dark-mode');
+    function markLoaded() {
+        window.__tep_unsaved = false;
+        const last = localStorage.getItem("tep_last_saved_decision");
+        const suffix = last ? ` • Last saved: ${fmtGB(last)}` : "";
+        setSaveStatus("Loaded your saved progress" + suffix, "ok");
+    }
 
-        if (isDarkMode) {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('theme', 'light');
-            if (themeIcon) {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-            }
-            updateLogoForTheme(false);
-        } else {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark');
-            if (themeIcon) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            }
-            updateLogoForTheme(true);
-        }
-    });
+    function markNeutral() {
+        const last = localStorage.getItem("tep_last_saved_decision");
+        if (last) setSaveStatus(`Last saved: ${fmtGB(last)}`, "info");
+        else setSaveStatus("", "info");
+    }
 
-    prefersDarkScheme.addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            if (e.matches) {
-                document.body.classList.add('dark-mode');
-                if (themeIcon) {
-                    themeIcon.classList.remove('fa-moon');
-                    themeIcon.classList.add('fa-sun');
+    /* ===========================
+       MOBILE NAV (with aria-expanded)
+    =========================== */
+    function initializeMobileNav() {
+        const mobileToggle = document.querySelector('.mobile-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (mobileToggle && navLinks) {
+            mobileToggle.addEventListener('click', function () {
+                const isOpen = navLinks.classList.toggle('active');
+                this.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+                const icon = this.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
                 }
-                updateLogoForTheme(true);
-            } else {
-                document.body.classList.remove('dark-mode');
-                if (themeIcon) {
-                    themeIcon.classList.remove('fa-sun');
-                    themeIcon.classList.add('fa-moon');
-                }
-                updateLogoForTheme(false);
-            }
+            });
         }
-    });
 
-    if (logoImg) {
-        logoImg.addEventListener('error', function() {
-            if (this.src.includes('logo-dark.png')) {
-                this.src = getLogoPath('logo.png');
-            } else {
-                createFallbackLogo();
+        document.addEventListener('click', function(event) {
+            if (!navLinks || !mobileToggle) return;
+            if (navLinks.classList.contains('active') &&
+                !navLinks.contains(event.target) &&
+                !mobileToggle.contains(event.target)) {
+                navLinks.classList.remove('active');
+                mobileToggle.setAttribute("aria-expanded", "false");
+                const icon = mobileToggle.querySelector('i');
+                if (icon) {
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                }
             }
         });
     }
-}
 
-/* ===========================
-   CHECKLIST LOGIC
-=========================== */
-let checkedItems = [];
-let itemCategories = [];
+    /* ===========================
+       THEME TOGGLE (stable)
+    =========================== */
+    function initializeThemeToggle() {
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        if (!themeToggleBtn) return;
 
-/* Dimension mapping for Decision Clarity */
-const dimensionConfig = {
-    framing: ['framing', 'criteria', 'timing'],
-    analysis: ['evidence', 'options', 'tradeoffs'],
-    alignment: ['ownership', 'stakeholders', 'comms'],
-    risk: ['risk', 'guardrails', 'downstream']
-};
+        const themeIcon = themeToggleBtn.querySelector('i');
+        const logoImg = document.getElementById('mainLogo');
 
-function initializeChecklist() {
-    const checklistContainers = document.querySelectorAll('.checklist-item');
-    checkedItems = new Array(checklistContainers.length).fill(false);
-    itemCategories = [];
+        function updateIcon(isDark) {
+            if (!themeIcon) return;
+            themeIcon.classList.toggle('fa-moon', !isDark);
+            themeIcon.classList.toggle('fa-sun', isDark);
+        }
 
-    checklistContainers.forEach((container, index) => {
-        const icon = container.querySelector('i');
-        const category = container.getAttribute('data-category');
-        itemCategories[index] = category;
+        function updateLogo(isDark) {
+            if (!logoImg) return;
+            logoImg.src = isDark ? 'assets/img/logo-dark.png' : 'assets/img/logo.png';
+        }
 
-        container.addEventListener('click', function(e) {
-            if (e.target.tagName === 'BUTTON') return;
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDarkInitial = saved ? saved === 'dark' : prefersDark;
+        updateIcon(isDarkInitial);
+        updateLogo(isDarkInitial);
 
-            if (icon.classList.contains('fa-square')) {
-                icon.classList.remove('fa-square');
-                icon.classList.add('fa-check-square');
-                icon.style.color = '#5A4496';
-                checkedItems[index] = true;
-            } else {
-                icon.classList.remove('fa-check-square');
-                icon.classList.add('fa-square');
-                icon.style.color = '#7B5FC4';
-                checkedItems[index] = false;
-            }
-            updateDecisionScore();
+        themeToggleBtn.addEventListener('click', function() {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            updateIcon(isDarkMode);
+            updateLogo(isDarkMode);
         });
-    });
-}
 
-function updateDecisionScore() {
-    const checkedCount = checkedItems.filter(Boolean).length;
-    const totalCount = checkedItems.length;
-    const decisionScore = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        mq.addEventListener('change', (e) => {
+            if (localStorage.getItem('theme')) return;
+            const shouldDark = e.matches;
+            document.body.classList.toggle('dark-mode', shouldDark);
+            updateIcon(shouldDark);
+            updateLogo(shouldDark);
+        });
 
-    document.getElementById('clarityPercentage').textContent = decisionScore + '%';
-    const progressFill = document.getElementById('progressFill');
-    progressFill.style.width = decisionScore + '%';
-
-    progressFill.classList.remove('high', 'medium', 'low');
-    if (decisionScore >= 75) {
-        progressFill.classList.add('high');
-    } else if (decisionScore >= 40) {
-        progressFill.classList.add('medium');
-    } else {
-        progressFill.classList.add('low');
+        if (logoImg) {
+            logoImg.addEventListener('error', function() {
+                if (this.src.includes('logo-dark.png')) {
+                    this.src = 'assets/img/logo.png';
+                } else {
+                    this.style.display = 'none';
+                    const fb = document.getElementById('logo-fallback');
+                    if (fb) fb.style.display = 'block';
+                }
+            });
+        }
     }
 
-    document.getElementById('generateBtn').disabled = checkedCount === 0;
+    /* ===========================
+       CHECKLIST LOGIC (state on window)
+    =========================== */
+    window.checkedItems = [];
+    window.itemCategories = [];
 
-    const dimensionScores = {
-        framing: { checked: 0, total: 0 },
-        analysis: { checked: 0, total: 0 },
-        alignment: { checked: 0, total: 0 },
-        risk: { checked: 0, total: 0 }
+    const dimensionConfig = {
+        framing: ['framing', 'criteria', 'timing'],
+        analysis: ['evidence', 'options', 'tradeoffs'],
+        alignment: ['ownership', 'stakeholders', 'comms'],
+        risk: ['risk', 'guardrails', 'downstream']
     };
 
-    itemCategories.forEach((category, index) => {
-        Object.keys(dimensionConfig).forEach(dim => {
-            if (dimensionConfig[dim].includes(category)) {
-                dimensionScores[dim].total += 1;
-                if (checkedItems[index]) {
-                    dimensionScores[dim].checked += 1;
+    function getCheckedCount() {
+        return Array.isArray(window.checkedItems) ? window.checkedItems.filter(Boolean).length : 0;
+    }
+    window.getCheckedCount = getCheckedCount;
+
+    function initializeChecklist() {
+        const checklistContainers = document.querySelectorAll('.checklist-item');
+        window.checkedItems = new Array(checklistContainers.length).fill(false);
+        window.itemCategories = [];
+
+        checklistContainers.forEach((container, index) => {
+            const icon = container.querySelector('i');
+            const category = container.getAttribute('data-category');
+            window.itemCategories[index] = category;
+
+            // ✅ Accessibility
+            container.setAttribute("role", "button");
+            container.setAttribute("tabindex", "0");
+            container.setAttribute("aria-pressed", "false");
+
+            const toggleItem = () => {
+                if (!icon) return;
+
+                if (icon.classList.contains('fa-square')) {
+                    icon.classList.remove('fa-square');
+                    icon.classList.add('fa-check-square');
+                    icon.style.color = '#5A4496';
+                    window.checkedItems[index] = true;
+                    container.setAttribute("aria-pressed", "true");
+                } else {
+                    icon.classList.remove('fa-check-square');
+                    icon.classList.add('fa-square');
+                    icon.style.color = '#7B5FC4';
+                    window.checkedItems[index] = false;
+                    container.setAttribute("aria-pressed", "false");
+                }
+
+                updateDecisionScore();
+                markUnsaved();
+            };
+
+            container.addEventListener('click', function(e) {
+                if (e.target && e.target.closest && e.target.closest('.actions-container')) return;
+                toggleItem();
+            });
+
+            container.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggleItem();
+                }
+            });
+        });
+
+        updateDecisionScore();
+    }
+
+    function syncActionButtons(isLocked) {
+        const generateBtn = document.getElementById('generateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const printBtn = document.getElementById('printBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const saveProgressBtn = document.getElementById('saveProgressBtn');
+
+        const checkedCount = getCheckedCount();
+
+        if (generateBtn) generateBtn.disabled = !!isLocked || checkedCount === 0;
+        if (clearBtn) clearBtn.disabled = !!isLocked || checkedCount === 0;
+        if (printBtn) printBtn.disabled = !!isLocked;
+        if (copyBtn) copyBtn.disabled = !!isLocked;
+        if (saveProgressBtn) {
+            if (isLocked) saveProgressBtn.disabled = true;
+        }
+    }
+    window.syncActionButtons = syncActionButtons;
+
+    function updateDecisionScore() {
+        const checkedCount = getCheckedCount();
+        const totalCount = window.checkedItems.length;
+        const decisionScore = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+
+        document.getElementById('clarityPercentage').textContent = decisionScore + '%';
+        const progressFill = document.getElementById('progressFill');
+        progressFill.style.width = decisionScore + '%';
+
+        progressFill.classList.remove('high', 'medium', 'low');
+        if (decisionScore >= 75) {
+            progressFill.classList.add('high');
+        } else if (decisionScore >= 40) {
+            progressFill.classList.add('medium');
+        } else {
+            progressFill.classList.add('low');
+        }
+
+        const locked = document.body.classList.contains("auth-locked");
+        syncActionButtons(locked);
+
+        const dimensionScores = {
+            framing: { checked: 0, total: 0 },
+            analysis: { checked: 0, total: 0 },
+            alignment: { checked: 0, total: 0 },
+            risk: { checked: 0, total: 0 }
+        };
+
+        window.itemCategories.forEach((category, index) => {
+            Object.keys(dimensionConfig).forEach(dim => {
+                if (dimensionConfig[dim].includes(category)) {
+                    dimensionScores[dim].total += 1;
+                    if (window.checkedItems[index]) dimensionScores[dim].checked += 1;
+                }
+            });
+        });
+
+        const framingScore = dimensionScores.framing.total
+            ? Math.round((dimensionScores.framing.checked / dimensionScores.framing.total) * 100)
+            : 0;
+        const analysisScore = dimensionScores.analysis.total
+            ? Math.round((dimensionScores.analysis.checked / dimensionScores.analysis.total) * 100)
+            : 0;
+        const alignmentScore = dimensionScores.alignment.total
+            ? Math.round((dimensionScores.alignment.checked / dimensionScores.alignment.total) * 100)
+            : 0;
+        const riskScore = dimensionScores.risk.total
+            ? Math.round((dimensionScores.risk.checked / dimensionScores.risk.total) * 100)
+            : 0;
+
+        document.getElementById('scoreFraming').textContent = framingScore + '%';
+        document.getElementById('scoreAnalysis').textContent = analysisScore + '%';
+        document.getElementById('scoreAlignment').textContent = alignmentScore + '%';
+        document.getElementById('scoreRisk').textContent = riskScore + '%';
+    }
+
+    window.updateDecisionScore = updateDecisionScore;
+
+    /* ===========================
+       SMART SUMMARY
+    =========================== */
+    function generateSmartSummary() {
+        const checkedCount = getCheckedCount();
+        const totalCount = window.checkedItems.length;
+        const decisionScore = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+
+        document.getElementById('summaryScore').textContent = decisionScore + '%';
+
+        const summarySection = document.getElementById('smartSummary');
+        summarySection.classList.add('active');
+        summarySection.scrollIntoView({ behavior: 'smooth' });
+
+        generateRedFlags();
+        generateNextSteps(decisionScore);
+        generateRecommendedResources();
+    }
+
+    function generateRedFlags() {
+        const redFlagsGrid = document.getElementById('redFlagsGrid');
+        if (!redFlagsGrid) return;
+        redFlagsGrid.innerHTML = '';
+
+        const uncheckedCategories = {};
+        window.checkedItems.forEach((checked, index) => {
+            if (!checked) {
+                const cat = window.itemCategories[index];
+                uncheckedCategories[cat] = (uncheckedCategories[cat] || 0) + 1;
+            }
+        });
+
+        const redFlags = [];
+
+        if (uncheckedCategories.framing || uncheckedCategories.criteria || uncheckedCategories.timing) {
+            redFlags.push({
+                title: 'The decision isn’t defined tightly enough',
+                description: 'If the decision statement, criteria, or timing is fuzzy, the room will debate the topic — not decide the move.',
+                icon: 'fas fa-bullseye'
+            });
+        }
+
+        if (uncheckedCategories.evidence || uncheckedCategories.options || uncheckedCategories.tradeoffs) {
+            redFlags.push({
+                title: 'Options are under‑analysed',
+                description: 'When evidence and trade‑offs aren’t explicit, decisions get made on confidence, politics, or convenience.',
+                icon: 'fas fa-scale-balanced'
+            });
+        }
+
+        if (uncheckedCategories.stakeholders || uncheckedCategories.ownership || uncheckedCategories.comms) {
+            redFlags.push({
+                title: 'Buy‑in risk is higher than it looks',
+                description: 'If you haven’t mapped decision ownership and blockers, you can "win the meeting" and still lose the execution.',
+                icon: 'fas fa-users'
+            });
+        }
+
+        if (uncheckedCategories.risk || uncheckedCategories.guardrails || uncheckedCategories.downstream) {
+            redFlags.push({
+                title: 'No guardrails = future rework',
+                description: 'Without thresholds and revisit conditions, today’s decision becomes tomorrow’s emergency when reality shifts.',
+                icon: 'fas fa-shield-halved'
+            });
+        }
+
+        if (redFlags.length === 0) {
+            redFlags.push({
+                title: 'No major clarity gaps',
+                description: 'Your decision thinking is bounded and decision‑ready. Your advantage now is execution quality and stakeholder sequencing.',
+                icon: 'fas fa-check-circle'
+            });
+        }
+
+        while (redFlags.length < 3) {
+            redFlags.push({
+                title: 'Hidden assumption exposure',
+                description: 'If you can’t name assumptions, you can’t test them. Make the assumptions visible before someone else uses them against you.',
+                icon: 'fas fa-eye'
+            });
+        }
+
+        redFlags.slice(0, 3).forEach(flag => {
+            const card = document.createElement('div');
+            card.className = 'red-flag-card';
+            card.innerHTML = `
+                <div class="flag-icon"><i class="${flag.icon}"></i></div>
+                <h4 class="flag-title">${flag.title}</h4>
+                <p class="flag-description">${flag.description}</p>
+            `;
+            redFlagsGrid.appendChild(card);
+        });
+    }
+
+    function generateNextSteps(decisionScore) {
+        const nextStepsGrid = document.getElementById('nextStepsGrid');
+        if (!nextStepsGrid) return;
+        nextStepsGrid.innerHTML = '';
+
+        let steps = [];
+
+        if (decisionScore >= 75) {
+            steps = [
+                {
+                    title: 'Write the 6‑line decision note',
+                    description: 'Decision statement, criteria, options, trade‑offs, risks/guardrails, next steps. Share it before the meeting.',
+                    icon: 'fas fa-file-lines'
+                },
+                {
+                    title: 'Pre‑wire the real blockers',
+                    description: 'Speak to the 1–2 people who can stop the decision. Align objections early so the meeting becomes confirmation.',
+                    icon: 'fas fa-handshake'
+                },
+                {
+                    title: 'Lock the execution rhythm',
+                    description: 'Define update cadence, ownership, and what "done" looks like so the decision becomes a plan, not a slide.',
+                    icon: 'fas fa-calendar-week'
+                }
+            ];
+        } else if (decisionScore >= 40) {
+            steps = [
+                {
+                    title: 'Tighten the decision statement',
+                    description: 'Rewrite it as: "We are deciding whether to X by Y, measured by Z." If you can’t, you’re not ready.',
+                    icon: 'fas fa-pen-to-square'
+                },
+                {
+                    title: 'Force two options + one trade‑off each',
+                    description: 'Create two viable options and name one real downside for each. This reduces political "vibes decisions".',
+                    icon: 'fas fa-code-branch'
+                },
+                {
+                    title: 'Define guardrails before approval',
+                    description: 'State what would trigger a revisit (cost threshold, time slip, quality signal). This protects you later.',
+                    icon: 'fas fa-gauge-high'
+                }
+            ];
+        } else {
+            steps = [
+                {
+                    title: 'Pause the decision — define first',
+                    description: 'Don’t decide "something" under pressure. Define the decision, criteria, and owner before debating solutions.',
+                    icon: 'fas fa-pause'
+                },
+                {
+                    title: 'Separate facts from assumptions',
+                    description: 'List what you know vs what you’re assuming. Pick one assumption you can test quickly this week.',
+                    icon: 'fas fa-flask'
+                },
+                {
+                    title: 'Map stakeholders and politics explicitly',
+                    description: 'Identify who wins/loses and who carries the downstream work. Decisions fail when this is invisible.',
+                    icon: 'fas fa-chess'
+                }
+            ];
+        }
+
+        steps.forEach(step => {
+            const card = document.createElement('div');
+            card.className = 'next-step-card';
+            card.innerHTML = `
+                <div class="step-icon"><i class="${step.icon}"></i></div>
+                <h4 class="step-title">${step.title}</h4>
+                <p class="step-description">${step.description}</p>
+            `;
+            nextStepsGrid.appendChild(card);
+        });
+    }
+
+    function generateRecommendedResources() {
+        const resourcesGrid = document.getElementById('resourcesGrid');
+        if (!resourcesGrid) return;
+        resourcesGrid.innerHTML = '';
+
+        const uncheckedCategories = {};
+        window.checkedItems.forEach((checked, index) => {
+            if (!checked) {
+                const cat = window.itemCategories[index];
+                uncheckedCategories[cat] = (uncheckedCategories[cat] || 0) + 1;
+            }
+        });
+
+        const resources = [];
+
+        resources.push({
+            title: 'Stakeholder Mapping Grid',
+            description: 'Map influence vs interest, identify blockers, and decide who to pre‑wire before you "go public" with the decision.',
+            icon: 'fas fa-diagram-project',
+            link: 'stakeholder-mapping-grid.html'
+        });
+
+        resources.push({
+            title: 'Multi‑Factor Risk Calculator',
+            description: 'Pressure‑test the decision across risk types (delivery, reputational, political, operational) so surprises don’t land on you.',
+            icon: 'fas fa-triangle-exclamation',
+            link: 'multi-factor-risk-calculator.html'
+        });
+
+        if (uncheckedCategories.evidence || uncheckedCategories.tradeoffs || uncheckedCategories.options) {
+            resources.push({
+                title: 'Situation Analysis Framework',
+                description: 'A clean way to summarise context, constraints, and decision drivers — without turning it into a 20‑slide story.',
+                icon: 'fas fa-compass',
+                link: 'situation-analysis-framework.html'
+            });
+        } else {
+            resources.push({
+                title: 'Decision Clarity Framework',
+                description: 'A compact structure for decision memos: criteria, trade‑offs, guardrails, and execution rhythm.',
+                icon: 'fas fa-sitemap',
+                link: 'decision-clarity-framework.html'
+            });
+        }
+
+        resources.slice(0, 3).forEach(resource => {
+            const card = document.createElement('div');
+            card.className = 'resource-card';
+            card.innerHTML = `
+                <div class="resource-icon"><i class="${resource.icon}"></i></div>
+                <h4 class="resource-title">${resource.title}</h4>
+                <p class="resource-description">${resource.description}</p>
+                <a href="${resource.link}" class="resource-link">
+                    Access tool <i class="fas fa-arrow-right"></i>
+                </a>
+            `;
+            resourcesGrid.appendChild(card);
+        });
+    }
+
+    /* ===========================
+       COPY CHECKLIST
+    =========================== */
+    function copyChecklist() {
+        const checklistName = 'DECISION CLARITY CHECKLIST';
+        const mainHeading = document.querySelector('.hero-main-heading').textContent;
+        const checklistItems = document.querySelectorAll('.checklist-text');
+
+        let text = checklistName + '\n';
+        text += '=============================\n\n';
+        text += mainHeading + '\n\n';
+        text += 'CHECKLIST ITEMS:\n';
+        text += '================\n\n';
+
+        checklistItems.forEach((item, index) => {
+            const isChecked = window.checkedItems[index] ? '[✓]' : '[ ]';
+            text += `${isChecked} ${index + 1}. ${item.innerText}\n`;
+        });
+
+        const checkedCount = getCheckedCount();
+        if (checkedCount > 0) {
+            const decisionScore = Math.round((checkedCount / checklistItems.length) * 100);
+            text += `\nCURRENT STATUS:\n`;
+            text += `===============\n`;
+            text += `Items checked: ${checkedCount}/${checklistItems.length}\n`;
+            text += `Decision Clarity Score: ${decisionScore}%\n`;
+        }
+
+        navigator.clipboard.writeText(text);
+
+        const btn = document.getElementById('copyBtn');
+        const originalHTML = btn.innerHTML;
+        const originalBg = btn.style.background;
+
+        btn.innerHTML = '<i class="fas fa-check"></i> Checklist copied';
+        btn.style.background = '#10b981';
+
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.background = originalBg;
+        }, 2000);
+
+        window.__tep_copied = true;
+    }
+
+    /* ===========================
+       PRINT / SAVE PDF
+    =========================== */
+    function printChecklistPDF() {
+        window.print();
+        window.__tep_printed = true;
+    }
+
+    /* ===========================
+       CLEAR ALL
+    =========================== */
+    function clearAllChecklist() {
+        const items = document.querySelectorAll('.checklist-item');
+        items.forEach((container, index) => {
+            const icon = container.querySelector('i');
+            if (!icon) return;
+            icon.classList.remove('fa-check-square');
+            if (!icon.classList.contains('fa-square')) icon.classList.add('fa-square');
+            icon.style.color = '#7B5FC4';
+            window.checkedItems[index] = false;
+            container.setAttribute("aria-pressed", "false");
+        });
+
+        const report = document.getElementById('smartSummary');
+        if (report) report.classList.remove('active');
+
+        updateDecisionScore();
+        markUnsaved();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        window.__tep_cleared = true;
+    }
+
+    /* ===========================
+       MY PLAYBOOK (LOCALSTORAGE)
+    =========================== */
+    const PLAYBOOK_KEY = 'tepSavedItems';
+    const CURRENT_TOOL_ID = 'decision-clarity-checklist';
+    const CURRENT_TOOL_TITLE = 'Decision Clarity Checklist';
+    const CURRENT_TOOL_TYPE = 'Checklist';
+
+    function getSavedItems() {
+        try {
+            const raw = localStorage.getItem(PLAYBOOK_KEY);
+            if (!raw) return [];
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function setSavedItems(items) {
+        try { localStorage.setItem(PLAYBOOK_KEY, JSON.stringify(items)); }
+        catch (e) {}
+    }
+
+    function openPlaybookUI() {
+        const overlay = document.getElementById('playbookOverlay');
+        const sidebar = document.getElementById('playbookSidebar');
+        if (overlay && sidebar) {
+            overlay.classList.add('open');
+            sidebar.classList.add('open');
+        }
+    }
+
+    function closePlaybookUI() {
+        const overlay = document.getElementById('playbookOverlay');
+        const sidebar = document.getElementById('playbookSidebar');
+        if (overlay && sidebar) {
+            overlay.classList.remove('open');
+            sidebar.classList.remove('open');
+        }
+    }
+
+    function wireHeaderMyPlaybookHooks() {
+        const myPlaybookMobileTab = document.getElementById('mobileMyPlaybookTab');
+        if (!myPlaybookMobileTab) return;
+
+        myPlaybookMobileTab.addEventListener('click', (e) => {
+            e.preventDefault();
+            openPlaybookUI();
+
+            const navLinks = document.querySelector('.nav-links');
+            const mobileToggle = document.getElementById("mobileToggle");
+            if (navLinks && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                if (mobileToggle) mobileToggle.setAttribute("aria-expanded", "false");
+                const icon = document.querySelector('.mobile-toggle i');
+                if (icon) {
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
                 }
             }
         });
-    });
-
-    const framingScore = dimensionScores.framing.total
-        ? Math.round((dimensionScores.framing.checked / dimensionScores.framing.total) * 100)
-        : 0;
-    const analysisScore = dimensionScores.analysis.total
-        ? Math.round((dimensionScores.analysis.checked / dimensionScores.analysis.total) * 100)
-        : 0;
-    const alignmentScore = dimensionScores.alignment.total
-        ? Math.round((dimensionScores.alignment.checked / dimensionScores.alignment.total) * 100)
-        : 0;
-    const riskScore = dimensionScores.risk.total
-        ? Math.round((dimensionScores.risk.checked / dimensionScores.risk.total) * 100)
-        : 0;
-
-    document.getElementById('scoreFraming').textContent = framingScore + '%';
-    document.getElementById('scoreAnalysis').textContent = analysisScore + '%';
-    document.getElementById('scoreAlignment').textContent = alignmentScore + '%';
-    document.getElementById('scoreRisk').textContent = riskScore + '%';
-}
-
-/* ===========================
-   SMART SUMMARY
-=========================== */
-function generateSmartSummary() {
-    const checkedCount = checkedItems.filter(Boolean).length;
-    const totalCount = checkedItems.length;
-    const decisionScore = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
-
-    document.getElementById('summaryScore').textContent = decisionScore + '%';
-
-    const summarySection = document.getElementById('smartSummary');
-    summarySection.classList.add('active');
-    summarySection.scrollIntoView({ behavior: 'smooth' });
-
-    generateRedFlags();
-    generateNextSteps(decisionScore);
-    generateRecommendedResources();
-}
-
-function generateRedFlags() {
-    const redFlagsGrid = document.getElementById('redFlagsGrid');
-    redFlagsGrid.innerHTML = '';
-
-    const uncheckedCategories = {};
-    checkedItems.forEach((checked, index) => {
-        if (!checked) {
-            const cat = itemCategories[index];
-            uncheckedCategories[cat] = (uncheckedCategories[cat] || 0) + 1;
-        }
-    });
-
-    const redFlags = [];
-
-    if (uncheckedCategories.framing || uncheckedCategories.criteria || uncheckedCategories.timing) {
-        redFlags.push({
-            title: 'The decision isn’t defined tightly enough',
-            description: 'If the decision statement, criteria, or timing is fuzzy, the room will debate the topic — not decide the move.',
-            icon: 'fas fa-bullseye'
-        });
     }
 
-    if (uncheckedCategories.evidence || uncheckedCategories.options || uncheckedCategories.tradeoffs) {
-        redFlags.push({
-            title: 'Options are under-analysed',
-            description: 'When evidence and trade-offs aren’t explicit, decisions get made on confidence, politics, or convenience.',
-            icon: 'fas fa-scale-balanced'
-        });
-    }
+    function initializePlaybook() {
+        const playbookOverlay = document.getElementById('playbookOverlay');
+        const playbookSidebar = document.getElementById('playbookSidebar');
+        const playbookButton = document.getElementById('myPlaybookButton');
+        const closeBtn = document.getElementById('closePlaybook');
+        const saveItemBtn = document.getElementById('saveBtn');
 
-    if (uncheckedCategories.stakeholders || uncheckedCategories.ownership || uncheckedCategories.comms) {
-        redFlags.push({
-            title: 'Buy-in risk is higher than it looks',
-            description: 'If you haven’t mapped decision ownership and blockers, you can “win the meeting” and still lose the execution.',
-            icon: 'fas fa-users'
-        });
-    }
+        if (!playbookOverlay || !playbookSidebar || !playbookButton || !closeBtn || !saveItemBtn) return;
 
-    if (uncheckedCategories.risk || uncheckedCategories.guardrails || uncheckedCategories.downstream) {
-        redFlags.push({
-            title: 'No guardrails = future rework',
-            description: 'Without thresholds and revisit conditions, today’s decision becomes tomorrow’s emergency when reality shifts.',
-            icon: 'fas fa-shield-halved'
-        });
-    }
-
-    if (redFlags.length === 0) {
-        redFlags.push({
-            title: 'No major clarity gaps',
-            description: 'Your decision thinking is bounded and decision-ready. Your advantage now is execution quality and stakeholder sequencing.',
-            icon: 'fas fa-check-circle'
-        });
-    }
-
-    while (redFlags.length < 3) {
-        redFlags.push({
-            title: 'Hidden assumption exposure',
-            description: 'If you can’t name assumptions, you can’t test them. Make the assumptions visible before someone else uses them against you.',
-            icon: 'fas fa-eye'
-        });
-    }
-
-    redFlags.slice(0, 3).forEach(flag => {
-        const card = document.createElement('div');
-        card.className = 'red-flag-card';
-        card.innerHTML = `
-            <div class="flag-icon"><i class="${flag.icon}"></i></div>
-            <h4 class="flag-title">${flag.title}</h4>
-            <p class="flag-description">${flag.description}</p>
-        `;
-        redFlagsGrid.appendChild(card);
-    });
-}
-
-function generateNextSteps(decisionScore) {
-    const nextStepsGrid = document.getElementById('nextStepsGrid');
-    nextStepsGrid.innerHTML = '';
-
-    let steps = [];
-
-    if (decisionScore >= 75) {
-        steps = [
-            {
-                title: 'Write the 6-line decision note',
-                description: 'Decision statement, criteria, options, trade-offs, risks/guardrails, next steps. Share it before the meeting.',
-                icon: 'fas fa-file-lines'
-            },
-            {
-                title: 'Pre-wire the real blockers',
-                description: 'Speak to the 1–2 people who can stop the decision. Align objections early so the meeting becomes confirmation.',
-                icon: 'fas fa-handshake'
-            },
-            {
-                title: 'Lock the execution rhythm',
-                description: 'Define update cadence, ownership, and what “done” looks like so the decision becomes a plan, not a slide.',
-                icon: 'fas fa-calendar-week'
-            }
-        ];
-    } else if (decisionScore >= 40) {
-        steps = [
-            {
-                title: 'Tighten the decision statement',
-                description: 'Rewrite it as: “We are deciding whether to X by Y, measured by Z.” If you can’t, you’re not ready.',
-                icon: 'fas fa-pen-to-square'
-            },
-            {
-                title: 'Force two options + one trade-off each',
-                description: 'Create two viable options and name one real downside for each. This reduces political “vibes decisions”.',
-                icon: 'fas fa-code-branch'
-            },
-            {
-                title: 'Define guardrails before approval',
-                description: 'State what would trigger a revisit (cost threshold, time slip, quality signal). This protects you later.',
-                icon: 'fas fa-gauge-high'
-            }
-        ];
-    } else {
-        steps = [
-            {
-                title: 'Pause the decision — define first',
-                description: 'Don’t decide “something” under pressure. Define the decision, criteria, and owner before debating solutions.',
-                icon: 'fas fa-pause'
-            },
-            {
-                title: 'Separate facts from assumptions',
-                description: 'List what you know vs what you’re assuming. Pick one assumption you can test quickly this week.',
-                icon: 'fas fa-flask'
-            },
-            {
-                title: 'Map stakeholders and politics explicitly',
-                description: 'Identify who wins/loses and who carries the downstream work. Decisions fail when this is invisible.',
-                icon: 'fas fa-chess'
-            }
-        ];
-    }
-
-    steps.forEach(step => {
-        const card = document.createElement('div');
-        card.className = 'next-step-card';
-        card.innerHTML = `
-            <div class="step-icon"><i class="${step.icon}"></i></div>
-            <h4 class="step-title">${step.title}</h4>
-            <p class="step-description">${step.description}</p>
-        `;
-        nextStepsGrid.appendChild(card);
-    });
-}
-
-function generateRecommendedResources() {
-    const resourcesGrid = document.getElementById('resourcesGrid');
-    resourcesGrid.innerHTML = '';
-
-    const uncheckedCategories = {};
-    checkedItems.forEach((checked, index) => {
-        if (!checked) {
-            const cat = itemCategories[index];
-            uncheckedCategories[cat] = (uncheckedCategories[cat] || 0) + 1;
-        }
-    });
-
-    const resources = [];
-
-    resources.push({
-        title: 'Stakeholder Mapping Grid',
-        description: 'Map influence vs interest, identify blockers, and decide who to pre-wire before you “go public” with the decision.',
-        icon: 'fas fa-diagram-project',
-        link: 'stakeholder-mapping-grid.html'
-    });
-
-    resources.push({
-        title: 'Multi-Factor Risk Calculator',
-        description: 'Pressure-test the decision across risk types (delivery, reputational, political, operational) so surprises don’t land on you.',
-        icon: 'fas fa-triangle-exclamation',
-        link: 'multi-factor-risk-calculator.html'
-    });
-
-    if (uncheckedCategories.evidence || uncheckedCategories.tradeoffs || uncheckedCategories.options) {
-        resources.push({
-            title: 'Situation Analysis Framework',
-            description: 'A clean way to summarise context, constraints, and decision drivers — without turning it into a 20-slide story.',
-            icon: 'fas fa-compass',
-            link: 'situation-analysis-framework.html'
-        });
-    } else {
-        resources.push({
-            title: 'Decision Clarity Framework',
-            description: 'A compact structure for decision memos: criteria, trade-offs, guardrails, and execution rhythm.',
-            icon: 'fas fa-sitemap',
-            link: 'decision-clarity-framework.html'
-        });
-    }
-
-    resources.slice(0, 3).forEach(resource => {
-        const card = document.createElement('div');
-        card.className = 'resource-card';
-        card.innerHTML = `
-            <div class="resource-icon"><i class="${resource.icon}"></i></div>
-            <h4 class="resource-title">${resource.title}</h4>
-            <p class="resource-description">${resource.description}</p>
-            <a href="${resource.link}" class="resource-link">
-                Access tool <i class="fas fa-arrow-right"></i>
-            </a>
-        `;
-        resourcesGrid.appendChild(card);
-    });
-}
-
-/* ===========================
-   COPY CHECKLIST
-=========================== */
-function copyChecklist() {
-    const checklistName = 'DECISION CLARITY CHECKLIST';
-    const mainHeading = document.querySelector('.hero-main-heading').textContent;
-    const checklistItems = document.querySelectorAll('.checklist-text');
-
-    let text = checklistName + '\n';
-    text += '=============================\n\n';
-    text += mainHeading + '\n\n';
-    text += 'CHECKLIST ITEMS:\n';
-    text += '================\n\n';
-
-    checklistItems.forEach((item, index) => {
-        const isChecked = checkedItems[index] ? '[✓]' : '[ ]';
-        text += `${isChecked} ${index + 1}. ${item.innerText}\n`;
-    });
-
-    const checkedCount = checkedItems.filter(Boolean).length;
-    if (checkedCount > 0) {
-        const decisionScore = Math.round((checkedCount / checklistItems.length) * 100);
-        text += `\nCURRENT STATUS:\n`;
-        text += `===============\n`;
-        text += `Items checked: ${checkedCount}/${checklistItems.length}\n`;
-        text += `Decision Clarity Score: ${decisionScore}%\n`;
-    }
-
-    navigator.clipboard.writeText(text);
-
-    const btn = document.getElementById('copyBtn');
-    const originalHTML = btn.innerHTML;
-    const originalBg = btn.style.background;
-
-    btn.innerHTML = '<i class="fas fa-check"></i> Checklist copied';
-    btn.style.background = '#10b981';
-
-    setTimeout(() => {
-        btn.innerHTML = originalHTML;
-        btn.style.background = originalBg;
-    }, 2000);
-}
-
-/* ===========================
-   MY PLAYBOOK (LOCALSTORAGE)
-=========================== */
-const PLAYBOOK_KEY = 'tepSavedItems';
-const CURRENT_TOOL_ID = 'decision-clarity-checklist';
-const CURRENT_TOOL_TITLE = 'Decision Clarity Checklist';
-const CURRENT_TOOL_TYPE = 'Checklist';
-
-function getSavedItems() {
-    try {
-        const raw = localStorage.getItem(PLAYBOOK_KEY);
-        if (!raw) return [];
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-        console.warn('Error reading saved items:', e);
-        return [];
-    }
-}
-
-function setSavedItems(items) {
-    try {
-        localStorage.setItem(PLAYBOOK_KEY, JSON.stringify(items));
-    } catch (e) {
-        console.warn('Error saving items:', e);
-    }
-}
-
-function initializePlaybook() {
-    const playbookOverlay = document.getElementById('playbookOverlay');
-    const playbookSidebar = document.getElementById('playbookSidebar');
-    const playbookButton = document.getElementById('myPlaybookButton');
-    const closeBtn = document.getElementById('closePlaybook');
-    const saveItemBtn = document.getElementById('saveBtn');
-
-    if (!playbookOverlay || !playbookSidebar || !playbookButton || !closeBtn || !saveItemBtn) return;
-
-    renderSavedItems();
-
-    const savedItems = getSavedItems();
-    const isAlreadySaved = savedItems.some(item => item.id === CURRENT_TOOL_ID);
-    updateSaveButtonState(saveItemBtn, isAlreadySaved);
-
-    saveItemBtn.addEventListener('click', () => {
-        const items = getSavedItems();
-        const index = items.findIndex(item => item.id === CURRENT_TOOL_ID);
-        let nowSaved;
-
-        if (index === -1) {
-            const toolLink = window.location.pathname.split('/').pop() || 'decision-clarity-checklist.html';
-            items.push({
-                id: CURRENT_TOOL_ID,
-                title: CURRENT_TOOL_TITLE,
-                type: CURRENT_TOOL_TYPE,
-                link: toolLink,
-                savedAt: new Date().toISOString()
-            });
-            nowSaved = true;
-        } else {
-            items.splice(index, 1);
-            nowSaved = false;
-        }
-
-        setSavedItems(items);
-        updateSaveButtonState(saveItemBtn, nowSaved);
         renderSavedItems();
-    });
 
-    playbookButton.addEventListener('click', () => {
-        playbookOverlay.classList.add('open');
-        playbookSidebar.classList.add('open');
-    });
+        const savedItems = getSavedItems();
+        const isAlreadySaved = savedItems.some(item => item.id === CURRENT_TOOL_ID);
+        updateSaveButtonState(saveItemBtn, isAlreadySaved);
 
-    closeBtn.addEventListener('click', () => {
-        playbookOverlay.classList.remove('open');
-        playbookSidebar.classList.remove('open');
-    });
+        saveItemBtn.addEventListener('click', () => {
+            const items = getSavedItems();
+            const index = items.findIndex(item => item.id === CURRENT_TOOL_ID);
+            let nowSaved;
 
-    playbookOverlay.addEventListener('click', (e) => {
-        if (e.target === playbookOverlay) {
-            playbookOverlay.classList.remove('open');
-            playbookSidebar.classList.remove('open');
-        }
-    });
-}
+            if (index === -1) {
+                const toolLink = window.location.pathname.split('/').pop() || 'decision-clarity-checklist.html';
+                items.push({
+                    id: CURRENT_TOOL_ID,
+                    title: CURRENT_TOOL_TITLE,
+                    type: CURRENT_TOOL_TYPE,
+                    link: toolLink,
+                    savedAt: new Date().toISOString()
+                });
+                nowSaved = true;
+            } else {
+                items.splice(index, 1);
+                nowSaved = false;
+            }
 
-function updateSaveButtonState(button, isSaved) {
-    if (!button) return;
-    const icon = button.querySelector('i');
-    const label = button.querySelector('span');
+            setSavedItems(items);
+            updateSaveButtonState(saveItemBtn, nowSaved);
+            renderSavedItems();
+        });
 
-    if (isSaved) {
-        button.classList.add('saved');
-        if (icon) {
-            icon.classList.remove('far');
-            icon.classList.add('fas');
-        }
-        if (label) label.textContent = 'Saved';
-    } else {
-        button.classList.remove('saved');
-        if (icon) {
-            icon.classList.remove('fas');
-            icon.classList.add('far');
-        }
-        if (label) label.textContent = 'Save item';
-    }
-}
+        playbookButton.addEventListener('click', openPlaybookUI);
+        closeBtn.addEventListener('click', closePlaybookUI);
 
-function renderSavedItems() {
-    const listEl = document.getElementById('savedItemsList');
-    const emptyEl = document.getElementById('savedItemsEmpty');
-    if (!listEl || !emptyEl) return;
-
-    const items = getSavedItems();
-    listEl.innerHTML = '';
-
-    if (!items.length) {
-        emptyEl.style.display = 'block';
-        return;
+        playbookOverlay.addEventListener('click', (e) => {
+            if (e.target === playbookOverlay) closePlaybookUI();
+        });
     }
 
-    emptyEl.style.display = 'none';
+    function wireFabKeyboard() {
+        const fab = document.getElementById("myPlaybookButton");
+        if (!fab) return;
+        fab.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openPlaybookUI();
+            }
+        });
+    }
 
-    items.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'saved-item';
+    function updateSaveButtonState(button, isSaved) {
+        if (!button) return;
+        const icon = button.querySelector('i');
+        const label = button.querySelector('span');
 
-        const savedDate = item.savedAt ? new Date(item.savedAt) : null;
-        const dateText = savedDate
-            ? savedDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-            : '';
+        if (isSaved) {
+            button.classList.add('saved');
+            if (icon) { icon.classList.remove('far'); icon.classList.add('fas'); }
+            if (label) label.textContent = 'Saved';
+        } else {
+            button.classList.remove('saved');
+            if (icon) { icon.classList.remove('fas'); icon.classList.add('far'); }
+            if (label) label.textContent = 'Save item';
+        }
+    }
 
-        li.innerHTML = `
-            <div class="saved-item-title-row">
-                <span class="saved-item-title">${item.title}</span>
-                <span class="saved-item-type">${item.type}</span>
-            </div>
-            <div class="saved-item-meta">${dateText ? `Saved on ${dateText}` : ''}</div>
-            <a class="saved-item-link" href="${item.link}">
-                Open <i class="fas fa-arrow-right"></i>
-            </a>
-        `;
-        listEl.appendChild(li);
-    });
-}
+    function renderSavedItems() {
+        const listEl = document.getElementById('savedItemsList');
+        const emptyEl = document.getElementById('savedItemsEmpty');
+        if (!listEl || !emptyEl) return;
+
+        const items = getSavedItems();
+        listEl.innerHTML = '';
+
+        if (!items.length) {
+            emptyEl.style.display = 'block';
+            return;
+        }
+
+        emptyEl.style.display = 'none';
+
+        items.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'saved-item';
+            const savedDate = item.savedAt ? new Date(item.savedAt) : null;
+            const dateText = savedDate
+                ? savedDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+                : '';
+
+            li.innerHTML = `
+                <div class="saved-item-title-row">
+                    <span class="saved-item-title">${item.title}</span>
+                    <span class="saved-item-type">${item.type}</span>
+                </div>
+                <div class="saved-item-meta">${dateText ? `Saved on ${dateText}` : ''}</div>
+                <a class="saved-item-link" href="${item.link}">
+                    Open <i class="fas fa-arrow-right"></i>
+                </a>
+            `;
+            listEl.appendChild(li);
+        });
+    }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/supabaseClient.js"></script>
-<script src="assets/accessControl.js"></script>
+<!-- ✅ ONE unified Supabase module -->
+<script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+    /* ===========================
+       SUPABASE INIT
+    =========================== */
+    const SB_URL = window.TEP_SUPABASE_URL;
+    const SB_KEY = window.TEP_SUPABASE_ANON_KEY;
+    const supabase = (SB_URL && SB_KEY) ? createClient(SB_URL, SB_KEY) : null;
+
+    /* ===========================
+       CONSTANTS
+    =========================== */
+    const TOOL_ID = "decision-clarity-checklist";
+    const TOOL_VERSION = 1;
+
+    /* ===========================
+       HELPERS
+    =========================== */
+    function initialsFrom(fullName, email) {
+        const name = (fullName || "").trim();
+        if (name) {
+            const parts = name.split(/\s+/).filter(Boolean);
+            const a = parts[0]?.[0] || "";
+            const b = parts.length > 1 ? (parts[parts.length - 1]?.[0] || "") : "";
+            const init = (a + b).toUpperCase();
+            return init || "ME";
+        }
+        const em = (email || "").trim();
+        if (em) return em.slice(0, 2).toUpperCase();
+        return "ME";
+    }
+
+    async function getAuthedUser() {
+        try {
+            if (!supabase) return null;
+            const { data } = await supabase.auth.getUser();
+            return data?.user || null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /* ===========================
+       ELEMENTS
+    =========================== */
+    const toolMain = document.getElementById("toolMain");
+    const initialsBtn = document.getElementById("userInitialsBtn");
+    const mobileProfileBtn = document.getElementById("mobileProfileBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const authOverlay = document.getElementById("authLockOverlay");
+    const saveProgressBtn = document.getElementById("saveProgressBtn");
+
+    /* ===========================
+       SAFE TELEMETRY
+    =========================== */
+    async function safeLogActivity(event_name, meta = {}) {
+        try {
+            if (!supabase) return;
+            const user = await getAuthedUser();
+            if (!user) return;
+
+            await supabase.from("activity_log").insert([{
+                user_id: user.id,
+                event_name,
+                meta,
+                created_at: new Date().toISOString()
+            }]);
+        } catch (e) {
+            // fail silently
+        }
+    }
+
+    /* ===========================
+       TRUE HARD LOCK (inert + capture)
+    =========================== */
+    function isLocked() {
+        return document.body.classList.contains("auth-locked");
+    }
+
+    function setToolInert(locked) {
+        try {
+            if (toolMain) toolMain.toggleAttribute("inert", !!locked);
+        } catch (e) {
+            // inert not supported in older browsers; fallback is capture blockers below
+        }
+    }
+
+    function captureBlocker(e) {
+        if (!isLocked()) return;
+        // allow clicks within the auth modal itself
+        const inAuth = e.target && (e.target.closest ? e.target.closest("#authLockOverlay") : null);
+        if (inAuth) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function keyBlocker(e) {
+        if (!isLocked()) return;
+        const inAuth = e.target && (e.target.closest ? e.target.closest("#authLockOverlay") : null);
+        if (inAuth) return;
+
+        // block tab/enter/space/arrow keys that could trigger UI
+        const blockKeys = ["Tab","Enter"," ","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"];
+        if (blockKeys.includes(e.key)) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+
+    // Capture phase listeners (true hard lock)
+    document.addEventListener("click", captureBlocker, true);
+    document.addEventListener("pointerdown", captureBlocker, true);
+    document.addEventListener("keydown", keyBlocker, true);
+
+    function setToolLocked(locked) {
+        document.body.classList.toggle("auth-locked", !!locked);
+
+        // overlay
+        if (authOverlay) {
+            authOverlay.classList.toggle("active", !!locked);
+            authOverlay.setAttribute("aria-hidden", locked ? "false" : "true");
+        }
+
+        // inert
+        setToolInert(locked);
+
+        // explicit button sync (fix sticky disabled states)
+        if (typeof window.syncActionButtons === "function") {
+            window.syncActionButtons(locked);
+        }
+    }
+
+    /* ===========================
+       HEADER STATE
+    =========================== */
+    function setSignedOutHeader() {
+        if (initialsBtn) {
+            initialsBtn.textContent = "…";
+            initialsBtn.href = "./sign-in.html";
+        }
+        if (mobileProfileBtn) mobileProfileBtn.href = "./sign-in.html";
+        if (logoutBtn) logoutBtn.style.display = "none";
+    }
+
+    function setSignedInHeader({ initials }) {
+        if (initialsBtn) {
+            initialsBtn.textContent = initials || "ME";
+            initialsBtn.href = "profile.html";
+        }
+        if (mobileProfileBtn) mobileProfileBtn.href = "profile.html";
+        if (logoutBtn) logoutBtn.style.display = "inline-flex";
+    }
+
+    /* ===========================
+       PROFILE LOOKUP (Phase 1: full_name only)
+    =========================== */
+    async function getUserName(user) {
+        const fallbackName =
+            user?.user_metadata?.full_name ||
+            user?.user_metadata?.name ||
+            "";
+
+        try {
+            const { data, error } = await supabase
+                .from("profiles")
+                .select("full_name")
+                .eq("id", user.id)
+                .maybeSingle();
+
+            if (!error && data) {
+                return (data.full_name || fallbackName);
+            }
+        } catch (e) {}
+
+        return fallbackName;
+    }
+
+    /* ===========================
+       TOOL STATE (LOAD + SAVE)
+    =========================== */
+    function getLocalSnapshot() {
+        return {
+            tool_id: TOOL_ID,
+            version: TOOL_VERSION,
+            updated_at: new Date().toISOString(),
+            checkedItems: Array.isArray(window.checkedItems) ? window.checkedItems : []
+        };
+    }
+
+    function applySnapshot(snapshot) {
+        try {
+            const arr = snapshot?.checkedItems;
+            if (!Array.isArray(arr)) return;
+
+            const items = document.querySelectorAll(".checklist-item");
+            const max = Math.min(items.length, arr.length);
+
+            if (!Array.isArray(window.checkedItems) || window.checkedItems.length !== items.length) {
+                window.checkedItems = new Array(items.length).fill(false);
+            }
+
+            for (let i = 0; i < max; i++) {
+                const container = items[i];
+                const icon = container?.querySelector("i");
+                const checked = !!arr[i];
+
+                window.checkedItems[i] = checked;
+
+                if (!container) continue;
+                container.setAttribute("aria-pressed", checked ? "true" : "false");
+
+                if (!icon) continue;
+
+                if (checked) {
+                    icon.classList.remove("fa-square");
+                    icon.classList.add("fa-check-square");
+                    icon.style.color = "#5A4496";
+                } else {
+                    icon.classList.remove("fa-check-square");
+                    icon.classList.add("fa-square");
+                    icon.style.color = "#7B5FC4";
+                }
+            }
+
+            if (typeof window.updateDecisionScore === "function") {
+                window.updateDecisionScore();
+            }
+        } catch (e) {}
+    }
+
+    async function loadToolStateFromCloud(user) {
+        if (!supabase || !user) return;
+
+        try {
+            const { data, error } = await supabase
+                .from("tool_states")
+                .select("state")
+                .eq("user_id", user.id)
+                .eq("tool_id", TOOL_ID)
+                .order("updated_at", { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (error || !data?.state) {
+                // nothing saved yet -> show last saved if present
+                if (typeof window.markNeutral === "function") window.markNeutral();
+                return;
+            }
+
+            applySnapshot(data.state);
+
+            if (typeof window.markLoaded === "function") window.markLoaded();
+        } catch (e) {
+            if (typeof window.markNeutral === "function") window.markNeutral();
+        }
+    }
+
+    async function saveToolStateToCloud(user) {
+        if (!supabase || !user) return { ok: false, message: "Not signed in." };
+
+        const snapshot = getLocalSnapshot();
+
+        try {
+            const { error } = await supabase
+                .from("tool_states")
+                .upsert([{
+                    user_id: user.id,
+                    tool_id: TOOL_ID,
+                    tool_version: TOOL_VERSION,
+                    state: snapshot,
+                    updated_at: new Date().toISOString()
+                }], { onConflict: "user_id,tool_id" });
+
+            if (error) return { ok: false, message: error.message || "Save failed." };
+
+            return { ok: true, message: "Progress saved to your account.", at: snapshot.updated_at };
+        } catch (e) {
+            return { ok: false, message: "Save failed." };
+        }
+    }
+
+    /* ===========================
+       OPTIONAL: light table sanity checks
+    =========================== */
+    async function softCheckTables(user) {
+        try {
+            if (!supabase || !user) return;
+            // Quick no-op selects; failures are ignored.
+            await supabase.from("profiles").select("id").eq("id", user.id).limit(1);
+            await supabase.from("tool_states").select("tool_id").eq("user_id", user.id).limit(1);
+        } catch (e) {}
+    }
+
+    /* ===========================
+       PAGE INIT (AUTH + LOCK)
+    =========================== */
+    async function handleSignedOut() {
+        setSignedOutHeader();
+        setToolLocked(true);
+        if (typeof window.setSaveStatus === "function") window.setSaveStatus("", "info");
+    }
+
+    async function handleSignedIn(user) {
+        const full_name = await getUserName(user);
+        const initials = initialsFrom(full_name, user.email);
+
+        setSignedInHeader({ initials });
+        setToolLocked(false);
+
+        // enable save (unlocked)
+        if (saveProgressBtn) saveProgressBtn.disabled = false;
+
+        if (typeof window.updateDecisionScore === "function") {
+            window.updateDecisionScore();
+        }
+
+        await loadToolStateFromCloud(user);
+
+        if (typeof window.updateDecisionScore === "function") {
+            window.updateDecisionScore();
+        }
+
+        await softCheckTables(user);
+        await safeLogActivity("tool_opened", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
+    }
+
+    async function initAuthAndLock() {
+        if (!supabase) {
+            setSignedOutHeader();
+            setToolLocked(true);
+            if (typeof window.setSaveStatus === "function") window.setSaveStatus("Missing Supabase config.", "err");
+            return;
+        }
+
+        const user = await getAuthedUser();
+        if (!user) {
+            await handleSignedOut();
+        } else {
+            await handleSignedIn(user);
+        }
+
+        supabase.auth.onAuthStateChange(async (_event, session) => {
+            const u = session?.user || null;
+            if (!u) await handleSignedOut();
+            else await handleSignedIn(u);
+        });
+    }
+
+    /* ===========================
+       LOGOUT
+    =========================== */
+    async function wireLogout() {
+        if (!logoutBtn) return;
+        logoutBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            if (!supabase) return;
+            try {
+                await safeLogActivity("logout_clicked", { tool_id: TOOL_ID });
+                await supabase.auth.signOut();
+                window.location.href = "./sign-in.html";
+            } catch (e2) {
+                window.location.href = "./sign-in.html";
+            }
+        });
+    }
+
+    /* ===========================
+       SAVE PROGRESS (MANUAL ONLY)
+    =========================== */
+    async function wireSaveProgress() {
+        if (!saveProgressBtn) return;
+
+        saveProgressBtn.addEventListener("click", async () => {
+            if (typeof window.setSaveStatus === "function") window.setSaveStatus("Saving…", "info");
+            saveProgressBtn.disabled = true;
+
+            const user = await getAuthedUser();
+            if (!user) {
+                if (typeof window.setSaveStatus === "function") window.setSaveStatus("Please sign in to save.", "err");
+                setToolLocked(true);
+                saveProgressBtn.disabled = false;
+                return;
+            }
+
+            const res = await saveToolStateToCloud(user);
+            if (res.ok) {
+                if (typeof window.markSaved === "function") window.markSaved(res.at);
+                await safeLogActivity("tool_saved", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
+            } else {
+                if (typeof window.setSaveStatus === "function") window.setSaveStatus(res.message || "Save failed.", "err");
+            }
+
+            saveProgressBtn.disabled = false;
+        });
+    }
+
+    /* ===========================
+       EXTRA TELEMETRY HOOKS (print/clear/copy)
+    =========================== */
+    function wirePrintAndClearTelemetry() {
+        const printBtn = document.getElementById("printBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const copyBtn = document.getElementById("copyBtn");
+
+        if (printBtn) {
+            printBtn.addEventListener("click", async () => {
+                const user = await getAuthedUser();
+                if (user) await safeLogActivity("tool_printed", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener("click", async () => {
+                const user = await getAuthedUser();
+                if (user) await safeLogActivity("tool_cleared", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
+            });
+        }
+
+        if (copyBtn) {
+            copyBtn.addEventListener("click", async () => {
+                const user = await getAuthedUser();
+                if (user) await safeLogActivity("tool_copied", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
+            });
+        }
+    }
+
+    /* ===========================
+       BOOT
+    =========================== */
+    wireLogout();
+    wireSaveProgress();
+    wirePrintAndClearTelemetry();
+    initAuthAndLock();
+</script>
+
 </body>
 </html>
-
-
