@@ -2284,17 +2284,17 @@
         const copyBtn = document.getElementById('copyBtn');
         const saveProgressBtn = document.getElementById('saveProgressBtn');
 
-        const checkedCount = getCheckedCount();
+    const checkedCount = getCheckedCount();
 
-        if (generateBtn) generateBtn.disabled = !!isLocked || checkedCount === 0;
-        if (clearBtn) clearBtn.disabled = !!isLocked || checkedCount === 0;
-        if (printBtn) printBtn.disabled = !!isLocked;
-        if (copyBtn) copyBtn.disabled = !!isLocked;
-        if (saveProgressBtn) {
-            if (isLocked) saveProgressBtn.disabled = true;
-        }
+       if (generateBtn) generateBtn.disabled = !!isLocked || checkedCount === 0;
+       if (clearBtn) clearBtn.disabled = !!isLocked || checkedCount === 0;
+       if (printBtn) printBtn.disabled = !!isLocked;
+       if (copyBtn) copyBtn.disabled = !!isLocked;
+
+       // ✅ this is the fix
+       if (saveProgressBtn) saveProgressBtn.disabled = !!isLocked;
     }
-    window.syncActionButtons = syncActionButtons;
+
 
     function updateDecisionScore() {
         const checkedCount = getCheckedCount();
@@ -3279,3 +3279,4 @@
 
 </body>
 </html>
+
