@@ -233,9 +233,9 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;            /* NEW: hard centre */
+      align-items: center;            /* hard centre */
       text-align: center;
-      margin-top: 80px;
+      margin-top: 0;
       padding: 0;
       width: 100%;
       position: relative;
@@ -243,16 +243,16 @@
     }
     .hero-content {
       width: 100%;
-      max-width: 1100px;             /* NEW: keeps everything truly centred and consistent */
-      padding: 86px 30px 18px;
+      max-width: 1100px;
+      padding: 141px 30px 18px;
       text-align: center;
       position: relative;
       z-index: 1;
-      margin: 0 auto;                /* NEW */
-      display: flex;                 /* NEW */
-      flex-direction: column;        /* NEW */
-      align-items: center;           /* NEW */
-      justify-content: center;       /* NEW */
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .hero-headline {
@@ -269,48 +269,13 @@
 
     .hero-line.bottom {
       display: flex;
-      align-items: center;           /* NEW: centre baseline */
+      align-items: center;
       justify-content: center;
       gap: 18px;
       flex-wrap: nowrap;
       white-space: nowrap;
     }
     .with-our { display: inline-block; white-space: nowrap; }
-
-    .flashing-words {
-      font-size: 84px;
-      font-weight: 700;
-      line-height: 1.25;
-      margin: 0;
-      letter-spacing: -1px;
-      min-height: 1.25em;
-      position: relative;
-      height: 105px;
-      width: 360px;
-      text-align: center;            /* NEW */
-    }
-    .flashing-word {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      opacity: 0;
-      animation: flashWords 15s infinite;
-      color: var(--accent-purple-dark);
-      text-align: center;            /* NEW */
-    }
-    .flashing-word:nth-child(1) { animation-delay: 0s; }
-    .flashing-word:nth-child(2) { animation-delay: 2s; }
-    .flashing-word:nth-child(3) { animation-delay: 4s; }
-    .flashing-word:nth-child(4) { animation-delay: 6s; }
-    .flashing-word:nth-child(5) { animation-delay: 8s; }
-    .flashing-word:nth-child(6) { animation-delay: 10s; }
-    .flashing-word:nth-child(7) { animation-delay: 12s; }
-
-    @keyframes flashWords {
-      0%, 12% { opacity: 0; }
-      2%, 10% { opacity: 1; }
-    }
 
     .hero-subhead {
       font-size: 22px;
@@ -797,23 +762,267 @@
     .footer-newsletter-button { background: var(--accent-purple); color: white; border: none; padding: 12px 20px; border-radius: var(--pill-radius); font-weight: 900; cursor: pointer; font-size: 14px; transition: all 0.3s ease; }
     .footer-newsletter-button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(123, 95, 196, 0.3); }
 
-    .chat-widget { position: fixed; bottom: 30px; right: 30px; z-index: 1000; }
-    .chat-toggle { width: 60px; height: 60px; background: var(--accent-purple); color: white; border-radius: var(--chat-radius); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 15px rgba(123, 95, 196, 0.4); transition: all 0.3s ease; border: none; font-size: 22px; }
+    /* =========================
+       TOOLKIT CHAT MODAL (NEW)
+       ========================= */
+    .chat-widget { position: fixed; bottom: 30px; right: 30px; z-index: 1200; }
+    .chat-toggle {
+      width: 60px; height: 60px;
+      background: var(--accent-purple);
+      color: white;
+      border-radius: var(--chat-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(123, 95, 196, 0.4);
+      transition: all 0.3s ease;
+      border: none;
+      font-size: 22px;
+    }
     .chat-toggle:hover { transform: scale(1.06); box-shadow: 0 8px 20px rgba(123, 95, 196, 0.5); }
-    .chat-container { position: absolute; bottom: 80px; right: 0; width: 320px; height: 460px; background: var(--primary-white); border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); display: none; flex-direction: column; overflow: hidden; border: 1px solid var(--border-light); }
-    .chat-container.active { display: flex; }
-    .chat-header { background: var(--accent-purple); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-    .chat-title { font-weight: 800; font-size: 18px; }
-    .chat-close { background: none; border: none; color: white; cursor: pointer; font-size: 18px; }
-    .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-    .message { max-width: 100%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4; }
-    .message-bot { background: var(--light-gray); color: var(--text-dark); align-self: flex-start; border-bottom-left-radius: 6px; }
-    .message-user { background: var(--accent-purple); color: white; align-self: flex-end; border-bottom-right-radius: 6px; max-width: 80%; }
-    .chat-input-container { padding: 15px; border-top: 1px solid var(--border-light); }
-    .chat-form { display: flex; flex-direction: column; gap: 10px; }
-    .chat-input { padding: 12px 16px; border: 1px solid var(--medium-gray); border-radius: var(--pill-radius); font-size: 14px; background: var(--primary-white); color: var(--text-dark); }
-    .chat-send { background: var(--accent-purple); color: white; border: none; padding: 12px 20px; border-radius: var(--pill-radius); font-weight: 900; cursor: pointer; font-size: 14px; transition: all 0.3s ease; }
-    .chat-send:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(123, 95, 196, 0.3); }
+
+    .chat-modal-overlay{
+      position: fixed;
+      inset: 0;
+      background: transparent;
+      z-index: 2001;
+      display: none;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 20px;
+    }
+    .chat-modal-overlay.active{ display:flex; }
+
+    .chat-modal{
+      width: 90vw;
+      max-width: 380px;
+      border-radius: 18px;
+      background: var(--primary-white);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+      overflow: hidden;
+      margin: 0 10px 64px 0; /* sit above the chat bubble */
+    }
+
+    .chat-modal-header{
+      padding: 18px 18px 14px;
+      background: var(--primary-white);
+      color: var(--text-dark);
+      display:flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .chat-modal-title{
+      display:flex;
+      flex-direction: column;
+      gap: 4px;
+      line-height: 1.2;
+    }
+    .chat-modal-title strong{ font-size: 18px; font-weight: 950; }
+    .chat-modal-title span{ font-size: 12px; opacity: 0.92; font-weight: 700; }
+
+    .chat-modal-close{
+      background: var(--light-gray);
+      color: var(--text-dark);
+      border: 1px solid var(--border-light);
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      cursor: pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .chat-modal-close:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.24); }
+
+    .chat-modal-body{
+      padding: 16px 18px 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .chat-hint{
+      border: 1px solid var(--border-light);
+      background: var(--light-gray);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--text-medium);
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .chat-quick{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .chat-pill{
+      border: 1px solid var(--border-light);
+      background: var(--primary-white);
+      color: var(--text-dark);
+      padding: 10px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 900;
+      font-size: 13px;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .chat-pill i{ color: var(--accent-purple); }
+    .chat-pill:hover{ transform: translateY(-1px); box-shadow: 0 12px 22px rgba(0,0,0,0.08); }
+
+    .chat-form-row{
+      display:flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .chat-input{
+      flex: 1 1 380px;
+      border: 1px solid var(--border-light);
+      background: var(--primary-white);
+      color: var(--text-dark);
+      border-radius: 999px;
+      padding: 12px 14px;
+      font-weight: 700;
+      outline: none;
+    }
+    .chat-input:focus{ border-color: rgba(123,95,196,0.45); box-shadow: 0 0 0 3px rgba(123,95,196,0.14); }
+
+    .chat-send{
+      border: none;
+      background: var(--accent-purple);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 950;
+      cursor: pointer;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      box-shadow: 0 12px 22px rgba(123,95,196,0.22);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .chat-send:hover{ transform: translateY(-1px); box-shadow: 0 16px 28px rgba(123,95,196,0.28); }
+
+    .chat-results{
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      background: var(--primary-white);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    /* Contact form inside chat */
+    .chat-contact-form{
+      display: grid;
+      gap: 10px;
+    }
+    .chat-contact-form .chat-input{
+      border-radius: 14px;
+      background: var(--primary-white);
+      border: 1px solid var(--border-light);
+      font-weight: 600;
+    }
+    .chat-contact-form .chat-input:focus{
+      border-color: rgba(123,95,196,0.45);
+      box-shadow: 0 0 0 3px rgba(123,95,196,0.14);
+    }
+    .chat-textarea{
+      border: 1px solid var(--border-light);
+      background: var(--primary-white);
+      color: var(--text-dark);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 700;
+      outline: none;
+      min-height: 120px;
+      resize: vertical;
+    }
+    .chat-textarea:focus{ border-color: rgba(123,95,196,0.45); box-shadow: 0 0 0 3px rgba(123,95,196,0.14); }
+    .chat-contact-form .chat-send{ 
+      width:100%; 
+      justify-content:center; 
+      background: var(--gradient-primary);
+      border: none;
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-size: 16px;
+    }
+
+    .hint-bubble{
+      border: 1px solid var(--border-light);
+      background: var(--light-gray);
+      color: var(--text-dark);
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chat-result{
+      display:flex;
+      gap: 12px;
+      align-items: flex-start;
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 12px;
+      background: var(--primary-white);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .chat-result:hover{ transform: translateY(-1px); box-shadow: 0 14px 26px rgba(0,0,0,0.08); }
+
+    .chat-result-ic{
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--light-purple);
+      color: var(--accent-purple);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex: 0 0 auto;
+    }
+    .chat-result-title{
+      font-weight: 950;
+      font-size: 14px;
+      margin-bottom: 2px;
+      line-height: 1.25;
+    }
+    .chat-result-meta{
+      font-size: 12px;
+      color: var(--text-medium);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .chat-result a{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      text-decoration:none;
+      font-weight: 950;
+      font-size: 12px;
+      color: var(--accent-purple);
+    }
+    .chat-result a:hover{ text-decoration: underline; }
+
+    .chat-footer-note{
+      font-size: 12px;
+      color: var(--dark-gray);
+      font-weight: 700;
+      text-align: center;
+      padding-top: 2px;
+    }
 
     .mobile-create-account-tab {
       display: none;
@@ -875,21 +1084,7 @@
     .modal-footer { margin-top: 20px; text-align: center; font-size: 14px; color: var(--text-medium); }
     .modal-footer a { color: var(--accent-purple); text-decoration: none; font-weight: 800; }
 
-    .cookie-popup-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.5s ease, visibility 0.5s ease;
-    }
+    
 
     @media (max-width: 1200px) {
       .featured-grid { grid-template-columns: repeat(2, 1fr); }
@@ -900,10 +1095,10 @@
     }
     @media (max-width: 992px) {
       .hero-headline { font-size: 64px; }
-      .flashing-words { font-size: 64px; height: 80px; width: 280px; }
       .footer-content { grid-template-columns: 1fr; gap: 50px; }
       .nav-links { gap: 30px; }
       .hero-content { max-width: 980px; }
+      .chat-modal{ max-width: 760px; }
     }
     @media (max-width: 768px) {
       .hero-line.top { white-space: normal; }
@@ -972,21 +1167,20 @@
       .hero-content { padding: 66px 20px 14px; max-width: 680px; }
       .hero-headline { font-size: 46px; }
       .hero-line.bottom { gap: 10px; flex-wrap: wrap; white-space: normal; }
-      .flashing-words { font-size: 46px; height: 62px; width: 240px; }
       .hero-subhead { font-size: 18px; }
       .tool-types-banner-content { font-size: 14px; }
 
       .tool-footer { flex-wrap: wrap; row-gap: 10px; }
       .tool-stats { width: 100%; justify-content: flex-start; margin-left: 0; }
 
-      .chat-container { width: 90vw; height: 450px; right: 5vw; }
-      .chat-toggle { width: 56px; height: 56px; font-size: 20px; }
+      .chat-modal{ max-width: 96vw; }
+      .chat-input{ flex-basis: 100%; }
+      .chat-send{ width: 100%; justify-content: center; }
     }
     @media (max-width: 480px) {
       .logo-img { height: 100px; }
       .footer-logo-img { height: 100px; }
       .hero-headline { font-size: 40px; }
-      .flashing-words { font-size: 40px; width: 210px; }
     }
   </style>
 </head>
@@ -1081,8 +1275,7 @@
     <div class="hero-content">
       <h1 class="hero-headline" aria-label="Find the right response with our tools">
         <span class="hero-line top">From Insight to Impact:<br>Your Complete Toolkit</span>
-        <span class="hero-line bottom">
-        </span>
+        <span class="hero-line bottom"></span>
       </h1>
 
       <p class="hero-subhead">
@@ -1203,6 +1396,7 @@
     </div>
   </section>
 
+  <!-- UPDATED: "Real situations" links now point to pages in your provided list -->
   <section class="real" aria-label="How to use the Toolkit in real situations">
     <div class="container">
       <div class="section-header">
@@ -1217,9 +1411,9 @@
           <div class="real-row">
             <div class="real-label">The Employee Playbook Suggested tools</div>
             <div class="real-tools">
-              <a href="manager-communication-framework.html">Manager Communication Framework</a>
-              <a href="workload-negotiation-script-builder.html">Workload Negotiation Script Builder</a>
-              <a href="category-manager.html">Manager Relationship tools</a>
+              <a href="framework-micromanagement.html">Micromanagement Framework</a>
+              <a href="checklist-micromanagement.html">Micromanagement Checklist</a>
+              <a href="category-manager-relationship-and-leadership-style.html">Manager Relationship tools</a>
             </div>
           </div>
         </div>
@@ -1230,9 +1424,9 @@
           <div class="real-row">
             <div class="real-label">The Employee Playbook Suggested tools</div>
             <div class="real-tools">
-              <a href="overload-reduction-planner.html">Overload Reduction Planner</a>
-              <a href="overload-reduction-planner.html">Burnout Risk Snapshot</a>
-              <a href="category-burnout.html">Burnout &amp; Capacity tools</a>
+              <a href="planner-overload-and-capacity.html">Overload &amp; Capacity Planner</a>
+              <a href="assessment-burnout-and-capacity.html">Burnout &amp; Capacity Assessment</a>
+              <a href="category-expectation-burnout-and-capacity.html">Burnout &amp; Capacity tools</a>
             </div>
           </div>
         </div>
@@ -1243,9 +1437,9 @@
           <div class="real-row">
             <div class="real-label">The Employee Playbook Suggested tools</div>
             <div class="real-tools">
-              <a href="category-hr.html">HR &amp; Formal Processes tools</a>
-              <a href="category-sos.html">SOS scripts (stabilise fast)</a>
-              <a href="workload-negotiation-script-builder.html">Script Builder (neutral follow-up)</a>
+              <a href="category-hr-and-formal-processes.html">HR &amp; Formal Processes tools</a>
+              <a href="form-escalation-documentation.html">Escalation Documentation Form</a>
+              <a href="plan-formal-escalation.html">Formal Escalation Plan</a>
             </div>
           </div>
         </div>
@@ -1253,6 +1447,7 @@
     </div>
   </section>
 
+  <!-- UPDATED: Featured tool links now map to your provided filenames -->
   <section class="featured" id="featured-tools" aria-label="Featured tools">
     <div class="container">
       <div class="section-header">
@@ -1261,10 +1456,10 @@
       </div>
 
       <div class="featured-grid">
-        <div class="tool-card" data-cat="burnout" data-title="Overload Reduction Planner" data-type="Planner" data-tags="burnout capacity workload renegotiate" data-link="overload-reduction-planner.html">
+        <div class="tool-card" data-cat="burnout" data-title="Overload & Capacity Planner" data-type="Planner" data-tags="burnout capacity workload renegotiate triage" data-link="planner-overload-and-capacity.html">
           <div class="tool-top">
             <div class="tool-category-label">Expectation, Burnout &amp; Capacity</div>
-            <div class="tool-name">Overload Reduction Planner</div>
+            <div class="tool-name">Overload &amp; Capacity Planner</div>
           </div>
           <div class="tool-desc">Turn “too much” into a rational plan: what to pause, what to renegotiate, and how to phrase it safely.</div>
           <div class="tool-review" aria-label="User review">
@@ -1275,7 +1470,7 @@
             <div class="review-meta">Aisha, Technology</div>
           </div>
           <div class="tool-footer">
-            <div class="tool-buttons"><a class="btn-primary" href="overload-reduction-planner.html">Open</a></div>
+            <div class="tool-buttons"><a class="btn-primary" href="planner-overload-and-capacity.html">Open</a></div>
             <div class="tool-stats" aria-label="Viewed and saved">
               <div class="tool-stat"><i class="fas fa-eye"></i> 3.4k</div>
               <div class="tool-stat"><i class="fas fa-bookmark"></i> 612</div>
@@ -1283,10 +1478,10 @@
           </div>
         </div>
 
-        <div class="tool-card" data-cat="burnout" data-title="Burnout Risk Snapshot" data-type="Assessment" data-tags="burnout signals risk snapshot" data-link="overload-reduction-planner.html">
+        <div class="tool-card" data-cat="burnout" data-title="Burnout & Capacity Assessment" data-type="Assessment" data-tags="burnout signals risk snapshot capacity stress fatigue" data-link="assessment-burnout-and-capacity.html">
           <div class="tool-top">
             <div class="tool-category-label">Expectation, Burnout &amp; Capacity</div>
-            <div class="tool-name">Burnout Risk Snapshot</div>
+            <div class="tool-name">Burnout &amp; Capacity Assessment</div>
           </div>
           <div class="tool-desc">A fast signal check to quantify risk, pinpoint what is driving it, and decide the safest next step.</div>
           <div class="tool-review" aria-label="User review">
@@ -1297,7 +1492,7 @@
             <div class="review-meta">James, Public Services</div>
           </div>
           <div class="tool-footer">
-            <div class="tool-buttons"><a class="btn-primary" href="overload-reduction-planner.html">Open</a></div>
+            <div class="tool-buttons"><a class="btn-primary" href="assessment-burnout-and-capacity.html">Open</a></div>
             <div class="tool-stats" aria-label="Viewed and saved">
               <div class="tool-stat"><i class="fas fa-eye"></i> 2.8k</div>
               <div class="tool-stat"><i class="fas fa-bookmark"></i> 487</div>
@@ -1305,10 +1500,10 @@
           </div>
         </div>
 
-        <div class="tool-card" data-cat="manager" data-title="Manager Communication Framework" data-type="Framework" data-tags="manager communication tone feedback" data-link="manager-communication-framework.html">
+        <div class="tool-card" data-cat="manager" data-title="Leadership Style Decoder" data-type="Framework" data-tags="manager communication tone feedback patterns leadership" data-link="framework-leadership-style-decoder.html">
           <div class="tool-top">
             <div class="tool-category-label">Manager Relationship &amp; Leadership Style</div>
-            <div class="tool-name">Manager Communication Framework</div>
+            <div class="tool-name">Leadership Style Decoder</div>
           </div>
           <div class="tool-desc">Identify how your manager processes information and power, then adapt your language so it lands cleanly.</div>
           <div class="tool-review" aria-label="User review">
@@ -1319,7 +1514,7 @@
             <div class="review-meta">Priya, Finance</div>
           </div>
           <div class="tool-footer">
-            <div class="tool-buttons"><a class="btn-primary" href="manager-communication-framework.html">Open</a></div>
+            <div class="tool-buttons"><a class="btn-primary" href="framework-leadership-style-decoder.html">Open</a></div>
             <div class="tool-stats" aria-label="Viewed and saved">
               <div class="tool-stat"><i class="fas fa-eye"></i> 4.1k</div>
               <div class="tool-stat"><i class="fas fa-bookmark"></i> 903</div>
@@ -1327,12 +1522,12 @@
           </div>
         </div>
 
-        <div class="tool-card" data-cat="clarity" data-title="Workload Negotiation Script Builder" data-type="Script" data-tags="workload negotiate boundaries email" data-link="workload-negotiation-script-builder.html">
+        <div class="tool-card" data-cat="clarity" data-title="Negotiation Framework" data-type="Framework" data-tags="workload negotiate boundaries email meeting priorities" data-link="framework-negotiation.html">
           <div class="tool-top">
             <div class="tool-category-label">Clarity, Priorities &amp; Direction</div>
-            <div class="tool-name">Workload Negotiation Script Builder</div>
+            <div class="tool-name">Negotiation Framework</div>
           </div>
-          <div class="tool-desc">Generate a message that reduces load without triggering defensiveness, with optional versions for email and meetings.</div>
+          <div class="tool-desc">A structured way to renegotiate load and scope without triggering defensiveness, with language options for email and meetings.</div>
           <div class="tool-review" aria-label="User review">
             <div class="stars" aria-label="Five stars">
               <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -1341,7 +1536,7 @@
             <div class="review-meta">Tom, Professional Services</div>
           </div>
           <div class="tool-footer">
-            <div class="tool-buttons"><a class="btn-primary" href="workload-negotiation-script-builder.html">Open</a></div>
+            <div class="tool-buttons"><a class="btn-primary" href="framework-negotiation.html">Open</a></div>
             <div class="tool-stats" aria-label="Viewed and saved">
               <div class="tool-stat"><i class="fas fa-eye"></i> 5.7k</div>
               <div class="tool-stat"><i class="fas fa-bookmark"></i> 1.3k</div>
@@ -1352,6 +1547,7 @@
     </div>
   </section>
 
+  <!-- UPDATED: Category links now match your provided filenames -->
   <section class="categories" id="categories" aria-label="Toolkit categories">
     <div class="container">
       <div class="section-header">
@@ -1371,7 +1567,7 @@
             </div>
           </div>
           <div class="category-desc">When everything is urgent, structure the work, expose constraints, and get decisions on record.</div>
-          <div class="category-action"><a href="category-clarity, priorities-and-direction.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
+          <div class="category-action"><a href="category-clarity-priorities-and-direction.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
         </div>
 
         <div class="category-card cat-burnout">
@@ -1385,7 +1581,7 @@
             </div>
           </div>
           <div class="category-desc">Capacity plans, overload reduction, early warning signals, and recovery prioritisation.</div>
-          <div class="category-action"><a href="category-burnout.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
+          <div class="category-action"><a href="category-expectation-burnout-and-capacity.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
         </div>
 
         <div class="category-card cat-manager">
@@ -1399,7 +1595,7 @@
             </div>
           </div>
           <div class="category-desc">Decode manager patterns, respond strategically, and protect your position without unnecessary friction.</div>
-          <div class="category-action"><a href="category-manager.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
+          <div class="category-action"><a href="category-manager-relationship-and-leadership-style.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
         </div>
 
         <div class="category-card cat-politics">
@@ -1413,7 +1609,7 @@
             </div>
           </div>
           <div class="category-desc">Map influence, read incentives, and position yourself clearly in complex organisational dynamics.</div>
-          <div class="category-action"><a href="category-politics.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
+          <div class="category-action"><a href="category-workplace-dynamics-and-politics.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
         </div>
 
         <div class="category-card cat-hr">
@@ -1427,7 +1623,7 @@
             </div>
           </div>
           <div class="category-desc">Procedural checklists, documentation structure, and escalation pathways that stand up under scrutiny.</div>
-          <div class="category-action"><a href="category-hr.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
+          <div class="category-action"><a href="category-hr-and-formal-processes.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
         </div>
 
         <div class="category-card cat-confidence">
@@ -1441,7 +1637,7 @@
             </div>
           </div>
           <div class="category-desc">Build authority signals, sharpen your delivery, and use language that holds its shape.</div>
-          <div class="category-action"><a href="category-confidence.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
+          <div class="category-action"><a href="category-confidence-presence-influence.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
         </div>
 
         <div class="category-card cat-career">
@@ -1455,9 +1651,10 @@
             </div>
           </div>
           <div class="category-desc">Career strategy tools: positioning, options, decision-making, and smart next moves.</div>
-          <div class="category-action"><a href="category-career.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
+          <div class="category-action"><a href="category-career-playbook.html"><i class="fas fa-arrow-right"></i> Explore tools</a></div>
         </div>
 
+        <!-- NOTE: you did NOT include a "category-sos.html" in your provided list, so this remains as-is and is flagged below -->
         <div class="category-card cat-sos">
           <div class="category-head">
             <div class="category-left">
@@ -1547,24 +1744,34 @@
     </div>
   </footer>
 
+  <!-- NEW: Toolkit Assistant Chat Modal -->
   <div class="chat-widget">
-    <button class="chat-toggle" aria-label="Open chat">
+    <button class="chat-toggle" id="openToolkitChat" aria-label="Open Toolkit assistant">
       <i class="fas fa-comment"></i>
     </button>
-    <div class="chat-container" aria-label="Chat">
-      <div class="chat-header">
-        <div class="chat-title">Send us a message</div>
-        <button class="chat-close" aria-label="Close chat"><i class="fas fa-times"></i></button>
+  </div>
+
+  <div class="chat-modal-overlay" id="toolkitChatOverlay" aria-hidden="true">
+    <div class="chat-modal" role="dialog" aria-modal="true" aria-label="Send us a message">
+      <div class="chat-modal-header">
+        <div class="chat-modal-title">
+          <strong>Send us a message</strong>
+          <span></span>
+        </div>
+        <button class="chat-modal-close" id="closeToolkitChat" aria-label="Close chat">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
-      <div class="chat-messages">
-        <div class="message message-bot">👋 Hi there! We would love to hear from you.</div>
-      </div>
-      <div class="chat-input-container">
-        <form class="chat-form" id="chatForm">
-          <input type="text" class="chat-input" placeholder="Your Name" required>
-          <input type="email" class="chat-input" placeholder="Your Email" required>
-          <textarea class="chat-input" rows="3" placeholder="Message" required></textarea>
-          <button type="submit" class="chat-send">Send Message</button>
+
+      <div class="chat-modal-body">
+        <div class="hint-bubble">👋 Hi there! We'd love to hear from you.</div>
+        <form id="chatContactForm" class="chat-contact-form" aria-label="Contact form">
+          <input type="text" id="contactName" class="chat-input" placeholder="Your name" required aria-label="Your name">
+          <input type="email" id="contactEmail" class="chat-input" placeholder="Your email" required aria-label="Your email">
+          <textarea id="contactMessage" class="chat-textarea" placeholder="Your message" required aria-label="Your message"></textarea>
+          <button type="submit" class="chat-send">
+            Send Message <i class="fas fa-paper-plane"></i>
+          </button>
         </form>
       </div>
     </div>
@@ -1572,15 +1779,21 @@
 
   <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // --- (everything above your existing "const tools = [...]" stays the same) ---
-
     // ===========================
-    // UPGRADED SEARCH LOGIC (ONLY CHANGE)
-    // Replace your current tools[] + normalise/filter/render block with this.
+    // SEARCH LOGIC (your upgraded block)
     // ===========================
 
-    // 1) Build a complete tool catalogue (from your filenames + a few named items)
+    // 1) Build a complete tool catalogue (UPDATED LINKS ONLY)
     const tools = [
+      // Categories
+      { title: "Career Playbook (Category)", type: "Category", tags: ["career","advancement","moves","positioning"], link: "category-career-playbook.html", icon: "fa-briefcase" },
+      { title: "Clarity, Priorities & Direction (Category)", type: "Category", tags: ["clarity","priorities","decisions","scope"], link: "category-clarity-priorities-and-direction.html", icon: "fa-bullseye" },
+      { title: "Confidence, Presence & Influence (Category)", type: "Category", tags: ["confidence","presence","influence","authority"], link: "category-confidence-presence-influence.html", icon: "fa-chart-line" },
+      { title: "Expectation, Burnout & Capacity (Category)", type: "Category", tags: ["burnout","capacity","overload","recovery"], link: "category-expectation-burnout-and-capacity.html", icon: "fa-fire" },
+      { title: "HR & Formal Processes (Category)", type: "Category", tags: ["hr","formal","process","evidence"], link: "category-hr-and-formal-processes.html", icon: "fa-file-contract" },
+      { title: "Manager Relationship & Leadership Style (Category)", type: "Category", tags: ["manager","leadership","patterns","boundaries"], link: "category-manager-relationship-and-leadership-style.html", icon: "fa-handshake" },
+      { title: "Workplace Dynamics & Politics (Category)", type: "Category", tags: ["politics","stakeholders","power","perception"], link: "category-workplace-dynamics-and-politics.html", icon: "fa-users" },
+
       // Assessments
       { title: "Burnout & Capacity Assessment", type: "Assessment", tags: ["burnout","capacity","overload","stress","fatigue","exhaustion","limits","recovery"], link: "assessment-burnout-and-capacity.html", icon: "fa-clipboard-list" },
       { title: "Conflict Risk Radar", type: "Assessment", tags: ["conflict","tension","risk","bullying","harassment","dispute","team"], link: "assessment-conflict-risk-radar.html", icon: "fa-radar" },
@@ -1606,233 +1819,75 @@
       { title: "Role Clarity & Scope Checklist", type: "Checklist", tags: ["role","scope","responsibilities","clarity","boundaries"], link: "checklist-role-clarity-and-scope.html", icon: "fa-briefcase" },
       { title: "Support & Enablement Checklist", type: "Checklist", tags: ["support","enablement","resources","blockers","tools"], link: "checklist-support-and-enablement.html", icon: "fa-screwdriver-wrench" },
       { title: "Team Dysfunction Checklist", type: "Checklist", tags: ["team","dysfunction","conflict","toxicity","breakdown"], link: "checklist-team-dysfunction.html", icon: "fa-people-arrows" },
-      { title: "Workload Clarity Checklist", type: "Checklist", tags: ["workload","clarity","priorities","scope","capacity"], link: "checklist-workload-clarity.html", icon: "fa-calendar-check" },
-
-      // Forms
-      { title: "Escalation Documentation Form", type: "Template", tags: ["documentation","escalation","hr","formal","record","evidence"], link: "form-escalation-documentation.html", icon: "fa-file-lines" },
+      { title: "Workload Clarity Checklist", type: "Checklist", tags: ["workload","clarity","priorities","direction","scope","too much","capacity"], link: "checklist-workload-clarity.html", icon: "fa-clipboard-check" },
 
       // Frameworks
-      { title: "Career Anchoring Framework", type: "Framework", tags: ["career","anchors","values","direction","choices"], link: "framework-career-anchoring.html", icon: "fa-anchor" },
-      { title: "Conflict Resolution Framework", type: "Framework", tags: ["conflict","resolution","difficult people","tension","repair"], link: "framework-conflict-resolution.html", icon: "fa-handshake-angle" },
-      { title: "Credibility & Positioning Framework", type: "Framework", tags: ["credibility","positioning","reputation","influence","authority"], link: "framework-credibility-and-positioning.html", icon: "fa-award" },
-      { title: "Decision Clarity Framework", type: "Framework", tags: ["decision","clarity","tradeoffs","options","strategy"], link: "framework-decision-clarity.html", icon: "fa-compass-drafting" },
-      { title: "Feedback Delivery Framework", type: "Framework", tags: ["feedback","difficult conversations","delivery","tone","boundaries"], link: "framework-feedback-delivery.html", icon: "fa-comment-medical" },
-      { title: "Leadership & Management Framework", type: "Framework", tags: ["leadership","management","style","direction","accountability"], link: "framework-leadership-management.html", icon: "fa-people-group" },
-      { title: "Leadership Style Decoder", type: "Framework", tags: ["leadership","style","decoder","manager","patterns"], link: "framework-leadership-style-decoder.html", icon: "fa-user-gear" },
-      { title: "Micromanagement Framework", type: "Framework", tags: ["micromanagement","control","trust","boundaries","autonomy"], link: "framework-micromanagement.html", icon: "fa-eye-slash" },
-      { title: "Micromanagement to Autonomy Framework", type: "Framework", tags: ["micromanagement","autonomy","trust","ownership"], link: "framework-micromanagement-to-autonomy.html", icon: "fa-arrow-up-right-dots" },
-      { title: "Negotiation Framework", type: "Framework", tags: ["negotiation","pay rise","promotion","scope","tradeoffs","ask"], link: "framework-negotiation.html", icon: "fa-scale-balanced" },
-      { title: "Psychological Safety Framework", type: "Framework", tags: ["psychological safety","trust","team","culture"], link: "framework-psychology-safety.html", icon: "fa-shield-heart" },
-      { title: "Risk & Safety Framework", type: "Framework", tags: ["risk","safety","exposure","protection","formal"], link: "framework-risk-and-safety.html", icon: "fa-triangle-exclamation" },
-      { title: "Situational Analysis Framework", type: "Framework", tags: ["situation","analysis","stakeholders","options","context"], link: "framework-situational-analysis.html", icon: "fa-diagram-project" },
-      { title: "Skills Development Framework", type: "Framework", tags: ["skills","development","growth","impact"], link: "framework-skills-development.html", icon: "fa-graduation-cap" },
-      { title: "Strategic Interpretation Framework", type: "Framework", tags: ["interpretation","politics","signals","meaning","pattern"], link: "framework-strategic-interpretation.html", icon: "fa-chess-knight" },
-      { title: "Trust Building Framework", type: "Framework", tags: ["trust","relationships","repair","credibility"], link: "framework-trust-building.html", icon: "fa-hand-holding-heart" },
-      { title: "Upward Leadership Framework", type: "Framework", tags: ["upward","leadership","managing up","influence","stakeholders"], link: "framework-upward-leadership.html", icon: "fa-arrow-up" },
+      { title: "Micromanagement Framework", type: "Framework", tags: ["micromanagement","control","scrutiny","nitpicking","manager"], link: "framework-micromanagement.html", icon: "fa-eye" },
+      { title: "Negotiation Framework", type: "Framework", tags: ["negotiation","scope","priorities","workload","pushback","boundaries"], link: "framework-negotiation.html", icon: "fa-scale-balanced" },
+      { title: "Leadership Style Decoder", type: "Framework", tags: ["leadership","manager","style","communication","influence"], link: "framework-leadership-style-decoder.html", icon: "fa-user-tie" },
 
-      // Guides
-      { title: "Boundaries Guide", type: "Guide", tags: ["boundaries","limits","pushback","saying no","scope"], link: "guide-boundaries.html", icon: "fa-shield-halved" },
-      { title: "Emotional Preparation Guide", type: "Guide", tags: ["emotions","stress","anxiety","regulation","calm"], link: "guide-emotional-preparation.html", icon: "fa-spa" },
-      { title: "Influence Reframes Guide", type: "Guide", tags: ["influence","reframe","language","persuasion","framing"], link: "guide-influence-reframes.html", icon: "fa-wand-magic-sparkles" },
-      { title: "Strategic Conversations Guide", type: "Guide", tags: ["conversations","difficult conversations","strategy","wording"], link: "guide-strategic-conversations.html", icon: "fa-comments-dollar" },
-      { title: "Toxic Behaviour Response Guide", type: "Guide", tags: ["toxic","bullying","harassment","response","boundaries","evidence"], link: "guide-toxic-behaviour-response.html", icon: "fa-ban" },
+      // Planners
+      { title: "Overload & Capacity Planner", type: "Planner", tags: ["overload","capacity","plan","triage","burnout","workload"], link: "planner-overload-and-capacity.html", icon: "fa-calendar-check" },
 
-      // Maps
-      { title: "Control vs Influence Map", type: "Map", tags: ["control","influence","agency","focus","stress"], link: "map-control-vs-influence.html", icon: "fa-circle-nodes" },
-      { title: "Crisis Clarity Map", type: "Map", tags: ["crisis","clarity","stabilise","triage","next steps"], link: "map-crisis-clarity.html", icon: "fa-life-ring" },
-      { title: "Political Landscape Map", type: "Map", tags: ["politics","stakeholders","power","influence","perception"], link: "map-political-landscape.html", icon: "fa-map" },
-      { title: "Stakeholder Map", type: "Map", tags: ["stakeholders","influence","alignment","power","relationships"], link: "map-stakeholder.html", icon: "fa-sitemap" },
+      // Plans / Forms (from your “real situations” section)
+      { title: "Formal Escalation Plan", type: "Plan", tags: ["formal","escalation","hr","process","steps"], link: "plan-formal-escalation.html", icon: "fa-gavel" },
+      { title: "Escalation Documentation Form", type: "Form", tags: ["documentation","evidence","hr","timeline","record"], link: "form-escalation-documentation.html", icon: "fa-file-lines" },
 
-      // Plans / Planners
-      { title: "90-Day Plan", type: "Planner", tags: ["90 day","plan","momentum","strategy","execution"], link: "plan-90-day.html", icon: "fa-calendar" },
-      { title: "Burnout Prevention Plan", type: "Plan", tags: ["burnout","prevention","recovery","pace","habits"], link: "plan-burnout-prevention.html", icon: "fa-heart-pulse" },
-      { title: "Confidence Rebuild Plan", type: "Plan", tags: ["confidence","rebuild","presence","reset","identity"], link: "plan-confidence-rebuild.html", icon: "fa-person-rays" },
-      { title: "Formal Escalation Plan", type: "Plan", tags: ["formal","escalation","hr","grievance","process","evidence"], link: "plan-formal-escalation.html", icon: "fa-gavel" },
-      { title: "Overload & Capacity Planner", type: "Planner", tags: ["overload","capacity","workload","triage","renegotiate"], link: "planner-overload-and-capacity.html", icon: "fa-sliders" },
-      { title: "Pay Increase Negotiation Planner", type: "Planner", tags: ["pay rise","salary","negotiation","promotion","compensation"], link: "planner-pay-increase-negotiation.html", icon: "fa-sterling-sign" },
-      { title: "Personal Action Plan", type: "Plan", tags: ["action plan","next steps","options","strategy"], link: "plan-personal-action.html", icon: "fa-route" },
-      { title: "Reputation Management Plan", type: "Plan", tags: ["reputation","risk","positioning","credibility"], link: "plan-reputation-management.html", icon: "fa-shield" },
-      { title: "Sustainable Pace Plan", type: "Plan", tags: ["pace","sustainable","burnout","energy","boundaries"], link: "plan-sustainable-pace.html", icon: "fa-person-walking" },
-
-      // Playbooks
-      { title: "Career Advancement Playbook", type: "Playbook", tags: ["career","advancement","promotion","strategy"], link: "playbook-career-advancement.html", icon: "fa-rocket" },
-      { title: "Influence Without Conflict Playbook", type: "Playbook", tags: ["influence","conflict","politics","stakeholders"], link: "playbook-influence-without-conflict.html", icon: "fa-dove" },
-      { title: "Micromanagement Playbook", type: "Playbook", tags: ["micromanagement","control","boundaries","autonomy"], link: "playbook-micromanagement.html", icon: "fa-user-shield" },
-      { title: "Overload Reduction Playbook", type: "Playbook", tags: ["overload","workload","capacity","burnout","renegotiate"], link: "playbook-overload-reduction.html", icon: "fa-boxes-stacked" },
-      { title: "Priority Reset Playbook", type: "Playbook", tags: ["priorities","reset","triage","clarity"], link: "playbook-priority-reset.html", icon: "fa-rotate" },
-      { title: "Strategic Silence Playbook", type: "Playbook", tags: ["silence","strategy","politics","power","timing"], link: "playbook-strategic-silence.html", icon: "fa-volume-xmark" },
-
-      // Other
-      { title: "Wheel of Life", type: "Assessment", tags: ["wheel of life","balance","life","wellbeing","priorities"], link: "wheel-of-life.html", icon: "fa-circle" },
-
-      // Named (no filename given) — keep, but link to a real page later
-      { title: "Difficult People Playbook", type: "Playbook", tags: ["difficult people","toxic","conflict","bullying","harassment"], link: "#", icon: "fa-user-ninja" },
-      { title: "Formal Process Guide", type: "Guide", tags: ["formal","process","hr","grievance","pip","disciplinary"], link: "#", icon: "fa-scale-balanced" },
-      { title: "Documentation Playbook", type: "Playbook", tags: ["documentation","evidence","paper trail","emails","notes"], link: "#", icon: "fa-folder-open" },
+      // NOTE: you referenced category-sos.html earlier but it wasn't in your provided list
+      // Keep it out of the catalogue until that page exists, to avoid dead links.
     ];
 
-    // 2) Synonyms + “people wording” expansion (this is the brains)
-    const synonymMap = {
-      // workload/burnout/capacity
-      "stressed": ["stress","burnout","overload","capacity","exhaustion"],
-      "stress": ["stressed","burnout","overload","pressure","anxiety"],
-      "burned": ["burnout","exhaustion","fatigue"],
-      "burnt": ["burnout","exhaustion","fatigue"],
-      "tired": ["fatigue","burnout","overload","capacity"],
-      "exhausted": ["burnout","overload","capacity","fatigue"],
-      "overwhelmed": ["overload","burnout","capacity","workload","too much"],
-      "swamped": ["overload","workload","capacity","too much"],
-      "busy": ["workload","overload","priorities","capacity"],
-      "too": ["too much","overload","capacity"],
-      "much": ["too much","overload","capacity"],
+    // 2) Quick-find rendering
+    const toolSearch = document.getElementById('toolSearch');
+    const quickResults = document.getElementById('quickResults');
+    const resultsGrid = document.getElementById('resultsGrid');
+    const resultsTitle = document.getElementById('resultsTitle');
+    const chips = Array.from(document.querySelectorAll('.chip'));
 
-      // micromanagement/control
-      "micromanage": ["micromanagement","control","scrutiny","nitpicking","checked"],
-      "micromanagement": ["micromanage","control","scrutiny","nitpicking"],
-      "nitpicking": ["micromanagement","scrutiny","control"],
-      "watched": ["micromanagement","scrutiny","control"],
-      "checked": ["micromanagement","scrutiny","control"],
+    let activeTypeFilter = null;
 
-      // conflict/toxic
-      "bullied": ["bullying","harassment","toxic","conflict","risk"],
-      "bullying": ["bullied","harassment","toxic","conflict"],
-      "harassment": ["bullying","toxic","conflict","formal","hr"],
-      "toxic": ["bullying","harassment","conflict","difficult people"],
-      "argument": ["conflict","tension","dispute"],
-      "tension": ["conflict","risk","team dysfunction"],
-
-      // HR/formal/performance
-      "pip": ["performance","hr","formal","process","review"],
-      "performance": ["pip","review","hr","process","ratings"],
-      "grievance": ["formal","hr","escalation","documentation","process"],
-      "disciplinary": ["formal","hr","process","documentation"],
-      "investigation": ["formal","hr","documentation","evidence"],
-      "evidence": ["documentation","paper trail","notes","emails","record"],
-      "document": ["documentation","evidence","paper trail","record"],
-      "documentation": ["evidence","paper trail","notes","emails","record"],
-      "escalate": ["escalation","formal","hr","process","documentation"],
-
-      // boundaries/role/scope
-      "boundaries": ["boundary","scope","limits","overcommitment","saying no"],
-      "boundary": ["boundaries","scope","limits","overcommitment"],
-      "scope": ["role","clarity","boundaries","expectations"],
-      "role": ["scope","clarity","expectations","responsibilities"],
-      "expectations": ["alignment","scope","role","deliverables"],
-
-      // influence/presence
-      "confidence": ["presence","influence","authority","credibility"],
-      "presence": ["confidence","authority","credibility","impact"],
-      "influence": ["presence","credibility","positioning","stakeholders","politics"],
-      "politics": ["stakeholders","influence","power","perception","mapping"],
-      "stakeholder": ["stakeholders","politics","influence","power"],
-
-      // pay/negotiation
-      "salary": ["pay rise","pay","negotiation","promotion","compensation"],
-      "pay": ["pay rise","salary","negotiation","compensation"],
-      "raise": ["pay rise","salary","negotiation"],
-      "promotion": ["career","advancement","negotiation","positioning"],
-      "negotiate": ["negotiation","pay rise","scope","tradeoffs","ask"],
-    };
-
-    // simple normaliser for tokens
-    function normalise(s) {
-      return (s || "")
-        .toLowerCase()
-        .replace(/['"]/g, "")
-        .replace(/[^a-z0-9\s-]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+    function normalise(str) {
+      return (str || "").toString().trim().toLowerCase();
     }
 
-    // tokenise into words, plus keep 2-word phrases like "pay rise" / "too much" / "paper trail"
-    function tokenise(input) {
-      const s = normalise(input);
-      if (!s) return [];
-      const parts = s.split(" ").filter(Boolean);
+    function scoreMatch(tool, q) {
+      const query = normalise(q);
+      if (!query) return 0;
 
-      const tokens = new Set(parts);
+      const title = normalise(tool.title);
+      const type = normalise(tool.type);
+      const tags = (tool.tags || []).map(normalise).join(' ');
 
-      // add bigrams (predict intent from phrases)
-      for (let i = 0; i < parts.length - 1; i++) {
-        tokens.add(parts[i] + " " + parts[i + 1]);
-      }
-      return Array.from(tokens);
-    }
-
-    // Expand tokens with synonyms + prefix prediction (e.g. "micr" => micromanagement)
-    function expandTokens(tokens) {
-      const expanded = new Set(tokens);
-
-      tokens.forEach(t => {
-        // synonym expansion
-        if (synonymMap[t]) synonymMap[t].forEach(x => expanded.add(x));
-
-        // lightweight prefix prediction: if user types partial, map it to likely full keywords
-        // (keep tight to avoid “random” matches)
-        const prefixRules = [
-          ["micr", ["micromanagement","micromanage","control","scrutiny"]],
-          ["burn", ["burnout","burnout detection","recovery","capacity"]],
-          ["overl", ["overload","workload","capacity","triage"]],
-          ["cap", ["capacity","bandwidth","limits","load"]],
-          ["conf", ["conflict","confidence","conflict risk radar","presence calibration"]], // intentional overlap
-          ["esca", ["escalation","formal","documentation","hr"]],
-          ["pip", ["pip","performance","hr","review"]],
-          ["grie", ["grievance","formal","hr","process"]],
-          ["stake", ["stakeholders","stakeholder map","politics","influence"]],
-          ["nego", ["negotiation","pay rise","scope","tradeoffs"]],
-        ];
-
-        prefixRules.forEach(([pref, adds]) => {
-          if (t.startsWith(pref)) adds.forEach(a => expanded.add(a));
-        });
-      });
-
-      return Array.from(expanded);
-    }
-
-    // Score a tool against the expanded query tokens
-    function scoreTool(tool, expandedTokens, rawTokens) {
-      const text = normalise([tool.title, tool.type, ...(tool.tags || [])].join(" "));
-      const tagsText = normalise((tool.tags || []).join(" "));
-
+      // simple scoring: title > tags > type
       let score = 0;
+      if (title.includes(query)) score += 6;
+      if (tags.includes(query)) score += 3;
+      if (type.includes(query)) score += 1;
 
-      expandedTokens.forEach(tok => {
-        const nt = normalise(tok);
-
-        // exact phrase/word match
-        if (text.includes(nt)) score += 6;
-
-        // tag match weighted slightly higher (tags are intent)
-        if (tagsText.includes(nt)) score += 7;
-
-        // prefix match for prediction (e.g. "micr" should count)
-        rawTokens.forEach(rt => {
-          const nrt = normalise(rt);
-          if (nrt.length >= 3 && nt.startsWith(nrt) && text.includes(nt)) score += 3;
+      // word-by-word partial matches
+      const words = query.split(/\s+/).filter(Boolean);
+      if (words.length > 1) {
+        words.forEach(w => {
+          if (title.includes(w)) score += 2;
+          if (tags.includes(w)) score += 1;
         });
-      });
-
-      // Small boost if query appears in title
-      rawTokens.forEach(rt => {
-        const nrt = normalise(rt);
-        if (nrt && normalise(tool.title).includes(nrt)) score += 5;
-      });
-
+      }
       return score;
     }
 
-    function renderResults(items, label) {
+    function renderResults(list, heading) {
       resultsGrid.innerHTML = "";
-      resultsTitle.textContent = label;
+      resultsTitle.textContent = heading || "Suggestions";
 
-      if (!items.length) {
+      const top = list.slice(0, 6);
+
+      if (top.length === 0) {
         resultsGrid.innerHTML = `
           <div class="result-card" style="grid-column: 1 / -1;">
             <div class="result-ic"><i class="fas fa-magnifying-glass"></i></div>
             <div>
               <div class="result-title">No matches yet</div>
-              <div class="result-meta">Try a different keyword, or clear the tool type filter.</div>
+              <div class="result-meta">Try different keywords (e.g. “PIP”, “scope”, “bullying”, “overload”, “manager”).</div>
             </div>
           </div>
         `;
@@ -1840,92 +1895,232 @@
         return;
       }
 
-      items.slice(0, 8).forEach(t => {
-        const card = document.createElement('div');
-        card.className = "result-card";
-        card.innerHTML = `
-          <div class="result-ic"><i class="fas ${t.icon || "fa-sparkles"}"></i></div>
-          <div style="min-width:0;">
-            <div class="result-title">${t.title}</div>
-            <div class="result-meta">${t.type} • ${(t.tags || []).slice(0, 3).join(" • ")}</div>
-            <div class="result-actions"><a href="${t.link}">Open tool <i class="fas fa-arrow-right" style="font-size:11px;"></i></a></div>
+      top.forEach(t => {
+        const icon = t.icon ? `fa-solid ${t.icon.startsWith("fa-") ? t.icon : ("fa-" + t.icon)}` : "fa-solid fa-sparkles";
+        resultsGrid.insertAdjacentHTML('beforeend', `
+          <div class="result-card">
+            <div class="result-ic"><i class="${icon}"></i></div>
+            <div style="min-width:0;">
+              <div class="result-title">${t.title}</div>
+              <div class="result-meta">${t.type}</div>
+              <div class="result-actions">
+                <a href="${t.link}">Open <i class="fas fa-arrow-right"></i></a>
+              </div>
+            </div>
           </div>
-        `;
-        resultsGrid.appendChild(card);
+        `);
       });
 
       quickResults.classList.add('active');
     }
 
-    const searchInput = document.getElementById('toolSearch');
-    const chips = Array.from(document.querySelectorAll('.chip'));
-    const quickResults = document.getElementById('quickResults');
-    const resultsGrid = document.getElementById('resultsGrid');
-    const resultsTitle = document.getElementById('resultsTitle');
-
-    let activeType = null;
-
-    function filterTools() {
-      const q = normalise(searchInput.value);
-      const labelBits = [];
+    function runSearch() {
+      const q = toolSearch ? toolSearch.value : "";
+      const query = normalise(q);
 
       let filtered = tools.slice();
 
-      if (activeType) {
-        filtered = filtered.filter(t => t.type === activeType);
-        labelBits.push(activeType + "s");
+      // apply type filter
+      if (activeTypeFilter) {
+        const f = normalise(activeTypeFilter);
+        filtered = filtered.filter(t => normalise(t.type).includes(f));
       }
 
-      if (!activeType && !q.length) {
-        quickResults.classList.remove('active');
-        return;
+      // apply search query
+      if (query) {
+        filtered = filtered
+          .map(t => ({ ...t, _score: scoreMatch(t, query) }))
+          .filter(t => t._score > 0)
+          .sort((a, b) => b._score - a._score);
+        renderResults(filtered, `Results for “${q.trim()}”`);
+      } else {
+        // no query: show “suggestions” based on type filter or featured defaults
+        if (activeTypeFilter) {
+          renderResults(filtered, `${activeTypeFilter} suggestions`);
+        } else {
+          // default suggestion mix (top 6 by hand-picked relevance)
+          const defaults = [
+            tools.find(t => t.title === "Overload & Capacity Planner"),
+            tools.find(t => t.title === "Capacity Checklist"),
+            tools.find(t => t.title === "Micromanagement Checklist"),
+            tools.find(t => t.title === "Negotiation Framework"),
+            tools.find(t => t.title === "Conflict Risk Radar"),
+            tools.find(t => t.title === "HR Performance Review Checklist"),
+          ].filter(Boolean);
+          renderResults(defaults.length ? defaults : tools, "Suggestions");
+        }
       }
-
-      // NEW: semantic/predictive scoring
-      const rawTokens = tokenise(q);
-      const expandedTokens = expandTokens(rawTokens);
-
-      // if there's no query text, show top items for the selected type
-      if (!q.length && activeType) {
-        renderResults(filtered, `Suggestions for ${activeType}s`);
-        return;
-      }
-
-      const scored = filtered
-        .map(t => ({ tool: t, score: scoreTool(t, expandedTokens, rawTokens) }))
-        .filter(x => x.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .map(x => x.tool);
-
-      const label = labelBits.length
-        ? `Suggestions for ${labelBits.join(" • ")} • “${q}”`
-        : `Suggestions for “${q}”`;
-
-      renderResults(scored, label);
     }
 
-    chips.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const filter = btn.getAttribute('data-filter');
+    if (toolSearch) {
+      toolSearch.addEventListener('input', runSearch);
+      toolSearch.addEventListener('focus', runSearch);
+    }
 
-        if (btn.classList.contains('active')) {
-          btn.classList.remove('active');
-          activeType = null;
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const filter = chip.getAttribute('data-filter');
+
+        // toggle logic
+        const isActive = chip.classList.contains('active');
+        chips.forEach(c => c.classList.remove('active'));
+
+        if (isActive) {
+          activeTypeFilter = null;
         } else {
-          chips.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          activeType = filter;
+          chip.classList.add('active');
+          activeTypeFilter = filter;
         }
-        filterTools();
+
+        runSearch();
       });
     });
 
-    searchInput.addEventListener('input', filterTools);
+    // Close results if user clicks outside quick-find
+    document.addEventListener('click', (e) => {
+      const wrap = document.querySelector('.quick-find-wrap');
+      if (!wrap) return;
+      const clickedInside = wrap.contains(e.target);
+      if (!clickedInside) {
+        quickResults.classList.remove('active');
+      }
+    });
 
-    // --- (everything below stays the same) ---
+    // ===========================
+    // MOBILE NAV TOGGLE
+    // ===========================
+    const mobileToggle = document.querySelector('.mobile-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (mobileToggle && navLinks) {
+      mobileToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    }
+
+    // ===========================
+    // THEME TOGGLE
+    // ===========================
+    const themeBtn = document.querySelector('.theme-toggle');
+    const themeIcon = themeBtn ? themeBtn.querySelector('i') : null;
+
+    function syncThemeIcon() {
+      const isDark = document.documentElement.classList.contains('dark-mode');
+      if (!themeIcon) return;
+      themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    if (themeBtn) {
+      syncThemeIcon();
+      themeBtn.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark-mode');
+        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
+        syncThemeIcon();
+      });
+    }
+
+    // ===========================
+    // CREATE ACCOUNT MODAL (mobile tab)
+    // ===========================
+    const createTab = document.getElementById('createAccountTab');
+    const createModal = document.getElementById('createAccountModal');
+    const closeModal = document.getElementById('closeModal');
+
+    function openCreateModal() {
+      if (!createModal) return;
+      createModal.classList.add('active');
+      createModal.setAttribute('aria-hidden', 'false');
+    }
+    function closeCreateModal() {
+      if (!createModal) return;
+      createModal.classList.remove('active');
+      createModal.setAttribute('aria-hidden', 'true');
+    }
+
+    if (createTab) createTab.addEventListener('click', (e) => { e.preventDefault(); openCreateModal(); });
+    if (closeModal) closeModal.addEventListener('click', (e) => { e.preventDefault(); closeCreateModal(); });
+    if (createModal) {
+      createModal.addEventListener('click', (e) => {
+        if (e.target === createModal) closeCreateModal();
+      });
+    }
+
+    // Prevent the dummy modal form from submitting anywhere
+    const modalForm = document.querySelector('.modal-form');
+    if (modalForm) modalForm.addEventListener('submit', (e) => { e.preventDefault(); });
+
+    
+
+    // ===========================
+    // TOOLKIT CHAT (Contact form only)
+    // ===========================
+    const chatOpenBtn = document.getElementById('openToolkitChat');
+    const chatOverlay = document.getElementById('toolkitChatOverlay');
+    const chatCloseBtn = document.getElementById('closeToolkitChat');
+    const contactNameEl = document.getElementById('contactName');
+    const contactForm = document.getElementById('chatContactForm');
+    const contactEmailEl = document.getElementById('contactEmail');
+    const contactMessageEl = document.getElementById('contactMessage');
+
+    function openChat() {
+      if (!chatOverlay) return;
+      chatOverlay.classList.add('active');
+      chatOverlay.setAttribute('aria-hidden', 'false');
+      setTimeout(() => { if (contactNameEl) contactNameEl.focus(); }, 50);
+    }
+    function closeChat() {
+      if (!chatOverlay) return;
+      chatOverlay.classList.remove('active');
+      chatOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    if (chatOpenBtn) chatOpenBtn.addEventListener('click', openChat);
+    if (chatCloseBtn) chatCloseBtn.addEventListener('click', closeChat);
+    if (chatOverlay) {
+      chatOverlay.addEventListener('click', (e) => {
+        if (e.target === chatOverlay) closeChat();
+      });
+    }
+
+    function isValidEmail(v){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').toString());
+    }
+
+    if (contactForm) {
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = (contactNameEl && contactNameEl.value || '').trim();
+        const email = (contactEmailEl && contactEmailEl.value || '').trim();
+        const msg = (contactMessageEl && contactMessageEl.value || '').trim();
+        if (!name || !email || !msg) return;
+        if (!isValidEmail(email)) return;
+
+        const to = 'hello@theemployeeplaybook.com';
+        const subject = `Toolkit message from ${name}`;
+        const body = `${msg}\n\nFrom: ${name} (${email})`;
+        const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailto;
+
+        if (contactNameEl) contactNameEl.value = '';
+        if (contactEmailEl) contactEmailEl.value = '';
+        if (contactMessageEl) contactMessageEl.value = '';
+      });
+    }
+
+    // Escape closes chat
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && chatOverlay && chatOverlay.classList.contains('active')) {
+        closeChat();
+      }
+    });
+
+    // ===========================
+    // INITIAL RUN
+    // ===========================
+    // Start with no results shown; only show when search focuses or types.
+    // If you want instant suggestions, uncomment:
+    // runSearch();
+
   });
-</script>
-
-  <script defer src="/_vercel/speed-insights/script.js"></script>
+  </script>
 </body>
 </html>
