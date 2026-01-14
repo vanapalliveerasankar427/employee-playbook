@@ -1,11 +1,15 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In | The Employee Playbook</title>
 
-  <!-- Favicon (match your site structure) -->
+  <!-- Basic metadata -->
+  <meta name="description" content="Sign in to The Employee Playbook to access your tools, saved progress, and account." />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
@@ -29,6 +33,7 @@
       --danger: #c0392b;
       --success: #1f7a4f;
       --info: #2f6fd6;
+      --focus: rgba(123, 95, 196, 0.22);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -45,8 +50,8 @@
 
     .login-container {
       width: 100%;
-      max-width: 380px;
-      padding: 30px 25px;
+      max-width: 520px;
+      padding: 36px 28px;
       background: var(--white);
       border-radius: 12px;
       box-shadow: var(--shadow);
@@ -75,10 +80,11 @@
       font-weight: 700;
       color: var(--accent);
       display: none;
+      letter-spacing: 0.2px;
     }
 
-    .login-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-    .login-subtitle { font-size: 14px; color: var(--dark-gray); line-height: 1.4; }
+    .login-title { font-size: 28px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+    .login-subtitle { font-size: 15px; color: var(--dark-gray); line-height: 1.5; }
 
     .login-form { display: flex; flex-direction: column; gap: 16px; }
 
@@ -87,11 +93,11 @@
     .form-label { font-size: 13px; font-weight: 500; color: var(--text); }
 
     .form-input {
-      padding: 12px 14px;
+      padding: 14px 16px;
       border: 1px solid var(--gray);
-      border-radius: 6px;
-      font-size: 14px;
-      transition: all 0.3s;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.2s;
       width: 100%;
       background: var(--white);
       color: var(--text);
@@ -100,15 +106,15 @@
     .form-input:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(123, 95, 196, 0.1);
+      box-shadow: 0 0 0 3px var(--focus);
     }
 
     .password-input-container { position: relative; width: 100%; }
-    .password-input { padding-right: 40px; }
+    .password-input { padding-right: 46px; }
 
     .password-toggle {
       position: absolute;
-      right: 12px;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
       background: none;
@@ -116,46 +122,56 @@
       color: var(--dark-gray);
       cursor: pointer;
       font-size: 13px;
-      width: 20px;
-      height: 20px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: color 0.3s;
-      border-radius: 4px;
+      transition: color 0.2s, box-shadow 0.2s;
+      border-radius: 8px;
     }
     .password-toggle:hover { color: var(--accent); }
+    .password-toggle:focus { outline: none; box-shadow: 0 0 0 3px var(--focus); }
 
     .form-options {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 5px;
+      gap: 10px;
     }
 
     .remember-me { display: flex; align-items: center; gap: 6px; }
     .remember-checkbox { width: 14px; height: 14px; accent-color: var(--accent); }
     .remember-label { font-size: 13px; color: var(--dark-gray); cursor: pointer; }
 
+    /* ✅ Forgot password is UI control -> button, not a link */
     .forgot-password {
       font-size: 13px;
       color: var(--accent);
       text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
+      font-weight: 600;
+      transition: color 0.2s, box-shadow 0.2s;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 8px;
+      white-space: nowrap;
     }
-    .forgot-password:hover { color: var(--accent-dark); }
+    .forgot-password:hover { color: var(--accent-dark); text-decoration: underline; }
+    .forgot-password:focus { outline: none; box-shadow: 0 0 0 3px var(--focus); }
 
     .login-button {
       background: var(--accent);
       color: white;
       border: none;
-      padding: 12px 16px;
-      border-radius: 6px;
-      font-weight: 600;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-weight: 700;
       cursor: pointer;
-      font-size: 14px;
-      transition: all 0.3s;
+      font-size: 16px;
+      transition: all 0.2s;
       margin-top: 5px;
       width: 100%;
       box-shadow: 0 3px 8px rgba(123, 95, 196, 0.2);
@@ -171,6 +187,8 @@
       box-shadow: 0 4px 10px rgba(123, 95, 196, 0.3);
     }
 
+    .login-button:focus { outline: none; box-shadow: 0 0 0 3px var(--focus), 0 4px 10px rgba(123, 95, 196, 0.26); }
+
     .login-button:disabled {
       opacity: 0.7;
       cursor: not-allowed;
@@ -182,15 +200,30 @@
       margin-top: 18px;
       font-size: 13px;
       color: var(--dark-gray);
+      line-height: 1.45;
     }
 
     .signup-link a {
       color: var(--accent);
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s;
+      font-weight: 700;
+      transition: color 0.2s;
     }
     .signup-link a:hover { color: var(--accent-dark); }
+
+    .legal {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--dark-gray);
+      text-align: center;
+      line-height: 1.45;
+    }
+    .legal a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .legal a:hover { color: var(--accent-dark); text-decoration: underline; }
 
     .status {
       display: none;
@@ -234,7 +267,7 @@
     .forgot-panel.show{ display:block; }
     .forgot-title{
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text);
       margin-bottom: 6px;
       display:flex;
@@ -252,12 +285,13 @@
       display:flex;
       gap:10px;
       align-items:center;
+      flex-wrap: wrap;
     }
     .mini-btn{
       border:none;
       background: var(--accent);
       color:#fff;
-      font-weight: 700;
+      font-weight: 800;
       border-radius: 8px;
       padding: 10px 12px;
       cursor:pointer;
@@ -273,17 +307,22 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(123, 95, 196, 0.22);
     }
+    .mini-btn:focus{ outline:none; box-shadow: 0 0 0 3px var(--focus), 0 4px 12px rgba(123, 95, 196, 0.22); }
     .mini-btn:disabled{ opacity:.7; cursor:not-allowed; transform:none; }
+
     .mini-link{
       border:none;
       background: transparent;
       color: var(--accent);
-      font-weight: 700;
+      font-weight: 800;
       cursor:pointer;
       font-size: 13px;
       padding: 8px 6px;
+      border-radius: 8px;
+      transition: box-shadow .2s;
     }
     .mini-link:hover{ text-decoration: underline; }
+    .mini-link:focus{ outline:none; box-shadow: 0 0 0 3px var(--focus); }
 
     @media (max-width: 480px) {
       body { padding: 15px; }
@@ -291,6 +330,7 @@
       .logo { height: 60px; }
       .login-title { font-size: 22px; }
       .login-subtitle { font-size: 13px; }
+      .form-options { align-items: flex-start; }
     }
 
     @keyframes fadeIn {
@@ -340,12 +380,12 @@
           <label for="remember" class="remember-label">Remember me</label>
         </div>
 
-        <!-- ✅ now opens inline reset (still supports your separate page if you want) -->
-        <a href="#" class="forgot-password" id="forgotLink">Forgot password?</a>
+        <!-- ✅ UI control button -->
+        <button type="button" class="forgot-password" id="forgotLink">Forgot password?</button>
       </div>
 
       <!-- ✅ Inline reset panel -->
-      <div class="forgot-panel" id="forgotPanel">
+      <div class="forgot-panel" id="forgotPanel" aria-hidden="true">
         <div class="forgot-title"><i class="fa-solid fa-key"></i> Reset your password</div>
         <div class="forgot-hint">
           We’ll email a secure reset link. If your account exists, it will arrive within a few minutes.
@@ -366,7 +406,16 @@
 
       <div id="statusBox" class="status" role="status" aria-live="polite"></div>
 
-      <div class="signup-link">Don't have an account? <a href="create-account.html">Sign up here</a></div>
+      <div class="signup-link">
+        Don't have an account? <a href="create-account.html">Sign up here</a>
+        <div class="legal">
+          By continuing, you agree to our
+          <a href="terms.html">Terms</a> and
+          <a href="privacy.html">Privacy Policy</a>.
+          <br>
+          Need help? <a href="support.html">Support</a>
+        </div>
+      </div>
     </form>
   </div>
 
@@ -433,25 +482,53 @@
         }
       }
 
+      function escapeHtml(str){
+        return String(str || '').replace(/[&<>"']/g, (m) => ({
+          '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+        }[m]));
+      }
+
+      // ✅ Allowlist internal destinations (Phase 1 hardening)
+      function safeInternalPath(p) {
+        const val = (p || '').trim();
+        if (!val) return null;
+
+        // Block absolute URLs
+        if (/^https?:\/\//i.test(val)) return null;
+
+        // Normalise
+        const cleaned = val.replace(/^(\.\/|\/)+/, '');
+
+        // Phase 1 allowlist (add to this as needed)
+        const allow = new Set([
+          'the-toolkit.html',
+          'index.html',
+          'account.html'
+        ]);
+
+        return allow.has(cleaned) ? cleaned : null;
+      }
+
       function getPostLoginRedirect() {
         const params = new URLSearchParams(window.location.search);
         const returnTo = params.get('returnTo');
         const next = params.get('next');
         const storedReturnTo = localStorage.getItem('returnTo');
         const storedNext = localStorage.getItem('tep_post_login_redirect');
-        return returnTo || next || storedReturnTo || storedNext || 'the-toolkit.html';
+
+        return (
+          safeInternalPath(returnTo) ||
+          safeInternalPath(next) ||
+          safeInternalPath(storedReturnTo) ||
+          safeInternalPath(storedNext) ||
+          'the-toolkit.html'
+        );
       }
 
       function cleanUrl(removeKeys = []) {
         const url = new URL(window.location.href);
         removeKeys.forEach(k => url.searchParams.delete(k));
         window.history.replaceState({}, document.title, url.toString());
-      }
-
-      function escapeHtml(str){
-        return String(str || '').replace(/[&<>"']/g, (m) => ({
-          '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
-        }[m]));
       }
 
       // ✅ Premium error mapper
@@ -493,13 +570,31 @@
         };
       }
 
-      // ✅ Remember me => session persistence
-      // (Supabase v2 uses setSession only; persistence is handled by client; we can reduce friction by not trying to override here.
-      // Keeping checkbox purely UI is fine for now.)
+      function setForgotPanel(open){
+        forgotPanel.classList.toggle('show', !!open);
+        forgotPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+      }
+
+      // ✅ Guard: Supabase must exist
+      if (!supabaseClient || !supabaseClient.auth) {
+        setStatus('error',
+          "We couldn’t initialise sign-in.<br><span style='color:var(--dark-gray);font-weight:600;'>Please refresh the page. If this continues, contact support.</span>"
+        );
+        // still allow UI usage (no hard crash)
+        return;
+      }
+
+      // ✅ Auth listener (Phase 1 stability for delayed sessions / magic links)
+      try {
+        supabaseClient.auth.onAuthStateChange((_event, session) => {
+          if (session) {
+            window.location.href = getPostLoginRedirect();
+          }
+        });
+      } catch (e) { /* silent */ }
 
       // ✅ 0) If already signed in, bounce them to destination
       (async function redirectIfAlreadySignedIn(){
-        if (!supabaseClient || !supabaseClient.auth) return;
         try {
           const { data } = await supabaseClient.auth.getSession();
           if (data && data.session) {
@@ -521,7 +616,6 @@
           setStatus('success',
             `Check your email to verify your account (${shownEmail}).<br><span style="color:var(--dark-gray);font-weight:600;">Open the secure link, then come back and sign in.</span>`
           );
-          // keep next param; remove check_email only
           cleanUrl(['check_email']);
         } else if (params.get('reset') === '1') {
           setStatus('success', 'Password updated. You can sign in now.');
@@ -536,18 +630,13 @@
       })();
 
       // 2) Handle Supabase email-link callbacks (signup + recovery) on this page
-      //    Supabase links often arrive with: ?type=signup|recovery&token_hash=...
+      //    Links often arrive with: ?type=signup|recovery&token_hash=...
       (async function handleEmailLinkCallback(){
         const params = new URLSearchParams(window.location.search);
         const type = params.get('type'); // 'signup' | 'recovery' | etc
         const token_hash = params.get('token_hash');
 
         if (!type || !token_hash) return;
-
-        if (!supabaseClient || !supabaseClient.auth) {
-          setStatus('error', 'Auth client not ready. Please refresh the page.');
-          return;
-        }
 
         setLoading(true);
 
@@ -564,7 +653,10 @@
           if (type === 'recovery') {
             setStatus('success', "Link verified.<br><span style='color:var(--dark-gray);font-weight:600;'>Redirecting to set a new password…</span>");
             cleanUrl(['type', 'token_hash']);
-            setTimeout(() => window.location.href = 'update-password.html', 650);
+
+            // ✅ Folder-safe redirect
+            const dest = new URL('update-password.html', window.location.href).toString();
+            setTimeout(() => window.location.href = dest, 650);
             return;
           }
 
@@ -581,15 +673,9 @@
         }
       })();
 
-      // ✅ Forgot password inline panel (premium + simple)
-      forgotLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        forgotPanel.classList.toggle('show');
-      });
-
-      cancelResetBtn.addEventListener('click', () => {
-        forgotPanel.classList.remove('show');
-      });
+      // ✅ Forgot password inline panel
+      forgotLink.addEventListener('click', () => setForgotPanel(!forgotPanel.classList.contains('show')));
+      cancelResetBtn.addEventListener('click', () => setForgotPanel(false));
 
       sendResetBtn.addEventListener('click', async () => {
         setStatus('', '');
@@ -601,23 +687,16 @@
           return;
         }
 
-        if (!supabaseClient || !supabaseClient.auth) {
-          setStatus('error',
-            "We couldn’t initialise password reset.<br><span style='color:var(--dark-gray);font-weight:600;'>Please refresh and try again.</span>"
-          );
-          return;
-        }
-
         setResetLoading(true);
 
         try {
-          const redirectTo = window.location.origin + '/update-password.html';
+          // ✅ Folder-safe redirect
+          const redirectTo = new URL('update-password.html', window.location.href).toString();
 
           const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
 
           // Always show success-style message (don’t leak if account exists)
           if (error) {
-            // still keep it premium + calm
             setStatus('info',
               "If an account exists for that email, we’ve sent a secure reset link.<br><span style='color:var(--dark-gray);font-weight:600;'>Please check your inbox (and spam/junk).</span>"
             );
@@ -627,7 +706,7 @@
             );
           }
 
-          forgotPanel.classList.remove('show');
+          setForgotPanel(false);
 
         } catch (e) {
           console.error(e);
@@ -644,14 +723,6 @@
         e.preventDefault();
         setStatus('', '');
         setLoading(true);
-
-        if (!supabaseClient || !supabaseClient.auth) {
-          setStatus('error',
-            "We couldn’t initialise sign-in.<br><span style='color:var(--dark-gray);font-weight:600;'>Please refresh and try again.</span>"
-          );
-          setLoading(false);
-          return;
-        }
 
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
