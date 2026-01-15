@@ -76,6 +76,10 @@
       --cat-confidence: #ef4444;
       --cat-career: #800020;
       --cat-sos: #dc2626;
+      /* Additional canonical tokens */
+      --cat-team: #EC4899;
+      --cat-boundaries: #F97316;
+      --cat-decision: #800020;
     }
 
     /* Dark Mode Variables */
@@ -106,6 +110,10 @@
       --cat-confidence: #ef4444;
       --cat-career: #800020;
       --cat-sos: #dc2626;
+      /* Additional canonical tokens */
+      --cat-team: #DB2777;
+      --cat-boundaries: #EA580C;
+      --cat-decision: #B03060;
     }
 
     /* ===========================
@@ -117,6 +125,8 @@
       box-sizing: border-box;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
+
+    html { overflow-y: scroll; scroll-behavior: smooth; }
 
     body {
       background-color: var(--primary-white);
@@ -161,11 +171,7 @@
       height: 100%;
     }
 
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      height: 100%;
-    }
+    .logo { display: block; text-decoration: none; }
 
     .logo-img {
       height: 100px;
@@ -179,21 +185,17 @@
 
     .logo-fallback {
       display: none;
-      align-items: center;
-      justify-content: center;
-      height: 48px;
-      padding: 0 14px;
-      border-radius: 10px;
-      background: var(--premium-gradient);
-      color: #fff;
-      font-weight: 800; /* NAV EXEMPT */
-      letter-spacing: 0.8px;
-      font-size: 13px;
-      text-transform: uppercase;
-      transform: translateX(20%);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-decoration: none;
     }
 
-    .nav-links { display: flex; gap: 50px; }
+    .nav-links {
+      display: flex;
+      gap: 50px;
+      transform: translateX(-28px);
+    }
 
     .nav-link {
       color: var(--text-dark);
@@ -201,9 +203,22 @@
       font-weight: 500; /* NAV EXEMPT */
       transition: color 0.3s ease;
       font-size: 17px;
+      position: relative;
     }
 
     .nav-link:hover { color: var(--accent-purple); }
+
+    .nav-link.active { color: var(--text-dark); }
+    .nav-link.active::after{
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      left: 0;
+      width: 100%;
+      height: 2px; /* underline */
+      background: var(--accent-purple);
+      border-radius: 2px 2px 0 0;
+    }
 
     .nav-link-container { position: relative; display: inline-block; }
 
@@ -226,7 +241,7 @@
       display: flex;
       align-items: center;
       gap: 24px;
-      transform: translateX(-20%);
+      transform: translateX(calc(-30% - 15px));
     }
 
     .header-cta {
@@ -271,6 +286,32 @@
     }
 
     .theme-toggle:hover { background-color: var(--light-gray); }
+
+    /* Post-login header bits */
+    .user-chip{
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(123,95,196,0.25);
+      background: rgba(123,95,196,0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .user-initials{ font-size: 12px; font-weight: 700; color: var(--accent-purple-dark); }
+    .logout-btn{
+      border: 1px solid rgba(0,0,0,0.10);
+      background: var(--primary-white);
+      color: var(--text-dark);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
 
     .mobile-toggle {
       display: none;
@@ -1498,51 +1539,576 @@
       .checklist-item::before { border-radius: 10px; }
       .step-sidebar { width: 92vw; }
     }
+    
+    /* ✅ HARD LOCK (Phase 1) */
+    .lock-overlay{
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+    }
+    .lock-overlay.open{ display: flex; }
+
+    .lock-card{
+      width: 100%;
+      max-width: 560px;
+      background: var(--primary-white);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 20px 24px 18px;
+      text-align: left;
+      box-shadow: 0 16px 48px rgba(17,24,39,0.22);
+    }
+    .lock-badge{
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: var(--premium-gradient);
+    }
+    .lock-title-row{ display:flex; align-items:center; gap:12px; margin-bottom: 8px; }
+    .lock-card h2{ font-size: 22px; font-weight: 700; margin: 6px 0 10px; color: var(--text-dark); }
+    .lock-card p{ font-size: 15px; font-weight: 500; color: var(--text-medium); margin-bottom: 16px; line-height: 1.6; }
+
+    .lock-actions{ display: flex; gap: 12px; flex-wrap: wrap; }
+    .lock-btn{
+      text-decoration: none;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid transparent;
+    }
+    .lock-btn.primary{ background: var(--premium-gradient); color: #fff; border: none; }
+    .lock-btn.secondary{ background: var(--light-purple); color: var(--accent-purple-dark); border: 1px solid rgba(123,95,196,0.25); }
+
+    /* ===========================
+       AUTH LOCK (tool gated behind sign-in)
+    =========================== */
+    .auth-lock-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+    }
+
+    .auth-lock-overlay.active { display: flex; }
+
+    .auth-lock-card {
+      width: min(560px, 100%);
+      background: var(--primary-white);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 22px 22px 18px;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+    }
+
+    .dark-mode .auth-lock-card {
+      background: rgba(18,18,18,0.96);
+      border-color: rgba(255,255,255,0.10);
+    }
+
+    .auth-lock-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .auth-lock-title i { color: var(--accent-purple); }
+
+    .auth-lock-text {
+      font-size: 14px;
+      color: var(--text-medium);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .auth-lock-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .auth-lock-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 800;
+      font-size: 13px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .auth-lock-btn.primary { background: var(--premium-gradient); color: #fff; }
+    .auth-lock-btn.secondary { background: var(--light-purple); color: var(--accent-purple-dark); }
+
+    .dark-mode .auth-lock-btn.secondary {
+      background: rgba(123, 95, 196, 0.21);
+      color: var(--accent-purple);
+    }
+
+    /* keep tool visible but non-interactive when locked */
+    body.auth-locked .tool-hero-section,
+    body.auth-locked .context-tips-grid,
+    body.auth-locked .checklist-body,
+    body.auth-locked .capacity-meter-section,
+    body.auth-locked #evidenceSummary,
+    body.auth-locked footer,
+    body.auth-locked .my-playbook-fab {
+      filter: none;
+      opacity: 1;
+      user-select: none;
+    }
+
+    /* Save status */
+    .save-status{
+      position: absolute;
+      top: 18px;
+      right: 120px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-medium);
+    }
+    .save-status.saved{ color: var(--success-green); }
+    .save-status.unsaved{ color: var(--warning-orange); }
+    .save-status.saving{ color: var(--accent-purple); }
+    @media (max-width: 768px){ .save-status{ right: 112px; top: 12px; } }
+
+    /* Print cleanup additions */
+    @media print {
+      nav,
+      .my-playbook-fab,
+      .playbook-sidebar-overlay,
+      .step-sidebar-overlay,
+      #lockOverlay,
+      .actions-container,
+      .save-btn,
+      .save-status { display: none !important; }
+      body { opacity: 1 !important; }
+      .tool-hero-section { margin-top: 0 !important; }
+    }
+
+    /* Remove global blur kill-switch to allow lock overlay blur */
+
+    /* ===========================
+       NAV (POST-LOGIN HEADER)
+    =========================== */
+    nav{
+      position:fixed; top:0; width:100%;
+      background: var(--nav-bg, rgba(255,255,255,0.95));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index:1000;
+      border-bottom:1px solid var(--border-light, rgba(0,0,0,0.08));
+      box-shadow:0 1px 3px rgba(0,0,0,0.05);
+      height:80px;
+    }
+
+    .nav-container{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px 0;
+      height:100%;
+    }
+
+    .logo{ display:block; text-decoration:none; }
+    .logo-img{
+      height:100px;
+      width:auto;
+      transform: translateX(20%);
+      padding:14px 10px;
+      display:block;
+      min-height:100px;
+    }
+    .logo-fallback{
+      display:none;
+      font-size:24px;
+      font-weight:700;
+      color: var(--text-dark, #212529);
+      text-decoration:none;
+    }
+
+    .nav-links{
+      display:flex;
+      gap:50px;
+      transform: translateX(-28px);
+    }
+
+    .nav-link{
+      color: var(--text-dark, #212529);
+      text-decoration:none;
+      font-weight:500;
+      font-size:17px;
+      position:relative;
+      transition: color .2s ease;
+    }
+    .nav-link:hover{ color: var(--accent-purple, #7B5FC4); }
+
+    .nav-link.active{ color: var(--text-dark, #212529); }
+    .nav-link.active::after{
+      content:'';
+      position:absolute;
+      bottom:-7px;
+      left:0;
+      width:100%;
+      height:2px;
+      background: var(--accent-purple, #7B5FC4);
+      border-radius:2px 2px 0 0;
+    }
+
+    .nav-link-container{ position:relative; display:inline-block; }
+    .new-tag{
+      position:absolute;
+      top:-12px;
+      right:-35px;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color:#000;
+      font-size:10px;
+      font-weight:700;
+      padding:2px 6px;
+      border-radius:4px;
+      box-shadow:0 2px 4px rgba(0,0,0,0.2);
+      z-index:10;
+      white-space:nowrap;
+    }
+
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      transform: translateX(calc(-30% - 15px));
+    }
+
+    .user-initials{
+      width:38px; height:38px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:0.5px;
+      color: var(--text-dark, #212529);
+      background: var(--primary-white, #fff);
+      border:1px solid var(--border-light, rgba(0,0,0,0.08));
+      transition: all .2s ease;
+      user-select:none;
+      flex:0 0 auto;
+    }
+    .user-initials:hover{
+      transform: translateY(-1px);
+      border-color: rgba(123,95,196,0.35);
+      box-shadow: 0 8px 18px rgba(123,95,196,0.12);
+      color: var(--accent-purple, #7B5FC4);
+    }
+
+    .logout-link{
+      display:none;
+      font-size:13px;
+      font-weight:700;
+      color: var(--text-medium, #495057);
+      text-decoration:none;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--border-light, rgba(0,0,0,0.08));
+      background: rgba(255,255,255,0.7);
+      transition: all .2s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    .logout-link:hover{
+      transform: translateY(-1px);
+      border-color: rgba(123,95,196,0.35);
+      color: var(--accent-purple-dark, #5A4496);
+      box-shadow: 0 8px 18px rgba(123,95,196,0.10);
+    }
+
+    .theme-toggle{ background:none; border:none; color: var(--text-dark, #212529); cursor:pointer; font-size:16px; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition: background-color .2s ease; }
+    .theme-toggle:hover{ background-color: var(--light-gray, #F8F9FA); }
+
+    .mobile-toggle{ display:none; background:none; border:none; color: var(--text-dark, #212529); cursor:pointer; font-size:24px; width:40px; height:40px; border-radius:50%; align-items:center; justify-content:center; transition: background-color .2s ease; }
+    .mobile-toggle:hover{ background-color: var(--light-gray, #F8F9FA); }
+
+    .mobile-profile{ display:none; margin-top:10px; padding:12px 20px; background: var(--accent-purple, #7B5FC4); color:#fff; border-radius:8px; text-align:center; font-weight:600; text-decoration:none; }
+
+    @media (max-width: 768px){
+      .nav-container{ justify-content:center; position:relative; }
+      .logo{ position:absolute; left:50%; transform: translateX(-50%); display:flex; align-items:center; height:100%; }
+      .logo-img{ height:125px; transform:none; padding:12px 0; }
+      .mobile-toggle{ display:flex; position:absolute; left:20px; }
+      .nav-actions{ transform:none; gap:12px; position:absolute; right:20px; }
+      .nav-actions .user-initials{ display:none; }
+      .nav-actions .logout-link{ display:none !important; }
+      .nav-links{ display:none; position:absolute; top:100%; left:0; width:100%; background: var(--nav-bg, rgba(255,255,255,0.95)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); flex-direction:column; padding:20px; border-top:1px solid var(--border-light, rgba(0,0,0,0.08)); box-shadow:0 5px 15px rgba(0,0,0,0.1); gap:20px; transform:none; }
+      .nav-links.active{ display:flex; }
+      .mobile-profile{ display:block !important; }
+      .new-tag{ position:static; margin-left:8px; }
+    }
   </style>
+
+  <!-- ✅ Supabase (required for Phase 1 auth + cloud save) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabase-config.js"></script>
 
   <!-- JS is intentionally NOT placed under the footer (per your instruction) -->
   <script defer>
-    document.addEventListener('DOMContentLoaded', () => {
+    // ✅ Tool identifiers
+    const TOOL_ID = "expectations-alignment-guide";
+    const TOOL_VERSION = 1;
+    const TOOL_TITLE = "Expectations Alignment Guide";
+
+    // ✅ Supabase guard
+    function getSupabase() {
+      const sb = window.supabaseClient || window.supabase;
+      if (!sb) return null;
+      if (sb?.auth && sb?.from) return sb;
+      if (window.TEP_SUPABASE_URL && window.TEP_SUPABASE_ANON_KEY && window.supabase?.createClient) {
+        window.supabaseClient = window.supabase.createClient(
+          window.TEP_SUPABASE_URL,
+          window.TEP_SUPABASE_ANON_KEY
+        );
+        return window.supabaseClient;
+      }
+      return null;
+    }
+
+    // ✅ Hard lock state
+    let isLocked = true;
+    let currentUser = null;
+
+    function setLockedState(lock) {
+      isLocked = !!lock;
+      const toolMain = document.getElementById("toolMain");
+      const overlay = document.getElementById("lockOverlay");
+      if (toolMain) {
+        if (isLocked) { toolMain.setAttribute("inert", ""); toolMain.setAttribute("aria-hidden", "true"); }
+        else { toolMain.removeAttribute("inert"); toolMain.removeAttribute("aria-hidden"); }
+      }
+      if (overlay) {
+        overlay.classList.toggle("open", isLocked);
+        overlay.setAttribute("aria-hidden", isLocked ? "false" : "true");
+      }
+    }
+
+    ["click","keydown","submit","input","change"].forEach(evt => {
+      window.addEventListener(evt, (e) => {
+        if (!isLocked) return;
+        const ov = document.getElementById("lockOverlay");
+        if (ov && ov.contains(e.target)) return; // allow overlay interactions
+        e.stopPropagation();
+        e.preventDefault();
+      }, true);
+    });
+
+    async function requireAuthOrLock() {
+      const sb = getSupabase();
+      if (!sb) { setLockedState(true); return; }
+      try {
+        const { data } = await sb.auth.getSession();
+        const session = data?.session || null;
+        if (!session?.user) { currentUser = null; setLockedState(true); setSignedOutHeader(); return; }
+        currentUser = session.user;
+        setLockedState(false);
+        await hydratePostLoginHeader();
+        await restoreToolState();
+        logEventSafe("tool_opened", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
+      } catch(e){ setLockedState(true); }
+    }
+
+    function initialsFromName(fullName){
+      const s = (fullName||"").trim().replace(/\s+/g, " ");
+      if (!s) return "?";
+      const parts = s.split(" ").filter(Boolean);
+      const a = parts[0]?.[0] || "?"; const b = parts.length>1 ? parts[parts.length-1][0] : "";
+      return (a+b).toUpperCase();
+    }
+
+    // Post-login header helpers
+    function setSignedOutHeader() {
+      const initialsBtn = document.getElementById("userInitialsBtn");
+      const mobileProfileBtn = document.getElementById("mobileProfileBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (initialsBtn) { initialsBtn.textContent = "…"; initialsBtn.href = "./sign-in.html"; }
+      if (mobileProfileBtn) mobileProfileBtn.href = "./sign-in.html";
+      if (logoutBtn) logoutBtn.style.display = "none";
+    }
+
+    function setSignedInHeader({ initials }) {
+      const initialsBtn = document.getElementById("userInitialsBtn");
+      const mobileProfileBtn = document.getElementById("mobileProfileBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (initialsBtn) { initialsBtn.textContent = initials || "ME"; initialsBtn.href = "profile.html"; }
+      if (mobileProfileBtn) mobileProfileBtn.href = "profile.html";
+      if (logoutBtn) logoutBtn.style.display = "inline-flex";
+    }
+
+    function initialsFrom(fullName, email) {
+      const name = (fullName || "").trim();
+      if (name) {
+        const parts = name.split(/\s+/).filter(Boolean);
+        const a = parts[0]?.[0] || "";
+        const b = parts.length > 1 ? (parts[parts.length - 1]?.[0] || "") : "";
+        const init = (a + b).toUpperCase();
+        return init || "ME";
+      }
+      const em = (email || "").trim();
+      if (em) return em.slice(0, 2).toUpperCase();
+      return "ME";
+    }
+
+    async function hydratePostLoginHeader(){
+      const sb = getSupabase(); if (!sb || !currentUser) return;
+      let fullName = "";
+      try{ const { data, error } = await sb.from("profiles").select("full_name").eq("id", currentUser.id).maybeSingle();
+        if (!error) fullName = data?.full_name || ""; }catch(e){}
+      setSignedInHeader({ initials: initialsFrom(fullName, currentUser?.email) });
+    }
+
+    async function wireLogout(){
+      const btn = document.getElementById("logoutBtn"); if (!btn) return;
+      btn.addEventListener("click", async()=>{ const sb = getSupabase(); try{ await sb?.auth?.signOut(); }catch(e){} currentUser=null; setLockedState(true); window.location.href = "sign-in.html"; });
+    }
+
+    // ✅ Save status helpers
+    let dirty = false; let lastSavedTs = null;
+    function setSaveStatus(mode, msg){ const el = document.getElementById("saveStatus"); if(!el) return; el.classList.remove("saved","unsaved","saving");
+      if(mode==="saving"){ el.classList.add("saving"); el.textContent = msg || "Saving…"; return; }
+      if(mode==="saved"){ el.classList.add("saved"); el.textContent = msg || (lastSavedTs?`Last saved ${formatTime(lastSavedTs)}`:"Saved"); return; }
+      el.classList.add("unsaved"); el.textContent = msg || "Unsaved"; }
+    function formatTime(ts){ const d=new Date(ts); return d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}); }
+    function setSaveProgressStatus(text){ const el=document.getElementById('saveProgressStatus'); if(el) el.textContent = text||''; }
+    function markDirty(){ dirty=true; setSaveStatus("unsaved"); setSaveProgressStatus('Unsaved'); syncActionButtons(); }
+    function markSavedNow(){ dirty=false; lastSavedTs=Date.now(); setSaveStatus("saved"); setSaveProgressStatus(`Saved at ${formatTime(lastSavedTs)}`); syncActionButtons(); }
+    function syncActionButtons(){
+      const saveBtn=document.getElementById("saveBtn"); if(saveBtn) saveBtn.disabled = isLocked;
+      const gen=document.getElementById('generateBtn'); if(gen) gen.disabled = !(Array.isArray(checkedItems) && checkedItems.some(Boolean));
+      const clr=document.getElementById('clearBtn'); if(clr) clr.disabled = !(Array.isArray(checkedItems) && checkedItems.some(Boolean));
+      const sp=document.getElementById('saveProgressBtn'); if(sp) sp.disabled = (isLocked || !dirty);
+    }
+
+    // ✅ Tool state
+    function getToolState(){ return { checkedItems: Array.isArray(checkedItems)?checkedItems:[], smartSummaryOpen: !!document.getElementById("smartSummary")?.classList.contains("active"), lastScore: document.getElementById("clarityPercentage")?.textContent || "0%" }; }
+    function applyToolState(state){ if(!state||typeof state!=="object") return; if(Array.isArray(state.checkedItems)){ checkedItems = state.checkedItems.slice(); const items=document.querySelectorAll('.checklist-item'); items.forEach((el,idx)=>{ const icon=el.querySelector('i'); if(!icon) return; const on=!!checkedItems[idx]; icon.classList.toggle('fa-check-square',on); icon.classList.toggle('fa-square',!on); icon.style.color = on?'#5A4496':'#7B5FC4'; }); updateAlignmentScore(); }
+      if(state.smartSummaryOpen){ const ss=document.getElementById('smartSummary'); ss?.classList.add('active'); } }
+    const LOCAL_KEY = `tep_tool_state__${TOOL_ID}`;
+    function saveLocal(state){ try{ localStorage.setItem(LOCAL_KEY, JSON.stringify({v:TOOL_VERSION,state,ts:Date.now()})); }catch(e){} }
+    function loadLocal(){ try{ const raw=localStorage.getItem(LOCAL_KEY); if(!raw) return null; const parsed=JSON.parse(raw); return parsed?.state||null; }catch(e){ return null; } }
+
+    async function saveToolState(){ if(isLocked) return; const sb=getSupabase(); const state=getToolState(); saveLocal(state); if(!sb||!currentUser){ setSaveStatus("unsaved","Not signed in"); return; } try{ setSaveStatus("saving"); const payload={ user_id: currentUser.id, tool_id: TOOL_ID, tool_version: TOOL_VERSION, state };
+        const { error } = await sb.from('tool_states').upsert(payload, { onConflict: 'user_id,tool_id' }); if(error) throw error; markSavedNow(); logEventSafe('tool_saved',{tool_id:TOOL_ID,tool_version:TOOL_VERSION}); }catch(e){ setSaveStatus('unsaved','Save failed'); } }
+
+    async function restoreToolState(){ const sb=getSupabase(); if(!sb||!currentUser){ const local=loadLocal(); if(local) applyToolState(local); return; } try{ const { data, error } = await sb.from('tool_states').select('state, tool_version, updated_at').eq('user_id', currentUser.id).eq('tool_id', TOOL_ID).maybeSingle(); if(!error && data?.state){ applyToolState(data.state); setSaveStatus('saved','Restored'); return; } }catch(e){} const local=loadLocal(); if(local) applyToolState(local); }
+
+    async function logEventSafe(event_name, payload={}){ const sb=getSupabase(); if(!sb||!currentUser) return; try{ await sb.from('activity_log').insert([{ user_id: currentUser.id, event_name, payload, created_at: new Date().toISOString() }]); }catch(e){} }
+    document.addEventListener('DOMContentLoaded', async () => {
       document.body.classList.add('loaded');
 
-      initializeChecklist();
+      // Basic UI
       initializeThemeToggle();
       initializeMobileNav();
-      initializePlaybook();
+      // default header state before auth resolves
+      setSignedOutHeader();
       initializeStepSidebar();
+      initializePlaybook();
+
+      // Tool init
+      initializeChecklist();
+      enableChecklistA11y();
+      wireSaveButton();
+      wireLogout();
+      wirePrint();
+      wireSaveProgressButton();
+
+      // Auth + lock + restore
+      setLockedState(true);
+      await requireAuthOrLock();
+
+      // Initial paint
+      updateAlignmentScore();
     });
 
     /* ===========================
        MOBILE NAV
     =========================== */
     function initializeMobileNav() {
-      const mobileToggle = document.querySelector('.mobile-toggle');
-      const navLinks = document.querySelector('.nav-links');
-
+      const mobileToggle = document.getElementById('mobileToggle');
+      const navLinks = document.getElementById('navLinks');
       if (!mobileToggle || !navLinks) return;
-
       mobileToggle.addEventListener('click', function () {
-        navLinks.classList.toggle('active');
+        const isOpen = navLinks.classList.toggle('active');
+        this.setAttribute("aria-expanded", isOpen ? "true" : "false");
         const icon = this.querySelector('i');
-        if (icon) {
-          icon.classList.toggle('fa-bars');
-          icon.classList.toggle('fa-times');
-        }
+        if (icon) { icon.classList.toggle('fa-bars'); icon.classList.toggle('fa-times'); }
       });
-
       document.addEventListener('click', function(event) {
-        if (navLinks.classList.contains('active') &&
-            !navLinks.contains(event.target) &&
-            !mobileToggle.contains(event.target)) {
+        if (navLinks.classList.contains('active') && !navLinks.contains(event.target) && !mobileToggle.contains(event.target)) {
           navLinks.classList.remove('active');
+          mobileToggle.setAttribute("aria-expanded", "false");
           const icon = mobileToggle.querySelector('i');
-          if (icon) {
-            icon.classList.add('fa-bars');
-            icon.classList.remove('fa-times');
-          }
+          if (icon) { icon.classList.add('fa-bars'); icon.classList.remove('fa-times'); }
         }
       });
     }
+
+    function enableChecklistA11y(){
+      document.querySelectorAll('.checklist-item').forEach((el)=>{
+        el.setAttribute('role','button');
+        el.setAttribute('tabindex','0');
+        el.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); }});
+      });
+    }
+
+    function wireSaveButton(){ const btn=document.getElementById('saveBtn'); if(!btn) return; btn.addEventListener('click', async ()=>{ await saveToolState(); btn.classList.add('saved'); setTimeout(()=>btn.classList.remove('saved'), 900); }); }
+
+    // New actions container handlers
+    function generateEvidenceSummary(){ try{ generateSmartSummary(); logEventSafe('evidence_report_generated',{tool_id:TOOL_ID,tool_version:TOOL_VERSION}); }catch(e){} }
+    function printChecklistPDF(){ logEventSafe('tool_printed',{tool_id:TOOL_ID,tool_version:TOOL_VERSION}); window.print(); }
+    function clearAllChecklist(){
+      const items = document.querySelectorAll('.checklist-item');
+      items.forEach((el, idx)=>{
+        const icon = el.querySelector('i'); if(!icon) return;
+        icon.classList.remove('fa-check-square'); icon.classList.add('fa-square'); icon.style.color = '#7B5FC4';
+        if (Array.isArray(checkedItems)) checkedItems[idx] = false;
+      });
+      const ss = document.getElementById('smartSummary'); if (ss) ss.classList.remove('active');
+      updateAlignmentScore();
+      markDirty();
+      setSaveProgressStatus('Unsaved');
+      syncActionButtons();
+    }
+
+    function wirePrint(){ const btn=document.getElementById('printBtn'); if(!btn) return; btn.addEventListener('click', printChecklistPDF); }
+    function wireSaveProgressButton(){ const btn=document.getElementById('saveProgressBtn'); if(!btn) return; btn.addEventListener('click', async ()=>{ setSaveProgressStatus('Saving...'); await saveToolState(); setSaveProgressStatus(lastSavedTs?`Saved at ${formatTime(lastSavedTs)}`:'Saved'); }); }
 
     /* ===========================
        THEME TOGGLE + LOGO
@@ -1677,6 +2243,7 @@
 
           updateAlignmentScore();
           openStepSidebar(index);
+          markDirty();
         });
       });
     }
@@ -1949,6 +2516,7 @@
       }
 
       updateAlignmentScore();
+      markDirty();
     }
 
     function refreshStepCompleteButton() {
@@ -2314,46 +2882,80 @@
 
 <body>
 
+<!-- ✅ HARD LOCK OVERLAY (Phase 1) -->
+<div id="lockOverlay" class="lock-overlay auth-lock-overlay" aria-hidden="true">
+  <div class="lock-card auth-lock-card" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+    <div class="auth-lock-title">
+      <i class="fas fa-lock"></i>
+      <h2 id="lockTitle">Sign in required</h2>
+    </div>
+    <div class="auth-lock-text">
+      This tool is available to signed-in members so your progress can be saved securely. Sign in to unlock the checklist and report.
+    </div>
+    <div class="auth-lock-actions">
+      <a class="auth-lock-btn primary" href="sign-in.html"><i class="fas fa-right-to-bracket"></i> Sign in</a>
+      <a class="auth-lock-btn secondary" href="the-pricing.html"><i class="fas fa-gem"></i> View plans</a>
+    </div>
+  </div>
+  </div>
+
 <!-- ===========================
      NAVIGATION
 =========================== -->
 <nav>
   <div class="container nav-container">
-    <button class="mobile-toggle" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <i class="fas fa-bars"></i>
+    </button>
 
-    <a href="index.html" class="logo" aria-label="The Employee Playbook">
-      <img src="./assets/img/logo.png" alt="The Employee Playbook" class="logo-img" id="mainLogo">
-      <div class="logo-fallback" id="logoFallback">The Employee Playbook</div>
+    <a href="index.html" class="logo" aria-label="Home">
+      <img
+        src="assets/img/logo.png"
+        alt="The Employee Playbook"
+        class="logo-img"
+        id="mainLogo"
+        onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';"
+      >
+      <div class="logo-fallback" id="logo-fallback">THE EMPLOYEE PLAYBOOK</div>
     </a>
 
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <a href="the-lens.html" class="nav-link">The Lens</a>
-      <a href="the-toolkit.html" class="nav-link">The Toolkit</a>
+
+      <a href="the-toolkit.html" class="nav-link active">The Toolkit</a>
+
       <div class="nav-link-container">
         <a href="the-coach.html" class="nav-link">The Coach</a>
         <span class="new-tag">NEW</span>
       </div>
+
       <a href="the-shift.html" class="nav-link">The Shift</a>
       <a href="the-pricing.html" class="nav-link">The Pricing</a>
-      <a href="sign-in.html" class="mobile-sign-in">Sign In</a>
-      <a href="create-account.html" class="mobile-sign-up">Sign Up</a>
+
+      <a href="profile.html" class="mobile-profile" id="mobileProfileBtn">Profile</a>
     </div>
 
     <div class="nav-actions">
-      <a href="create-account.html" class="header-cta">Sign up</a>
-      <a href="sign-in.html" class="sign-in">Sign in</a>
-      <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+      <a href="sign-in.html" class="user-initials" id="userInitialsBtn" aria-label="Open profile">…</a>
+
+      <a class="logout-link" id="logoutBtn" href="#" aria-label="Log out">Log out</a>
+
+      <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle theme">
+        <i class="fas fa-moon"></i>
+      </button>
     </div>
   </div>
 </nav>
 
+<!-- ✅ Tool wrapper (locked via inert when signed out) -->
+<main id="toolMain" aria-live="polite">
 <!-- ===========================
      HERO
 =========================== -->
 <div class="tool-hero-section">
-  <button class="save-btn" id="saveBtn">
+  <button class="save-btn" id="saveBtn" type="button">
     <i class="far fa-bookmark"></i>
-    <span>Save</span>
+    <span>Save item</span>
   </button>
 
   <div class="tool-hero-content">
@@ -2622,12 +3224,23 @@
     </div>
 
     <div class="actions-container">
-      <button class="action-btn" onclick="generateSmartSummary()" id="generateBtn" disabled>
-        <i class="fas fa-magic"></i> Generate summary
+      <button class="action-btn" onclick="generateEvidenceSummary()" id="generateBtn" disabled>
+        <i class="fas fa-chart-bar"></i> Generate Evidence Report
       </button>
-      <button class="action-btn secondary" onclick="copyChecklist()" id="copyBtn">
-        <i class="far fa-copy"></i> Copy checklist
+
+      <button class="action-btn secondary" onclick="printChecklistPDF()" id="printBtn">
+        <i class="fas fa-print"></i> Print / Save PDF
       </button>
+
+      <button class="action-btn secondary" onclick="clearAllChecklist()" id="clearBtn" disabled>
+        <i class="fas fa-eraser"></i> Clear All
+      </button>
+
+      <!-- ✅ Cloud save: MANUAL ONLY -->
+      <button class="action-btn secondary" id="saveProgressBtn" disabled>
+        <i class="fas fa-cloud-arrow-up"></i> Save Progress
+      </button>
+      <div class="save-progress-status" id="saveProgressStatus"></div>
     </div>
   </div>
 </div>
@@ -2715,14 +3328,18 @@
 =========================== -->
 <footer>
   <div class="container">
-    <p>© 2025 The Employee Playbook. All rights reserved.</p>
+    <p>© <span id="yearNow"></span> The Employee Playbook. All rights reserved.</p>
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/supabaseClient.js"></script>
-<script src="assets/accessControl.js"></script>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    var y = document.getElementById('yearNow');
+    if (y) { y.textContent = String(new Date().getFullYear()); }
+  });
+  </script>
+
 </body>
 </html>
-
-
