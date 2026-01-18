@@ -1700,7 +1700,7 @@
       <div class="readiness-header">
         <h2>Your Review Readiness Score</h2>
         <p>
-          Your Review Readiness Score shows how prepared you are to advocate for yourself with evidence and strategy.
+          Your Performance Review Readiness Score shows how prepared you are to advocate for yourself with evidence and strategy.
           High scores mean you're walking in confident and prepared; low scores indicate you're relying on memory or hope.
           Use this to ensure you're ready for a productive, evidence-based conversation.
         </p>
@@ -1745,20 +1745,21 @@
 
         <div class="actions-container">
           <button class="action-btn" onclick="generateEvidenceSummary()" id="generateBtn" disabled>
-            <i class="fas fa-file-alt"></i> Generate Prep Summary
+            <i class="fas fa-file-alt"></i> Generate Summary
           </button>
 
           <button class="action-btn secondary" onclick="printChecklistPDF()" id="printBtn">
-            <i class="fas fa-print"></i> Print / Save PDF
+            <i class="fas fa-print"></i> Print
           </button>
-
+             
+          <button class="action-btn secondary" id="saveProgressBtn" disabled>
+            <i class="fas fa-cloud-arrow-up"></i> Save Progress
+          </button>
+             
           <button class="action-btn secondary" onclick="clearAllChecklist()" id="clearBtn" disabled>
             <i class="fas fa-eraser"></i> Clear All
           </button>
 
-          <button class="action-btn secondary" id="saveProgressBtn" disabled>
-            <i class="fas fa-cloud-arrow-up"></i> Save Progress
-          </button>
           <div class="save-progress-status" id="saveProgressStatus"></div>
         </div>
       </div>
@@ -2920,4 +2921,5 @@
 
 </body>
 </html>
+
 
