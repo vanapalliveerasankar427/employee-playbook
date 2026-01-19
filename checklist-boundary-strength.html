@@ -350,6 +350,28 @@
             display: none;
         }
 
+        .save-popup {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-purple-dark);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 3000;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .save-popup.visible {
+            opacity: 1;
+        }
+
+
         @media (max-width: 768px) {
             .nav-container {
                 justify-content: center;
@@ -503,7 +525,7 @@
 
         .breadcrumb .current {
             color: var(--text-dark);
-            font-weight: 800;
+            font-weight: 600;
         }
 
         /* Save Item (My Playbook bookmark) */
@@ -1798,6 +1820,7 @@
             .actions-container,
             .theme-toggle,
             .logout-link,
+            #mobileLogoutBtn,
             .user-initials,
             .lock-overlay {
                 display: none !important;
@@ -1809,6 +1832,30 @@
             .checklist-item {
                 display: none !important;
             }
+
+            /* Ensure report content is visible */
+            .smart-summary-section,
+            .smart-summary-section * {
+                visibility: visible !important;
+                display: block !important;
+            }
+
+            /* Restore grid cards specifically */
+            .red-flags-grid,
+            .next-steps-grid,
+            .resources-grid {
+                display: block !important;
+            }
+
+            .red-flag-card,
+            .next-step-card,
+            .resource-card {
+                display: block !important;
+                visibility: visible !important;
+                page-break-inside: avoid;
+                margin-bottom: 15px;
+            }
+
 
 
             body {
@@ -2886,6 +2933,9 @@
             setLastSaved(nowISO);
             setDirty(false);
             syncActionButtons();
+            showSavePopup("Progress saved successfully.");
+            saveStatus.style.display = "block";
+            renderSavedItems();
             safeLogEvent("tool_saved", { storage: "local", tool_id: TOOL_ID });
         }
 
@@ -3191,6 +3241,24 @@
             setDirty(false);
             setLastSaved(null);
         }
+
+        function showSavePopup(message) {
+            const popup = document.createElement("div");
+            popup.className = "save-popup";
+            popup.textContent = message;
+
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                popup.classList.add("visible");
+            }, 50);
+
+            setTimeout(() => {
+                popup.classList.remove("visible");
+                setTimeout(() => popup.remove(), 300);
+            }, 2500);
+        }
+
 
         document.addEventListener("DOMContentLoaded", () => {
             // (note: module runs after parse; keep for safety)
