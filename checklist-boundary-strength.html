@@ -100,7 +100,6 @@
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             /**---- hard cap all font weights at 700 ----- */
-            font-weight: min(inherit, 700) !important;
         }
 
         body {
@@ -172,7 +171,7 @@
             border-radius: 6px;
             background: var(--accent-purple);
             color: white;
-            font-weight: 800;
+            font-weight: 700;
             font-size: 14px;
             letter-spacing: 1px;
             align-items: center;
@@ -254,7 +253,7 @@
             background: linear-gradient(135deg, rgba(123, 95, 196, 0.10), rgba(123, 95, 196, 0.04));
             border: 1px solid rgba(123, 95, 196, 0.25);
             color: var(--accent-purple-dark);
-            font-weight: 800;
+            font-weight: 700;
             font-size: 12px;
             letter-spacing: 0.5px;
             text-decoration: none;
@@ -810,7 +809,7 @@
 
         .checklist-section-title {
             font-size: 28px;
-            font-weight: 800;
+            font-weight: 700;
             color: var(--accent-purple-dark);
             margin-bottom: 18px;
             margin-top: 60px !important;
@@ -929,13 +928,13 @@
 
         .boundary-title {
             font-size: 20px;
-            font-weight: 800;
+            font-weight: 700;
             color: var(--accent-purple-dark);
         }
 
         .boundary-percentage {
             font-size: 28px;
-            font-weight: 900;
+            font-weight: 700;
             color: var(--accent-purple);
         }
 
@@ -1008,7 +1007,7 @@
         }
 
         .boundary-dimension-pill span.score {
-            font-weight: 800;
+            font-weight: 700;
             color: var(--accent-purple);
         }
 
@@ -1030,7 +1029,7 @@
             padding: 12px 18px;
             font-size: 14px;
             border-radius: 12px;
-            font-weight: 800;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -1072,7 +1071,7 @@
         }
 
         .save-status {
-            display: none !important;
+            display: block;
             margin-top: 8px;
             font-size: 12px;
             color: var(--dark-gray);
@@ -1082,7 +1081,7 @@
 
         .save-status strong {
             color: var(--text-dark);
-            font-weight: 800;
+            font-weight: 700;
         }
 
         /* ===========================
@@ -1119,7 +1118,7 @@
 
         .summary-title {
             font-size: 24px;
-            font-weight: 900;
+            font-weight: 700;
             color: var(--accent-purple-dark);
             margin-bottom: 6px;
         }
@@ -1141,7 +1140,7 @@
 
         .section-header {
             font-size: 20px;
-            font-weight: 900;
+            font-weight: 700;
             margin-bottom: 22px;
             display: flex;
             align-items: center;
@@ -1266,7 +1265,7 @@
         .step-title,
         .resource-title {
             font-size: 16px;
-            font-weight: 800;
+            font-weight: 700;
             color: var(--text-dark);
             margin-bottom: 10px;
         }
@@ -1283,7 +1282,7 @@
 
         .resource-link {
             color: var(--accent-purple);
-            font-weight: 800;
+            font-weight: 700;
             text-decoration: none;
             font-size: 14px;
             display: inline-flex;
@@ -1313,7 +1312,7 @@
             gap: 8px;
             cursor: pointer;
             font-size: 13px;
-            font-weight: 800;
+            font-weight: 700;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
             transition: all 0.25s ease;
         }
@@ -1604,7 +1603,7 @@
 
         .lock-title {
             font-size: 22px;
-            font-weight: 800;
+            font-weight: 700;
             color: var(--text-dark);
             line-height: 1.2;
         }
@@ -1630,7 +1629,7 @@
             gap: 10px;
             padding: 12px 16px;
             border-radius: 12px;
-            font-weight: 900;
+            font-weight: 700;
             font-size: 14px;
             text-decoration: none;
             border: 1px solid transparent;
@@ -2377,7 +2376,6 @@
         const nextStepsGrid = document.getElementById("nextStepsGrid");
         const resourcesGrid = document.getElementById("resourcesGrid");
 
-        const saveStatus = document.getElementById("saveStatus");
         const unsavedText = document.getElementById("unsavedText");
         const lastSavedText = document.getElementById("lastSavedText");
 
@@ -2889,6 +2887,25 @@
             return parsed?.state || null;
         }
 
+        function showSavePopup(message) {
+            const popup = document.createElement("div");
+            popup.className = "save-popup";
+            popup.textContent = message;
+
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                popup.classList.add("visible");
+            }, 50);
+
+            setTimeout(() => {
+                popup.classList.remove("visible");
+                setTimeout(() => popup.remove(), 300);
+            }, 2500);
+        }
+
+
+
         async function saveProgress() {
             if (isLocked) return;
             const payload = buildStatePayload();
@@ -2919,9 +2936,14 @@
                         setLastSaved(nowISO);
                         setDirty(false);
                         syncActionButtons();
+
+                        // SHOW SAVE CONFIRMATION POPUP
+                        showSavePopup("Progress saved successfully.");
+
                         safeLogEvent("tool_saved", { storage: "supabase", tool_id: TOOL_ID });
                         return;
                     }
+
                 } catch (e) {
                     // fall through to local
                 }
@@ -2933,7 +2955,6 @@
             setDirty(false);
             syncActionButtons();
             showSavePopup("Progress saved successfully.");
-            saveStatus.style.display = "block";
             renderSavedItems();
             safeLogEvent("tool_saved", { storage: "local", tool_id: TOOL_ID });
         }
@@ -3217,45 +3238,25 @@
    BEFORE UNLOAD LOCAL FALLBACK
 ========================================================= */
         window.addEventListener("beforeunload", () => {
-            if (isDirty && !isLocked) {
-                saveProgress();
+            if (isDirty && !isLocked && !lastSavedAtISO) {
+                const payload = buildStatePayload();
+                localStorage.setItem(LS_PROGRESS_KEY, JSON.stringify({
+                    state: payload,
+                    saved_at: new Date().toISOString()
+                }));
             }
         });
+
 
 
         /* =========================================================
            17) STARTUP
         ========================================================= */
-        function attachHardLockGates() {
-            // Pointer + keyboard gates while locked
-            ["click", "mousedown", "mouseup", "pointerdown", "pointerup", "touchstart", "touchend"].forEach(evt => {
-                window.addEventListener(evt, lockEventGate, true);
-            });
-            ["keydown", "keypress"].forEach(evt => {
-                window.addEventListener(evt, lockEventGate, true);
-            });
-        }
+
 
         function initSaveStatus() {
             setDirty(false);
             setLastSaved(null);
-        }
-
-        function showSavePopup(message) {
-            const popup = document.createElement("div");
-            popup.className = "save-popup";
-            popup.textContent = message;
-
-            document.body.appendChild(popup);
-
-            setTimeout(() => {
-                popup.classList.add("visible");
-            }, 50);
-
-            setTimeout(() => {
-                popup.classList.remove("visible");
-                setTimeout(() => popup.remove(), 300);
-            }, 2500);
         }
 
 
@@ -3269,35 +3270,21 @@
         initChecklist();
         initPlaybook();
         initSaveStatus();
-
-        (async () => {
-            try {
-                // FIRST attach gates
-                attachHardLockGates();
-
-                // THEN load auth state
-                await refreshAuthUI();
-
-                // Restore progress ONLY if signed-in and unlocked
-                if (!isLocked) await restoreProgress();
-
-            } catch (e) {
-                console.error("Startup error:", e);
-            } finally {
-                // ALWAYS show page
-                body.classList.add("loaded");
-            }
-        })();
+        document.addEventListener("click", lockEventGate, true);
+        document.addEventListener("keydown", lockEventGate, true);
 
 
 
         // Keep header in sync
         supabase?.auth?.onAuthStateChange(async () => {
             await refreshAuthUI();
+
+            if (!isLocked) {
+                await restoreProgress();
+            }
         });
 
-        // Restore progress ONLY if signed-in and unlocked
-        if (!isLocked) await restoreProgress();
+
 
         // Initial score sync
         updateBoundaryScore();
