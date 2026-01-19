@@ -1803,8 +1803,21 @@
                 display: none !important;
             }
 
+            /* Hide checklist items from print output */
+            #checklistText,
+            .checklist-grid,
+            .checklist-item {
+                display: none !important;
+            }
+
+
             body {
                 opacity: 1 !important;
+            }
+
+            /* Ensure everything before snapshot is hidden */
+            body * {
+                visibility: hidden;
             }
 
             .tool-hero-section {
@@ -1838,10 +1851,7 @@
                 margin-bottom: 20px;
             }
 
-            /* Ensure everything before snapshot is hidden */
-            body * {
-                visibility: hidden;
-            }
+
 
             /* Show print header */
             .print-header,
@@ -2393,7 +2403,11 @@
             } else {
                 lockOverlay.classList.remove("show");
                 lockOverlay.setAttribute("aria-hidden", "true");
-                toolMain.removeAttribute("inert");
+                if (toolMain.hasAttribute("inert")) {
+                    toolMain.removeAttribute("inert");
+                    toolMain.style.pointerEvents = "auto";
+                }
+
                 toolMain.classList.remove("locked-hint");
             }
 
@@ -2445,7 +2459,7 @@
             const anyChecked = checked.some(Boolean);
             generateBtn.disabled = !anyChecked || isLocked;
             clearBtn.disabled = !anyChecked || isLocked;
-            saveProgressBtn.disabled = !anyChecked || isLocked || !isDirty;
+            saveProgressBtn.disabled = !anyChecked || isLocked || isLocked;
             printBtn.disabled = isLocked; // allow print only when signed in (matches premium behaviour)
         }
 
@@ -2568,10 +2582,17 @@
         function toggleItem(idx) {
             setItemState(idx, !checked[idx]);
             updateBoundaryScore();
+
+            // Mark as dirty immediately after any interaction
             setDirty(true);
+
+            // Enable Save Progress immediately if at least one is checked
+            saveProgressBtn.disabled = isLocked;
+
             syncActionButtons();
             triggerAutosave();
         }
+
 
         function initChecklist() {
             checklistItems.forEach((item, idx) => {
@@ -3181,12 +3202,15 @@
         initChecklist();
         initPlaybook();
         initSaveStatus();
+
+        // FIRST attach gates
         attachHardLockGates();
+
+        // THEN load auth state
+        await refreshAuthUI();
 
         body.classList.add("loaded");
 
-        // Auth UI + lock
-        await refreshAuthUI();
 
         // Keep header in sync
         supabase?.auth?.onAuthStateChange(async () => {
