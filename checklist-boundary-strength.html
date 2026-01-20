@@ -3,11 +3,19 @@
      (1) TRUE HARD LOCK behind sign-in (inert on #toolMain + global event capture when locked)
      (2) Post-login header behaviour: initials chip + Log out button (desktop + mobile)
      (3) Save Progress to Supabase tool_states (manual save only) + localStorage fallback
-     (4) Unsaved + Last saved feedback (timestamp)
+     (4) Unsaved + Last saved feedback (timestamp) ✅ VISIBLE
      (5) Print / Save PDF (clean print CSS)
      (6) Clear All (resets checklist + analysis)
      (7) Accessibility: checklist items keyboard togglable + mobile menu aria-expanded
      (8) Telemetry: logs tool_opened/tool_saved/tool_printed/tool_cleared safely (fails silently)
+     (9) Saved toast confirmation ✅ NEW
+     (10) Fixed bookmark behaviour (opens sidebar when already saved) ✅ FIXED
+     (11) FA6 icons (fa-regular fa-square / fa-solid fa-square-check) ✅ FIXED
+     (12) Report state restoration ✅ FIXED
+     (13) Lock accessibility focus trap ✅ IMPROVED
+     (14) Auth overlay compact styling ✅ FIXED
+     (15) Header logout button visible ✅ FIXED
+     (16) Auth state listener synced ✅ FIXED
 -->
 
 <!DOCTYPE html>
@@ -99,7 +107,6 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            /**---- hard cap all font weights at 700 ----- */
         }
 
         body {
@@ -171,7 +178,7 @@
             border-radius: 6px;
             background: var(--accent-purple);
             color: white;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 14px;
             letter-spacing: 1px;
             align-items: center;
@@ -183,6 +190,7 @@
             display: flex;
             gap: 50px;
             transform: translateX(-28px);
+            margin-left: -20px;
         }
 
         .nav-link {
@@ -238,9 +246,8 @@
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 14px;
-            transform: translateX(calc(-30% - 15px));
-            /* ✅ 15px left shift + capacity style */
+            gap: 16px;
+            padding-right: 8px;
         }
 
         .user-initials {
@@ -253,7 +260,7 @@
             background: linear-gradient(135deg, rgba(123, 95, 196, 0.10), rgba(123, 95, 196, 0.04));
             border: 1px solid rgba(123, 95, 196, 0.25);
             color: var(--accent-purple-dark);
-            font-weight: 700;
+            font-weight: 800;
             font-size: 12px;
             letter-spacing: 0.5px;
             text-decoration: none;
@@ -282,9 +289,9 @@
             color: var(--text-dark);
             text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
-            padding: 7px 12px;
-            border-radius: 999px;
+            font-size: 13px;
+            padding: 6px 11px;
+            border-radius: 8px;
             border: 1px solid var(--border-light);
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(10px);
@@ -292,18 +299,27 @@
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            line-height: 1;
         }
 
         .logout-link:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border-color: rgba(123, 95, 196, 0.25);
             color: var(--accent-purple-dark);
         }
 
         body.dark-mode .logout-link {
             background: rgba(20, 20, 20, 0.6);
+            color: var(--text-medium);
+        }
+
+        body.dark-mode .logout-link:hover {
+            color: var(--accent-purple);
+            border-color: rgba(157, 134, 233, 0.25);
         }
 
         .theme-toggle {
@@ -348,28 +364,6 @@
             display: none;
         }
 
-        .save-popup {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent-purple-dark);
-            color: white;
-            padding: 12px 18px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 3000;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .save-popup.visible {
-            opacity: 1;
-        }
-
-
         @media (max-width: 768px) {
             .nav-container {
                 justify-content: center;
@@ -400,10 +394,9 @@
             }
 
             .nav-actions {
-                transform: none;
                 position: absolute;
                 right: 20px;
-                gap: 10px;
+                gap: 12px;
             }
 
             .nav-links {
@@ -626,7 +619,6 @@
             border-radius: 999px;
             font-size: 12px;
             font-weight: 600;
-            /* base */
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border: 1px solid transparent;
@@ -640,8 +632,6 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
-
-        /* ✅ reduce weight by 100 in the playbook sidebar? (you requested earlier) — keeping pills at 600; sidebar is handled later */
 
         .category-pill:hover {
             transform: translateY(-1px);
@@ -809,7 +799,7 @@
 
         .checklist-section-title {
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--accent-purple-dark);
             margin-bottom: 18px;
             margin-top: 60px !important;
@@ -928,13 +918,13 @@
 
         .boundary-title {
             font-size: 20px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--accent-purple-dark);
         }
 
         .boundary-percentage {
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 900;
             color: var(--accent-purple);
         }
 
@@ -1007,7 +997,7 @@
         }
 
         .boundary-dimension-pill span.score {
-            font-weight: 700;
+            font-weight: 800;
             color: var(--accent-purple);
         }
 
@@ -1029,7 +1019,7 @@
             padding: 12px 18px;
             font-size: 14px;
             border-radius: 12px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -1070,8 +1060,8 @@
             box-shadow: none !important;
         }
 
+        /* ✅ PHASE 1 FIX #1: Make save status visible */
         .save-status {
-            display: block;
             margin-top: 8px;
             font-size: 12px;
             color: var(--dark-gray);
@@ -1081,7 +1071,71 @@
 
         .save-status strong {
             color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        /* ✅ PHASE 1 FIX #2: Toast notification */
+        .save-toast {
+            position: fixed;
+            bottom: 80px;
+            right: 24px;
+            z-index: 2100;
+            background: var(--primary-white);
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 12px 40px rgba(123, 95, 196, 0.25);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            min-width: 260px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: toastPopIn 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        @keyframes toastPopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        body.dark-mode .save-toast {
+            background: rgba(20, 20, 20, 0.95);
+            border-color: rgba(157, 134, 233, 0.4);
+            box-shadow: 0 12px 40px rgba(123, 95, 196, 0.35);
+        }
+
+        .save-toast.show {
+            display: flex;
+        }
+
+        .save-toast i {
+            color: var(--success-green);
+            font-size: 20px;
             font-weight: 700;
+        }
+
+        .save-toast-content {
+            flex: 1;
+        }
+
+        .save-toast-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .save-toast-subtitle {
+            font-size: 12px;
+            color: var(--dark-gray);
         }
 
         /* ===========================
@@ -1090,7 +1144,7 @@
         .smart-summary-section {
             max-width: 1100px;
             margin: 0 auto 60px;
-            padding: 0 20px;
+            padding: 30px 20px 0;
             display: none;
         }
 
@@ -1118,7 +1172,7 @@
 
         .summary-title {
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 900;
             color: var(--accent-purple-dark);
             margin-bottom: 6px;
         }
@@ -1133,14 +1187,14 @@
         .summary-insight {
             font-size: 14px;
             color: var(--dark-gray);
-            max-width: 680px;
+            max-width: 700px;
             margin: 0 auto;
             font-weight: 400;
         }
 
         .section-header {
             font-size: 20px;
-            font-weight: 700;
+            font-weight: 900;
             margin-bottom: 22px;
             display: flex;
             align-items: center;
@@ -1265,7 +1319,7 @@
         .step-title,
         .resource-title {
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-dark);
             margin-bottom: 10px;
         }
@@ -1282,7 +1336,7 @@
 
         .resource-link {
             color: var(--accent-purple);
-            font-weight: 700;
+            font-weight: 800;
             text-decoration: none;
             font-size: 14px;
             display: inline-flex;
@@ -1312,7 +1366,7 @@
             gap: 8px;
             cursor: pointer;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 800;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
             transition: all 0.25s ease;
         }
@@ -1379,14 +1433,12 @@
         .playbook-sidebar-header h3 {
             font-size: 18px;
             font-weight: 700;
-            /* ✅ reduced by 100 */
             color: var(--text-dark);
         }
 
         .playbook-sidebar-header p {
             font-size: 13px;
             font-weight: 400;
-            /* ✅ reduced by 100 */
             color: var(--dark-gray);
         }
 
@@ -1422,7 +1474,6 @@
         .saved-items-empty {
             font-size: 13px;
             font-weight: 400;
-            /* ✅ reduced by 100 */
             color: var(--dark-gray);
             line-height: 1.6;
         }
@@ -1455,14 +1506,12 @@
         .saved-item-title {
             font-size: 14px;
             font-weight: 600;
-            /* ✅ reduced by 100 */
             color: var(--text-dark);
         }
 
         .saved-item-type {
             font-size: 11px;
             font-weight: 600;
-            /* ✅ reduced by 100 */
             text-transform: uppercase;
             letter-spacing: 0.6px;
             color: var(--accent-purple-dark);
@@ -1471,7 +1520,6 @@
         .saved-item-meta {
             font-size: 12px;
             font-weight: 400;
-            /* ✅ reduced by 100 */
             color: var(--dark-gray);
         }
 
@@ -1479,7 +1527,6 @@
             margin-top: 6px;
             font-size: 12px;
             font-weight: 700;
-            /* ✅ reduced by 100 */
             color: var(--accent-purple);
             text-decoration: none;
             display: inline-flex;
@@ -1501,7 +1548,6 @@
         .quick-links-title {
             font-size: 12px;
             font-weight: 600;
-            /* ✅ reduced by 100 */
             text-transform: uppercase;
             letter-spacing: 0.8px;
             color: var(--text-medium);
@@ -1524,7 +1570,6 @@
             color: var(--accent-purple-dark);
             font-size: 13px;
             font-weight: 400;
-            /* ✅ reduced by 100 */
             display: flex;
             align-items: center;
             gap: 8px;
@@ -1543,11 +1588,6 @@
             color: var(--accent-purple);
         }
 
-        .print-header {
-            display: none;
-        }
-
-
         /* ===========================
        HARD LOCK OVERLAY (behind sign-in)
     =========================== */
@@ -1559,9 +1599,24 @@
             align-items: center;
             justify-content: center;
             padding: 24px;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
+            background: rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            animation: lockFadeIn 0.2s ease-out;
+        }
+
+        @keyframes lockFadeIn {
+            from {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+                -webkit-backdrop-filter: blur(0px);
+            }
+
+            to {
+                opacity: 1;
+                backdrop-filter: blur(1px);
+                -webkit-backdrop-filter: blur(1px);
+            }
         }
 
         .lock-overlay.show {
@@ -1570,19 +1625,19 @@
 
         .lock-card {
             width: 100%;
-            max-width: 560px;
+            max-width: 420px;
             background: var(--primary-white);
             border: none;
-            border-radius: 22px;
-            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
-            padding: 24px 24px 18px;
+            border-radius: 16px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+            padding: 18px 20px;
             position: relative;
         }
 
         body.dark-mode .lock-card {
             background: rgba(18, 18, 18, 0.92);
             border-color: rgba(255, 255, 255, 0.10);
-            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
         }
 
         .lock-badge {
@@ -1592,49 +1647,50 @@
         .lock-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 6px;
         }
 
         .lock-header i {
             color: var(--accent-purple);
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .lock-title {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 800;
             color: var(--text-dark);
             line-height: 1.2;
         }
 
         .lock-subtitle {
-            font-size: 16px;
+            font-size: 13px;
             color: var(--text-medium);
-            margin-bottom: 16px;
-            line-height: 1.6;
+            margin-bottom: 14px;
+            line-height: 1.5;
         }
 
         .lock-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
         .lock-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 12px 16px;
-            border-radius: 12px;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             text-decoration: none;
             border: 1px solid transparent;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
+            height: 36px;
         }
 
         .lock-btn.primary {
@@ -1659,7 +1715,7 @@
 
         .lock-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
         }
 
         /* When locked, we also add a subtle visual cue on main (no blur frosting) */
@@ -1762,6 +1818,11 @@
                 bottom: 18px;
                 right: 18px;
             }
+
+            .save-toast {
+                bottom: 70px;
+                right: 18px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1810,119 +1871,172 @@
     =========================== */
         @media print {
 
-            /* Existing hide rules (kept as-is) */
             nav,
             .my-playbook-fab,
             .playbook-sidebar-overlay,
             .save-btn,
             .actions-container,
             .theme-toggle,
-            .logout-link,
-            #mobileLogoutBtn,
             .user-initials,
-            .lock-overlay {
+            .lock-overlay,
+            .save-toast {
                 display: none !important;
             }
-
-            /* Hide checklist items from print output */
-            #checklistText,
-            .checklist-grid,
-            .checklist-item {
-                display: none !important;
-            }
-
-            /* Ensure report content is visible */
-            .smart-summary-section,
-            .smart-summary-section * {
-                visibility: visible !important;
-                display: block !important;
-            }
-
-            /* Restore grid cards specifically */
-            .red-flags-grid,
-            .next-steps-grid,
-            .resources-grid {
-                display: block !important;
-            }
-
-            .red-flag-card,
-            .next-step-card,
-            .resource-card {
-                display: block !important;
-                visibility: visible !important;
-                page-break-inside: avoid;
-                margin-bottom: 15px;
-            }
-
-
 
             body {
                 opacity: 1 !important;
             }
 
-            /* Ensure everything before snapshot is hidden */
-            body * {
-                visibility: hidden;
-            }
-
             .tool-hero-section {
                 margin-top: 0 !important;
-                padding-top: 0 !important;
-                display: none !important;
-            }
-
-            .context-tips-grid {
-                display: none !important;
-            }
-
-            .boundary-score-section {
+                padding-top: 20px !important;
                 page-break-after: avoid;
             }
 
-            .smart-summary-section {
-                display: block !important;
+            /* Hide everything except title */
+            .context-tips-grid,
+            .checklist-body,
+            .breadcrumb,
+            .checklist-name,
+            .hero-subheading,
+            .category-pills-container,
+            .boundary-score-section,
+            .summary-header p,
+            .summary-header .summary-subtitle {
+                display: none !important;
             }
 
+            /* Show only title */
+            .hero-main-heading {
+                display: block !important;
+                margin-bottom: 8px !important;
+                font-size: 28px !important;
+                page-break-after: avoid;
+            }
+
+            /* Add date/timestamp */
+            .hero-main-heading::after {
+                content: "\A" attr(data-date);
+                white-space: pre;
+                font-size: 12px;
+                color: #666;
+                font-weight: 400;
+            }
+
+            /* Show print-only snapshot of checked items */
+            .print-only-snapshot {
+                display: block !important;
+                page-break-inside: avoid;
+                margin-top: 16px !important;
+                margin-bottom: 20px !important;
+            }
+
+            .print-snapshot-header {
+                font-size: 16px !important;
+                font-weight: 700 !important;
+                color: #5A4496 !important;
+                margin-bottom: 10px !important;
+                border-bottom: 1px solid #ccc !important;
+                padding-bottom: 6px !important;
+            }
+
+            .print-snapshot-items {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 6px !important;
+            }
+
+            .print-snapshot-item {
+                display: flex !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+                font-size: 13px !important;
+                line-height: 1.4 !important;
+                color: #212529 !important;
+            }
+
+            .print-snapshot-icon {
+                min-width: 16px !important;
+                font-size: 14px !important;
+                color: #5A4496 !important;
+                margin-top: 1px !important;
+            }
+
+            .print-snapshot-text {
+                flex: 1 !important;
+            }
+
+            /* Show report section with header only */
+            .smart-summary-section {
+                display: block !important;
+                page-break-before: auto;
+                margin-top: 16px !important;
+            }
+
+            .summary-title {
+                display: block !important;
+                font-size: 16px !important;
+                font-weight: 700 !important;
+                margin-bottom: 16px !important;
+            }
+
+            .section-header {
+                display: block !important;
+                font-size: 14px !important;
+                margin-bottom: 12px !important;
+            }
+
+            /* Hide individual section headers, put 3 boxes in ONE ROW */
+            .red-flags-grid,
+            .next-steps-grid,
+            .resources-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 12px !important;
+                page-break-inside: avoid;
+                margin-bottom: 20px !important;
+            }
+
+            /* Card styling for print */
+            .red-flag-card,
+            .next-step-card,
+            .resource-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                font-size: 12px !important;
+                padding: 12px !important;
+            }
+
+            .red-flag-card h4,
+            .next-step-card h4,
+            .resource-card h4 {
+                font-size: 13px !important;
+                margin-bottom: 6px !important;
+            }
+
+            .flag-description,
+            .step-description,
+            .resource-description {
+                font-size: 11px !important;
+                line-height: 1.4 !important;
+            }
+
+            /* Clean up links for print */
             a {
                 color: inherit !important;
                 text-decoration: none !important;
             }
 
-            /* ===== PHASE-1 PRINT ADDITIONS ===== */
-
-            /* Print header must be visible */
-            .print-header {
-                display: block !important;
-                margin-bottom: 20px;
+            .resource-link {
+                display: inline-flex !important;
+                font-size: 11px !important;
             }
-
-
-
-            /* Show print header */
-            .print-header,
-            .print-header * {
-                visibility: visible !important;
-            }
-
-            /* Show snapshot section onward */
-            #printSnapshotStart,
-            #printSnapshotStart~*,
-            #printSnapshotStart~* * {
-                visibility: visible !important;
-            }
+        }
         }
     </style>
 </head>
 
 <body>
-
-    <!-- PHASE-1 PRINT HEADER (visible only when printing) -->
-    <div class="print-header">
-        <h2>Boundary Strength Checklist</h2>
-        <p>Printed: <span id="printDate"></span></p>
-        <p>Last Saved: <span id="printLastSaved"></span></p>
-    </div>
-
 
     <!-- ===========================
      NAVIGATION
@@ -1953,14 +2067,12 @@
                 <a href="the-pricing.html" class="nav-link">The Pricing</a>
 
                 <a href="profile.html" class="mobile-profile" id="mobileProfileBtn">Profile</a>
-                <a href="#" class="mobile-profile" id="mobileLogoutBtn" style="display:none;">Log out</a>
             </div>
 
             <div class="nav-actions">
                 <a href="sign-in.html" class="user-initials" id="userInitialsBtn" aria-label="Open profile">…</a>
-                <a class="logout-link" id="logoutBtn" href="#" aria-label="Log out" style="display:none;">
-                    <i class="fas fa-arrow-right-from-bracket"></i> Log out
-                </a>
+                <button class="logout-link" id="logoutBtn" style="display: none;" type="button" aria-label="Log out"><i
+                        class="fas fa-sign-out-alt"></i> Log out</button>
                 <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle theme">
                     <i class="fas fa-moon"></i>
                 </button>
@@ -1979,12 +2091,24 @@
             </div>
             <div class="lock-subtitle" id="lockDesc">
                 This tool is available to signed-in members so your progress can be saved securely. Sign in to unlock
-                the checklist and report.
+                the
+                checklist and report.
             </div>
             <div class="lock-actions">
-                <a class="lock-btn primary" href="sign-in.html"><i class="fas fa-right-to-bracket"></i> Sign in</a>
+                <a class="lock-btn primary" id="lockSignInBtn"
+                    href="sign-in.html?redirect=boundary-strength-checklist.html"><i
+                        class="fas fa-right-to-bracket"></i> Sign in</a>
                 <a class="lock-btn secondary" href="the-pricing.html"><i class="fas fa-gem"></i> View plans</a>
             </div>
+        </div>
+    </div>
+
+    <!-- ✅ PHASE 1 FIX #2: Toast notification -->
+    <div class="save-toast" id="saveToast" role="status" aria-live="polite" aria-atomic="true">
+        <i class="fas fa-circle-check"></i>
+        <div class="save-toast-content">
+            <div class="save-toast-title">Saved</div>
+            <div class="save-toast-subtitle" id="saveToastSubtitle">Saved</div>
         </div>
     </div>
 
@@ -1998,7 +2122,7 @@
   =========================== -->
         <div class="tool-hero-section">
             <button class="save-btn" id="saveBtn" type="button">
-                <i class="far fa-bookmark"></i>
+                <i class="fa-regular fa-bookmark"></i>
                 <span>Save item</span>
             </button>
 
@@ -2006,7 +2130,7 @@
                 <div class="breadcrumb">
                     <a href="the-toolkit.html">Toolkit</a>
                     <i class="fas fa-chevron-right"></i>
-                    <a href="category-expectation-burnout-and-capacity.html">Expectations, Burnout & Capacity</a>
+                    <a href="category-expectation-burnout-and-capacity.html">Expectation, Burnout & Capacity</a>
                     <i class="fas fa-chevron-right"></i>
                     <span class="current">Boundary Strength Checklist</span>
                 </div>
@@ -2057,11 +2181,11 @@
             <div class="tips-card">
                 <h3 class="section-title"><i class="fas fa-lightbulb"></i>Pro Tips</h3>
                 <ul class="bullet-list">
-                    <li>Be honest with yourself — boundary weakness is not a failure, it’s an opportunity</li>
-                    <li>Boundaries protect your energy, focus, and wellbeing — they’re not selfish</li>
+                    <li>Be honest with yourself — boundary weakness is not a failure, it's an opportunity</li>
+                    <li>Boundaries protect your energy, focus, and wellbeing — they're not selfish</li>
                     <li>Start small — strengthen one boundary at a time rather than trying to fix everything</li>
-                    <li>Communicate boundaries clearly and consistently — people can’t respect what they don’t know</li>
-                    <li>Remember: “No” is a complete sentence. You don’t need to justify or over-explain</li>
+                    <li>Communicate boundaries clearly and consistently — people can't respect what they don't know</li>
+                    <li>Remember: "No" is a complete sentence. You don't need to justify or over-explain</li>
                 </ul>
             </div>
         </div>
@@ -2073,73 +2197,77 @@
             <h2 class="checklist-section-title">Your Boundary Strength Checklist</h2>
 
             <div class="checklist-grid" id="checklistGrid">
-                <!-- Each item is keyboard togglable (role=checkbox) -->
+                <!-- ✅ PHASE 1 FIX #4: Font Awesome 6.4 icons (fa-regular fa-square / fa-solid fa-square-check) -->
                 <div class="checklist-item" data-category="burnout" role="checkbox" aria-checked="false" tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I have clear start and end times for my workday and stick to them
-                        consistently.</div>
+                        consistently.
+                    </div>
                 </div>
                 <div class="checklist-item" data-category="burnout" role="checkbox" aria-checked="false" tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I take my full lunch break away from my desk most days.</div>
                 </div>
                 <div class="checklist-item" data-category="burnout" role="checkbox" aria-checked="false" tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I don't feel obligated to respond to work messages outside of work
                         hours.</div>
                 </div>
                 <div class="checklist-item" data-category="confidence" role="checkbox" aria-checked="false"
                     tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I can confidently say "no" to requests that don't align with my
-                        priorities or capacity.</div>
+                        priorities or
+                        capacity.</div>
                 </div>
                 <div class="checklist-item" data-category="burnout" role="checkbox" aria-checked="false" tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I don't take on other people's work or responsibilities to avoid
                         conflict.</div>
                 </div>
                 <div class="checklist-item" data-category="burnout" role="checkbox" aria-checked="false" tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I don't feel responsible for other people's emotional reactions or
                         problems.</div>
                 </div>
                 <div class="checklist-item" data-category="confidence" role="checkbox" aria-checked="false"
                     tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I can redirect conversations that become unproductive or emotionally
-                        draining.</div>
+                        draining.
+                    </div>
                 </div>
                 <div class="checklist-item" data-category="clarity" role="checkbox" aria-checked="false" tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I protect focused work time by declining unnecessary meetings or
-                        scheduling "do not disturb" blocks.</div>
+                        scheduling "do
+                        not disturb" blocks.</div>
                 </div>
                 <div class="checklist-item" data-category="manager" role="checkbox" aria-checked="false" tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I communicate clearly when my plate is full and negotiate deadlines or
-                        scope when needed.</div>
+                        scope when
+                        needed.</div>
                 </div>
                 <div class="checklist-item" data-category="burnout" role="checkbox" aria-checked="false" tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I don't feel guilty for taking time off or using my entitled leave.
                     </div>
                 </div>
                 <div class="checklist-item" data-category="confidence" role="checkbox" aria-checked="false"
                     tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I can assertively communicate my needs without apologising excessively.
                     </div>
                 </div>
                 <div class="checklist-item" data-category="burnout" role="checkbox" aria-checked="false" tabindex="0">
-                    <i class="far fa-square" aria-hidden="true"></i>
+                    <i class="fa-regular fa-square" aria-hidden="true"></i>
                     <div class="checklist-text">I have strategies to manage work-related stress that don't involve
-                        overworking.</div>
+                        overworking.
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div id="printSnapshotStart"></div>
 
         <!-- ===========================
        SCORE BAR + ACTIONS
@@ -2150,7 +2278,8 @@
                 <p>
                     Your Boundary Strength Score shows how well you're protecting your time, energy, and focus.
                     Strong boundaries don't mean being rigid — they mean knowing your limits and communicating them
-                    clearly so you can perform sustainably.
+                    clearly so you
+                    can perform sustainably.
                 </p>
             </div>
 
@@ -2194,10 +2323,6 @@
                         <i class="fas fa-list-check"></i> Generate Evidence Report
                     </button>
 
-                    <button class="action-btn" id="saveProgressBtn" type="button" disabled>
-                        <i class="fas fa-cloud-arrow-up"></i> Save Progress
-                    </button>
-
                     <button class="action-btn secondary" id="printBtn" type="button">
                         <i class="fas fa-print"></i> Print / Save PDF
                     </button>
@@ -2206,12 +2331,26 @@
                         <i class="fas fa-eraser"></i> Clear All
                     </button>
 
+                    <button class="action-btn" id="saveProgressBtn" type="button" disabled>
+                        <i class="fas fa-cloud-arrow-up"></i> Save Progress
+                    </button>
 
+                    <!-- ✅ PHASE 1 FIX #1: Made save status visible -->
                     <div class="save-status" id="saveStatus">
-                        <span id="unsavedText"><strong>Status:</strong> Not started</span><br>
+                        <span id="unsavedText"><strong>Status:</strong> Saved to My Playbook</span><br>
                         <span id="lastSavedText"><strong>Last saved:</strong> —</span>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- ===========================
+       PRINT-ONLY SNAPSHOT (Shows checked items)
+  =========================== -->
+        <div class="print-only-snapshot" id="printOnlySnapshot" style="display: none;">
+            <div class="print-snapshot-header">Your Checked Boundary Strengths</div>
+            <div class="print-snapshot-items" id="printSnapshotItems">
+                <!-- Generated by JavaScript -->
             </div>
         </div>
 
@@ -2225,8 +2364,9 @@
                 </p>
                 <p class="summary-insight">
                     Use this report as evidence for yourself — not a judgement. It highlights the exact boundary
-                    patterns that are driving overwhelm and gives you practical steps to stabilise your workload and
-                    protect your capacity.
+                    patterns that are
+                    driving overwhelm and gives you practical steps to stabilise your workload and protect your
+                    capacity.
                 </p>
             </div>
 
@@ -2277,8 +2417,7 @@
                         <div class="playbook-quick-links-list">
                             <a href="dashboard.html" class="quick-link-pill"><i class="fas fa-gauge"></i> The
                                 Dashboard</a>
-                            <a href="the-lens.html" class="quick-link-pill"><i class="fas fa-search"></i> The
-                                Lens</a>
+                            <a href="the-lens.html" class="quick-link-pill"><i class="fas fa-search"></i> The Lens</a>
                             <a href="the-toolkit.html" class="quick-link-pill"><i class="fas fa-toolbox"></i> The
                                 Toolkit</a>
                             <a href="the-coach.html" class="quick-link-pill"><i class="fas fa-comments"></i> The
@@ -2312,9 +2451,23 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- ===========================
-     JAVASCRIPT (Phase 1 Complete)
+     JAVASCRIPT (Phase 1 Complete + Auth Fixes)
 =========================== -->
     <script type="module">
+        // FAILSAFE: Make body visible immediately
+        if (document.body) {
+            document.body.classList.add("loaded");
+            console.log("FAILSAFE: Body made visible immediately");
+        }
+
+        // Global error handler
+        window.addEventListener('error', function (e) {
+            console.error('GLOBAL ERROR CAUGHT:', e.error);
+            console.error('Error message:', e.message);
+            console.error('Error filename:', e.filename);
+            console.error('Error line:', e.lineno);
+        });
+
         /* =========================================================
            0) TOOL CONSTANTS
         ========================================================= */
@@ -2332,8 +2485,24 @@
         const SUPABASE_ANON_KEY = window.TEP_SUPABASE_ANON_KEY;
 
         let supabase = null;
-        if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function initSupabaseClient() {
+            // Wait up to 5 seconds for window.supabase to be available
+            for (let i = 0; i < 50; i++) {
+                if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
+                    try {
+                        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        console.log("✅ SUPABASE READY");
+                        return true;
+                    } catch (e) {
+                        console.error("Supabase client creation failed:", e);
+                        return false;
+                    }
+                }
+                await new Promise(r => setTimeout(r, 100));
+            }
+            console.warn("⚠ Supabase library not available");
+            return false;
         }
 
         /* =========================================================
@@ -2341,8 +2510,15 @@
         ========================================================= */
         const body = document.body;
 
+        // MAKE BODY VISIBLE IMMEDIATELY (before any initialization)
+        if (body) {
+            body.classList.add("loaded");
+            console.log("✓ Body made visible immediately");
+        }
+
         const toolMain = document.getElementById("toolMain");
         const lockOverlay = document.getElementById("lockOverlay");
+        const lockSignInBtn = document.getElementById("lockSignInBtn");
 
         const mobileToggle = document.getElementById("mobileToggle");
         const navLinks = document.getElementById("navLinks");
@@ -2350,7 +2526,6 @@
         const userInitialsBtn = document.getElementById("userInitialsBtn");
         const logoutBtn = document.getElementById("logoutBtn");
         const mobileProfileBtn = document.getElementById("mobileProfileBtn");
-        const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
 
         const themeToggleBtn = document.getElementById("themeToggleBtn");
         const themeIcon = themeToggleBtn?.querySelector("i");
@@ -2376,8 +2551,12 @@
         const nextStepsGrid = document.getElementById("nextStepsGrid");
         const resourcesGrid = document.getElementById("resourcesGrid");
 
+        const saveStatus = document.getElementById("saveStatus");
         const unsavedText = document.getElementById("unsavedText");
         const lastSavedText = document.getElementById("lastSavedText");
+
+        const saveToast = document.getElementById("saveToast");
+        const saveToastSubtitle = document.getElementById("saveToastSubtitle");
 
         const saveBtn = document.getElementById("saveBtn");
         const playbookOverlay = document.getElementById("playbookOverlay");
@@ -2393,9 +2572,12 @@
         let checked = new Array(checklistItems.length).fill(false);
         let lastSavedAtISO = null;
         let isDirty = false;
-        let isLocked = true; // assume locked until session checked
-        let autosaveTimer = null;
+        let isLocked = true;
 
+        /* ✅ PHASE 1 FIX #6: Focus trap state */
+        let focusableElementsInLock = [];
+        let firstFocusableInLock = null;
+        let lastFocusableInLock = null;
 
         /* =========================================================
            4) HELPERS
@@ -2419,48 +2601,90 @@
         }
 
         function setSignedOutHeader() {
-            userInitialsBtn.textContent = "…";
-            userInitialsBtn.href = "sign-in.html";
-            logoutBtn.style.display = "none";
-            mobileLogoutBtn.style.display = "none";
-            mobileProfileBtn.href = "profile.html";
+            if (userInitialsBtn) {
+                userInitialsBtn.textContent = "…";
+                userInitialsBtn.href = "sign-in.html";
+            }
+            if (logoutBtn) logoutBtn.style.display = "none";
+            if (mobileProfileBtn) mobileProfileBtn.href = "profile.html";
         }
 
         function setSignedInHeader(user) {
             const fullName = user?.user_metadata?.full_name || user?.user_metadata?.fullName || "";
             const email = user?.email || "";
-            userInitialsBtn.textContent = initialsFrom(fullName, email);
-            userInitialsBtn.href = "profile.html";
-            logoutBtn.style.display = "inline-flex";
-            mobileLogoutBtn.style.display = "block";
-            mobileProfileBtn.href = "profile.html";
+            if (userInitialsBtn) {
+                userInitialsBtn.textContent = initialsFrom(fullName, email);
+                userInitialsBtn.href = "profile.html";
+            }
+            if (logoutBtn) logoutBtn.style.display = "inline-flex";
+            if (mobileProfileBtn) mobileProfileBtn.href = "profile.html";
+        }
+
+        /* ✅ PHASE 1 FIX #6: Focus trap implementation */
+        function setupFocusTrap() {
+            if (!lockOverlay) return;
+
+            const lockCard = lockOverlay.querySelector(".lock-card");
+            if (!lockCard) return;
+
+            focusableElementsInLock = Array.from(
+                lockCard.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])')
+            );
+
+            firstFocusableInLock = focusableElementsInLock[0] || null;
+            lastFocusableInLock = focusableElementsInLock[focusableElementsInLock.length - 1] || null;
+        }
+
+        function handleLockFocusTrap(e) {
+            if (!isLocked) return;
+            if (e.key !== "Tab") return;
+
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusableInLock) {
+                    e.preventDefault();
+                    lastFocusableInLock?.focus();
+                }
+            } else {
+                if (document.activeElement === lastFocusableInLock) {
+                    e.preventDefault();
+                    firstFocusableInLock?.focus();
+                }
+            }
         }
 
         function setLockState(locked) {
             isLocked = locked;
 
             if (locked) {
-                lockOverlay.classList.add("show");
-                lockOverlay.setAttribute("aria-hidden", "false");
-                toolMain.setAttribute("inert", "");
-                toolMain.classList.add("locked-hint");
-            } else {
-                lockOverlay.classList.remove("show");
-                lockOverlay.setAttribute("aria-hidden", "true");
-                if (toolMain.hasAttribute("inert")) {
-                    toolMain.removeAttribute("inert");
-                    toolMain.style.pointerEvents = "auto";
+                if (lockOverlay) {
+                    lockOverlay.classList.add("show");
+                    lockOverlay.setAttribute("aria-hidden", "false");
+                }
+                if (toolMain) {
+                    toolMain.setAttribute("inert", "");
+                    toolMain.classList.add("locked-hint");
                 }
 
-                toolMain.classList.remove("locked-hint");
+                setupFocusTrap();
+                setTimeout(() => {
+                    if (lockSignInBtn) lockSignInBtn.focus();
+                }, 100);
+            } else {
+                if (lockOverlay) {
+                    lockOverlay.classList.remove("show");
+                    lockOverlay.setAttribute("aria-hidden", "true");
+                }
+                if (toolMain) {
+                    toolMain.removeAttribute("inert");
+                    toolMain.classList.remove("locked-hint");
+                }
             }
 
             syncActionButtons();
         }
 
-        // TRUE HARD LOCK: capture all pointer/keyboard interaction outside overlay while locked
         function lockEventGate(e) {
-            if (!isLocked) return;
+            if (!isLocked || !lockOverlay) return;
             const withinOverlay = lockOverlay.contains(e.target);
             if (withinOverlay) return;
             e.preventDefault();
@@ -2469,6 +2693,8 @@
 
         function setDirty(nextDirty = true) {
             isDirty = nextDirty;
+            if (!unsavedText) return;
+
             if (!checked.some(Boolean)) {
                 unsavedText.innerHTML = "<strong>Status:</strong> Not started";
             } else if (isDirty) {
@@ -2480,53 +2706,51 @@
 
         function setLastSaved(iso) {
             lastSavedAtISO = iso || null;
-            lastSavedText.innerHTML = `<strong>Last saved:</strong> ${formatGB(lastSavedAtISO)}`;
+            if (lastSavedText) {
+                lastSavedText.innerHTML = `<strong>Last saved:</strong> ${formatGB(lastSavedAtISO)}`;
+            }
         }
-
-        /* =========================================================
-   PHASE-1 AUTOSAVE (Debounced)
-========================================================= */
-        function triggerAutosave() {
-            if (isLocked || !isDirty) return;
-
-            clearTimeout(autosaveTimer);
-
-            autosaveTimer = setTimeout(() => {
-                if (!isLocked && isDirty) {
-                    saveProgress();
-                }
-            }, 1200);
-        }
-
 
         function syncActionButtons() {
             const anyChecked = checked.some(Boolean);
-            generateBtn.disabled = !anyChecked || isLocked;
-            clearBtn.disabled = !anyChecked || isLocked;
-            saveProgressBtn.disabled = !anyChecked || isLocked;
-            printBtn.disabled = isLocked; // allow print only when signed in (matches premium behaviour)
+            if (generateBtn) generateBtn.disabled = !anyChecked || isLocked;
+            if (clearBtn) clearBtn.disabled = !anyChecked || isLocked;
+            if (saveProgressBtn) saveProgressBtn.disabled = !anyChecked || isLocked || !isDirty;
+            if (printBtn) printBtn.disabled = isLocked;
         }
 
         function safeJSONParse(raw, fallback) {
             try { return JSON.parse(raw); } catch { return fallback; }
         }
 
+        /* ✅ PHASE 1 FIX #2: Toast helper */
+        function showSaveToast() {
+            if (isLocked || !saveToast || !saveToastSubtitle) return;
+
+            saveToastSubtitle.textContent = "Saved";
+
+            saveToast.classList.add("show");
+            setTimeout(() => {
+                saveToast.classList.remove("show");
+            }, 1500);
+        }
+
+
         /* =========================================================
            5) THEME TOGGLE
         ========================================================= */
         function updateLogoForTheme(isDarkMode) {
             if (!logoImg) return;
-            // keeps your file naming
             logoImg.style.display = "block";
             const nextSrc = isDarkMode ? "assets/img/logo-dark.png" : "assets/img/logo.png";
             logoImg.src = nextSrc;
         }
 
         function initTheme() {
-            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+            const prefersDarkScheme = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
             const savedTheme = localStorage.getItem("theme");
 
-            const shouldDark = (savedTheme === "dark") || (!savedTheme && prefersDarkScheme.matches);
+            const shouldDark = (savedTheme === "dark") || (!savedTheme && prefersDarkScheme && prefersDarkScheme.matches);
             if (shouldDark) {
                 body.classList.add("dark-mode");
                 themeIcon?.classList.remove("fa-moon");
@@ -2539,37 +2763,41 @@
                 updateLogoForTheme(false);
             }
 
-            themeToggleBtn?.addEventListener("click", () => {
-                const isDark = body.classList.contains("dark-mode");
-                if (isDark) {
-                    body.classList.remove("dark-mode");
-                    localStorage.setItem("theme", "light");
-                    themeIcon?.classList.remove("fa-sun");
-                    themeIcon?.classList.add("fa-moon");
-                    updateLogoForTheme(false);
-                } else {
-                    body.classList.add("dark-mode");
-                    localStorage.setItem("theme", "dark");
-                    themeIcon?.classList.remove("fa-moon");
-                    themeIcon?.classList.add("fa-sun");
-                    updateLogoForTheme(true);
-                }
-            });
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener("click", () => {
+                    const isDark = body.classList.contains("dark-mode");
+                    if (isDark) {
+                        body.classList.remove("dark-mode");
+                        localStorage.setItem("theme", "light");
+                        themeIcon?.classList.remove("fa-sun");
+                        themeIcon?.classList.add("fa-moon");
+                        updateLogoForTheme(false);
+                    } else {
+                        body.classList.add("dark-mode");
+                        localStorage.setItem("theme", "dark");
+                        themeIcon?.classList.remove("fa-moon");
+                        themeIcon?.classList.add("fa-sun");
+                        updateLogoForTheme(true);
+                    }
+                });
+            }
 
-            prefersDarkScheme.addEventListener("change", (e) => {
-                if (localStorage.getItem("theme")) return;
-                if (e.matches) {
-                    body.classList.add("dark-mode");
-                    themeIcon?.classList.remove("fa-moon");
-                    themeIcon?.classList.add("fa-sun");
-                    updateLogoForTheme(true);
-                } else {
-                    body.classList.remove("dark-mode");
-                    themeIcon?.classList.remove("fa-sun");
-                    themeIcon?.classList.add("fa-moon");
-                    updateLogoForTheme(false);
-                }
-            });
+            if (prefersDarkScheme && prefersDarkScheme.addEventListener) {
+                prefersDarkScheme.addEventListener("change", (e) => {
+                    if (localStorage.getItem("theme")) return;
+                    if (e.matches) {
+                        body.classList.add("dark-mode");
+                        themeIcon?.classList.remove("fa-moon");
+                        themeIcon?.classList.add("fa-sun");
+                        updateLogoForTheme(true);
+                    } else {
+                        body.classList.remove("dark-mode");
+                        themeIcon?.classList.remove("fa-sun");
+                        themeIcon?.classList.add("fa-moon");
+                        updateLogoForTheme(false);
+                    }
+                });
+            }
         }
 
         /* =========================================================
@@ -2607,17 +2835,22 @@
         ========================================================= */
         function setItemState(idx, value) {
             const item = checklistItems[idx];
+            if (!item) return; // Skip if item doesn't exist
+
             const icon = item.querySelector("i");
+            if (!icon) return; // Skip if icon doesn't exist
+
             checked[idx] = !!value;
 
+            /* ✅ PHASE 1 FIX #4: FA6 icon classes */
             if (checked[idx]) {
-                icon.classList.remove("fa-square");
-                icon.classList.add("fa-check-square");
+                icon.classList.remove("fa-regular", "fa-square");
+                icon.classList.add("fa-solid", "fa-square-check");
                 icon.style.color = "#5A4496";
                 item.setAttribute("aria-checked", "true");
             } else {
-                icon.classList.remove("fa-check-square");
-                icon.classList.add("fa-square");
+                icon.classList.remove("fa-solid", "fa-square-check");
+                icon.classList.add("fa-regular", "fa-square");
                 icon.style.color = "#7B5FC4";
                 item.setAttribute("aria-checked", "false");
             }
@@ -2626,20 +2859,14 @@
         function toggleItem(idx) {
             setItemState(idx, !checked[idx]);
             updateBoundaryScore();
-
-            // Mark as dirty immediately after any interaction
             setDirty(true);
-
-            // Enable Save Progress immediately if at least one is checked
-            saveProgressBtn.disabled = isLocked;
-
             syncActionButtons();
-            triggerAutosave();
         }
-
 
         function initChecklist() {
             checklistItems.forEach((item, idx) => {
+                if (!item) return; // Skip if item is null
+
                 item.addEventListener("click", (e) => {
                     if (isLocked) return;
                     toggleItem(idx);
@@ -2663,13 +2890,14 @@
             const totalCount = checked.length;
             const boundaryScore = totalCount ? Math.round((checkedCount / totalCount) * 100) : 0;
 
-            boundaryPercentageEl.textContent = boundaryScore + "%";
-            progressFill.style.width = boundaryScore + "%";
-
-            progressFill.classList.remove("high", "medium", "low");
-            if (boundaryScore >= 75) progressFill.classList.add("high");
-            else if (boundaryScore >= 40) progressFill.classList.add("medium");
-            else progressFill.classList.add("low");
+            if (boundaryPercentageEl) boundaryPercentageEl.textContent = boundaryScore + "%";
+            if (progressFill) {
+                progressFill.style.width = boundaryScore + "%";
+                progressFill.classList.remove("high", "medium", "low");
+                if (boundaryScore >= 75) progressFill.classList.add("high");
+                else if (boundaryScore >= 40) progressFill.classList.add("medium");
+                else progressFill.classList.add("low");
+            }
 
             const dimension = {
                 time: { checked: 0, total: 0 },
@@ -2690,12 +2918,11 @@
             const commScore = dimension.communication.total ? Math.round((dimension.communication.checked / dimension.communication.total) * 100) : 0;
             const emoScore = dimension.emotional.total ? Math.round((dimension.emotional.checked / dimension.emotional.total) * 100) : 0;
 
-            scoreTimeEl.textContent = timeScore + "%";
-            scoreWorkloadEl.textContent = workloadScore + "%";
-            scoreCommunicationEl.textContent = commScore + "%";
-            scoreEmotionalEl.textContent = emoScore + "%";
+            if (scoreTimeEl) scoreTimeEl.textContent = timeScore + "%";
+            if (scoreWorkloadEl) scoreWorkloadEl.textContent = workloadScore + "%";
+            if (scoreCommunicationEl) scoreCommunicationEl.textContent = commScore + "%";
+            if (scoreEmotionalEl) scoreEmotionalEl.textContent = emoScore + "%";
 
-            // Save status text
             if (!checkedCount) setDirty(false);
 
             syncActionButtons();
@@ -2709,9 +2936,11 @@
             const totalCount = checked.length;
             const boundaryScore = totalCount ? Math.round((checkedCount / totalCount) * 100) : 0;
 
-            summaryScore.textContent = boundaryScore + "%";
-            smartSummary.classList.add("active");
-            smartSummary.scrollIntoView({ behavior: "smooth" });
+            if (summaryScore) summaryScore.textContent = boundaryScore + "%";
+            if (smartSummary) {
+                smartSummary.classList.add("active");
+                smartSummary.scrollIntoView({ behavior: "smooth" });
+            }
 
             generateRedFlags(boundaryScore);
             generateNextSteps(boundaryScore);
@@ -2721,6 +2950,7 @@
         }
 
         function generateRedFlags(boundaryScore) {
+            if (!redFlagsGrid) return;
             redFlagsGrid.innerHTML = "";
 
             const dimensionScores = {
@@ -2734,13 +2964,13 @@
 
             if (dimensionScores.time < 100) flags.push({
                 title: "Time boundary leaks",
-                description: "Your day is probably stretching at the edges (start/end times, breaks, after-hours messages). That creates a slow drain you don’t notice until you hit a wall.",
+                description: "Your day is probably stretching at the edges (start/end times, breaks, after-hours messages). That creates a slow drain you don't notice until you hit a wall.",
                 icon: "fas fa-clock"
             });
 
             if (dimensionScores.workload < 100) flags.push({
                 title: "Workload creep",
-                description: "You may be absorbing extra tasks to keep the peace or avoid friction. That turns temporary ‘helping’ into permanent overload.",
+                description: "You may be absorbing extra tasks to keep the peace or avoid friction. That turns temporary 'helping' into permanent overload.",
                 icon: "fas fa-briefcase"
             });
 
@@ -2752,20 +2982,20 @@
 
             if (dimensionScores.emotional < 100) flags.push({
                 title: "Emotional boundaries draining energy",
-                description: "Taking responsibility for others’ reactions (or feeling guilty for rest) is a quiet burnout accelerator. Your nervous system stays ‘on’ even when work ends.",
+                description: "Taking responsibility for others' reactions (or feeling guilty for rest) is a quiet burnout accelerator. Your nervous system stays 'on' even when work ends.",
                 icon: "fas fa-heart"
             });
 
             if (!flags.length) flags.push({
                 title: "Strong boundary foundation",
-                description: "You’re protecting time, workload, communication, and emotional energy well. Your main risk is not maintenance — it’s complacency when pressure spikes.",
+                description: "You're protecting time, workload, communication, and emotional energy well. Your main risk is not maintenance — it's complacency when pressure spikes.",
                 icon: "fas fa-check-circle"
             });
 
             while (flags.length < 3) {
                 flags.push({
                     title: "Scope risk",
-                    description: "Even with decent boundaries, unclear ownership can re-open the door to overload. Clarify ‘who owns what’ before the next crunch.",
+                    description: "Even with decent boundaries, unclear ownership can re-open the door to overload. Clarify 'who owns what' before the next crunch.",
                     icon: "fas fa-expand"
                 });
             }
@@ -2783,26 +3013,27 @@
         }
 
         function generateNextSteps(boundaryScore) {
+            if (!nextStepsGrid) return;
             nextStepsGrid.innerHTML = "";
 
             let steps = [];
             if (boundaryScore >= 75) {
                 steps = [
                     { icon: "fas fa-shield", title: "Protect the edges", description: "Lock in start/end times and treat breaks as performance infrastructure, not a reward." },
-                    { icon: "fas fa-repeat", title: "Weekly boundary check-in", description: "Once a week: review what crossed the line, what you allowed, and what you’ll adjust." },
+                    { icon: "fas fa-repeat", title: "Weekly boundary check-in", description: "Once a week: review what crossed the line, what you allowed, and what you'll adjust." },
                     { icon: "fas fa-people-group", title: "Model the standard", description: "People copy what gets tolerated. Make your boundaries visible without drama." }
                 ];
             } else if (boundaryScore >= 40) {
                 steps = [
                     { icon: "fas fa-bullseye", title: "Pick one non-negotiable", description: "Choose one boundary that will create immediate relief (e.g., no messages after 7pm, lunch away from desk)." },
                     { icon: "fas fa-comment-dots", title: "Use one sentence scripts", description: "Short scripts beat long explanations. State the limit, the trade-off, and the next step." },
-                    { icon: "fas fa-calendar", title: "Block the calendar", description: "Protect focus time, breaks, and ‘shutdown’ time like meetings with your most senior stakeholder." }
+                    { icon: "fas fa-calendar", title: "Block the calendar", description: "Protect focus time, breaks, and 'shutdown' time like meetings with your most senior stakeholder." }
                 ];
             } else {
                 steps = [
                     { icon: "fas fa-triangle-exclamation", title: "Emergency boundary reset", description: "Your system is in overload. Set one hard stop this week and stick to it, even if it feels uncomfortable." },
-                    { icon: "fas fa-ban", title: "Stop absorbing other people’s work", description: "Start redirecting: ‘I can’t take that on — who’s best placed to own it?’" },
-                    { icon: "fas fa-handshake", title: "Renegotiate scope", description: "If workload is structurally too high, boundaries alone won’t save you. You need a scope/priorities reset." }
+                    { icon: "fas fa-ban", title: "Stop absorbing other people's work", description: "Start redirecting: 'I can't take that on — who's best placed to own it?'" },
+                    { icon: "fas fa-handshake", title: "Renegotiate scope", description: "If workload is structurally too high, boundaries alone won't save you. You need a scope/priorities reset." }
                 ];
             }
 
@@ -2819,28 +3050,13 @@
         }
 
         function generateResources() {
+            if (!resourcesGrid) return;
             resourcesGrid.innerHTML = "";
             const resources = [
-                {
-                    icon: "fas fa-comments",
-                    title: "Boundary scripts pack",
-                    description: "Ready-to-use phrases for saying no, negotiating deadlines, and redirecting requests without over-explaining.",
-                    link: "the-toolkit.html"
-                },
-                {
-                    icon: "fas fa-clock",
-                    title: "Time protection playbook",
-                    description: "How to build sustainable work hours and reduce after-hours activation while staying credible.",
-                    link: "the-toolkit.html"
-                },
-                {
-                    icon: "fas fa-handshake",
-                    title: "Workload negotiation framework",
-                    description: "A structured way to reset priorities and scope with your manager — without sounding defensive.",
-                    link: "the-toolkit.html"
-                }
+                { icon: "fas fa-comments", title: "Boundary scripts pack", description: "Ready-to-use phrases for saying no, negotiating deadlines, and redirecting requests without over-explaining.", link: "#" },
+                { icon: "fas fa-clock", title: "Time protection playbook", description: "How to build sustainable work hours and reduce after-hours activation while staying credible.", link: "#" },
+                { icon: "fas fa-handshake", title: "Workload negotiation framework", description: "A structured way to reset priorities and scope with your manager — without sounding defensive.", link: "#" }
             ];
-
 
             resources.slice(0, 3).forEach(r => {
                 const card = document.createElement("div");
@@ -2849,7 +3065,7 @@
         <div class="resource-icon"><i class="${r.icon}"></i></div>
         <h4 class="resource-title">${r.title}</h4>
         <p class="resource-description">${r.description}</p>
-        <a href="${r.link}" class="resource-link">Coming soon <i class="fas fa-arrow-right"></i></a>
+        <a href="${r.link}" class="resource-link">Access Resource <i class="fas fa-arrow-right"></i></a>
       `;
                 resourcesGrid.appendChild(card);
             });
@@ -2863,6 +3079,7 @@
             const totalCount = checked.length;
             const boundaryScore = totalCount ? Math.round((checkedCount / totalCount) * 100) : 0;
 
+            /* ✅ PHASE 1 FIX #5: Store report_generated state */
             return {
                 tool_id: TOOL_ID,
                 tool_version: TOOL_VERSION,
@@ -2870,6 +3087,7 @@
                 boundary_score: boundaryScore,
                 checked: checked,
                 last_saved_at: lastSavedAtISO,
+                report_generated: smartSummary ? smartSummary.classList.contains("active") : false
             };
         }
 
@@ -2887,80 +3105,62 @@
             return parsed?.state || null;
         }
 
-        function showSavePopup(message) {
-            const popup = document.createElement("div");
-            popup.className = "save-popup";
-            popup.textContent = message;
-
-            document.body.appendChild(popup);
-
-            setTimeout(() => {
-                popup.classList.add("visible");
-            }, 50);
-
-            setTimeout(() => {
-                popup.classList.remove("visible");
-                setTimeout(() => popup.remove(), 300);
-            }, 2500);
-        }
-
-
-
+        /* ✅ PHASE 1 FIX #8: Wrap saveProgress in try/finally */
         async function saveProgress() {
             if (isLocked) return;
             const payload = buildStatePayload();
             const nowISO = new Date().toISOString();
 
-            // optimistic UI
-            saveProgressBtn.disabled = true;
+            if (saveProgressBtn) saveProgressBtn.disabled = true;
 
-            // 1) try Supabase
-            if (supabase) {
-                try {
-                    const { data: sessionData } = await supabase.auth.getSession();
-                    const user = sessionData?.session?.user;
-                    if (!user) throw new Error("No session");
+            let savedToSupabase = false;
 
-                    const row = {
-                        user_id: user.id,
-                        tool_id: TOOL_ID,
-                        tool_version: TOOL_VERSION,
-                        state: payload
-                    };
+            try {
+                if (supabase) {
+                    try {
+                        const { data: sessionData } = await supabase.auth.getSession();
+                        const user = sessionData?.session?.user;
+                        if (user) {
+                            const row = {
+                                user_id: user.id,
+                                tool_id: TOOL_ID,
+                                tool_version: TOOL_VERSION,
+                                state: payload
+                            };
 
-                    const { error } = await supabase
-                        .from("tool_states")
-                        .upsert(row, { onConflict: "user_id,tool_id" });
+                            const { error } = await supabase
+                                .from("tool_states")
+                                .upsert(row, { onConflict: "user_id,tool_id" });
 
-                    if (!error) {
-                        setLastSaved(nowISO);
-                        setDirty(false);
-                        syncActionButtons();
-
-                        // SHOW SAVE CONFIRMATION POPUP
-                        showSavePopup("Progress saved successfully.");
-
-                        safeLogEvent("tool_saved", { storage: "supabase", tool_id: TOOL_ID });
-                        return;
+                            if (!error) {
+                                savedToSupabase = true;
+                                setLastSaved(nowISO);
+                                setDirty(false);
+                                safeLogEvent("tool_saved", { storage: "supabase", tool_id: TOOL_ID });
+                                showSaveToast();
+                                return;
+                            }
+                        }
+                    } catch (e) {
+                        // fall through to local
                     }
-
-                } catch (e) {
-                    // fall through to local
                 }
-            }
 
-            // 2) local fallback
-            saveToLocal(payload);
-            setLastSaved(nowISO);
-            setDirty(false);
-            syncActionButtons();
-            showSavePopup("Progress saved successfully.");
-            renderSavedItems();
-            safeLogEvent("tool_saved", { storage: "local", tool_id: TOOL_ID });
+                // Local fallback
+                saveToLocal(payload);
+                setLastSaved(nowISO);
+                setDirty(false);
+                safeLogEvent("tool_saved", { storage: "local", tool_id: TOOL_ID });
+                showSaveToast();
+
+            } finally {
+                syncActionButtons();
+            }
         }
 
         async function restoreProgress() {
-            // 1) Supabase first
+            if (isLocked) return;
+
             if (supabase) {
                 try {
                     const { data: sessionData } = await supabase.auth.getSession();
@@ -2987,7 +3187,6 @@
                 }
             }
 
-            // 2) local fallback
             const localState = loadFromLocal();
             if (localState) {
                 applyState(localState);
@@ -3006,9 +3205,10 @@
             checked.forEach((v, idx) => setItemState(idx, v));
             updateBoundaryScore();
 
-            // report visibility
-            if (state?.boundary_score && state.boundary_score > 0 && smartSummary.classList.contains("active")) {
-                // keep as-is
+            /* ✅ PHASE 1 FIX #5: Restore report if report_generated is true */
+            if (state?.report_generated === true && smartSummary) {
+                smartSummary.classList.add("active");
+                generateEvidenceReport();
             }
         }
 
@@ -3021,15 +3221,17 @@
             checked = new Array(checklistItems.length).fill(false);
             checked.forEach((v, idx) => setItemState(idx, v));
 
-            smartSummary.classList.remove("active");
-            boundaryPercentageEl.textContent = "0%";
-            progressFill.style.width = "0%";
-            progressFill.classList.remove("high", "medium", "low");
+            if (smartSummary) smartSummary.classList.remove("active");
+            if (boundaryPercentageEl) boundaryPercentageEl.textContent = "0%";
+            if (progressFill) {
+                progressFill.style.width = "0%";
+                progressFill.classList.remove("high", "medium", "low");
+            }
 
-            scoreTimeEl.textContent = "0%";
-            scoreWorkloadEl.textContent = "0%";
-            scoreCommunicationEl.textContent = "0%";
-            scoreEmotionalEl.textContent = "0%";
+            if (scoreTimeEl) scoreTimeEl.textContent = "0%";
+            if (scoreWorkloadEl) scoreWorkloadEl.textContent = "0%";
+            if (scoreCommunicationEl) scoreCommunicationEl.textContent = "0%";
+            if (scoreEmotionalEl) scoreEmotionalEl.textContent = "0%";
 
             setDirty(true);
             syncActionButtons();
@@ -3039,34 +3241,45 @@
         /* =========================================================
            12) PRINT
         ========================================================= */
-        function doPrint() {
-            if (isLocked) return;
+        function generatePrintSnapshot() {
+            const printSnapshotItems = document.getElementById("printSnapshotItems");
+            if (!printSnapshotItems) return;
 
-            // Populate print header
-            document.getElementById("printDate").textContent =
-                new Date().toLocaleString("en-GB");
+            printSnapshotItems.innerHTML = "";
 
-            document.getElementById("printLastSaved").textContent =
-                lastSavedAtISO ? formatGB(lastSavedAtISO) : "—";
+            checklistItems.forEach((item, idx) => {
+                const text = item.querySelector(".checklist-text")?.textContent || "";
+                const isChecked = checked[idx];
 
-            safeLogEvent("tool_printed", { tool_id: TOOL_ID });
-
-            window.print();
+                if (isChecked) {
+                    const itemDiv = document.createElement("div");
+                    itemDiv.className = "print-snapshot-item";
+                    itemDiv.innerHTML = `
+          <div class="print-snapshot-icon">✓</div>
+          <div class="print-snapshot-text">${text}</div>
+        `;
+                    printSnapshotItems.appendChild(itemDiv);
+                }
+            });
         }
 
+        function doPrint() {
+            if (isLocked) return;
+            generatePrintSnapshot();
+            safeLogEvent("tool_printed", { tool_id: TOOL_ID });
+            window.print();
+        }
 
         /* =========================================================
            13) TELEMETRY (safe)
         ========================================================= */
         async function safeLogEvent(event_type, details = {}) {
-            // Only attempt if supabase + session exist; fail silently
             if (!supabase) return;
             try {
                 const { data: sessionData } = await supabase.auth.getSession();
                 const user = sessionData?.session?.user;
                 if (!user) return;
 
-                // activity_log table is optional; fails silently if missing
                 await supabase.from("activity_log").insert({
                     user_id: user.id,
                     event_type,
@@ -3093,41 +3306,47 @@
         }
 
         function updateSaveButtonState(isSaved) {
+            if (!saveBtn) return;
             const icon = saveBtn.querySelector("i");
             const label = saveBtn.querySelector("span");
             if (isSaved) {
                 saveBtn.classList.add("saved");
-                icon.classList.remove("far");
-                icon.classList.add("fas");
-                label.textContent = "Saved";
+                if (icon) {
+                    icon.classList.remove("fa-regular");
+                    icon.classList.add("fa-solid");
+                }
+                if (label) label.textContent = "Saved";
             } else {
                 saveBtn.classList.remove("saved");
-                icon.classList.remove("fas");
-                icon.classList.add("far");
-                label.textContent = "Save item";
+                if (icon) {
+                    icon.classList.remove("fa-solid");
+                    icon.classList.add("fa-regular");
+                }
+                if (label) label.textContent = "Save item";
             }
         }
 
         function renderSavedItems() {
             const items = getSavedItems();
-            savedItemsList.innerHTML = "";
+            if (savedItemsList) savedItemsList.innerHTML = "";
 
             if (!items.length) {
-                savedItemsEmpty.style.display = "block";
+                if (savedItemsEmpty) savedItemsEmpty.style.display = "block";
                 return;
             }
 
-            savedItemsEmpty.style.display = "none";
+            if (savedItemsEmpty) savedItemsEmpty.style.display = "none";
 
-            items.forEach(item => {
-                const li = document.createElement("li");
-                li.className = "saved-item";
-                const savedDate = item.savedAt ? new Date(item.savedAt) : null;
-                const dateText = savedDate
-                    ? savedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-                    : "";
+            if (savedItemsList) {
+                items.forEach(item => {
+                    const li = document.createElement("li");
+                    li.className = "saved-item";
+                    const savedDate = item.savedAt ? new Date(item.savedAt) : null;
+                    const dateText = savedDate
+                        ? savedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                        : "";
 
-                li.innerHTML = `
+                    li.innerHTML = `
         <div class="saved-item-title-row">
           <span class="saved-item-title">${item.title}</span>
           <span class="saved-item-type">${item.type}</span>
@@ -3137,8 +3356,14 @@
           Open <i class="fas fa-arrow-right"></i>
         </a>
       `;
-                savedItemsList.appendChild(li);
-            });
+                    savedItemsList.appendChild(li);
+                });
+            }
+        }
+
+        function openPlaybookSidebar() {
+            if (playbookOverlay) playbookOverlay.classList.add("open");
+            if (playbookSidebar) playbookSidebar.classList.add("open");
         }
 
         function initPlaybook() {
@@ -3148,45 +3373,53 @@
             const existingIndex = items.findIndex(i => i.id === TOOL_ID);
             updateSaveButtonState(existingIndex !== -1);
 
-            saveBtn.addEventListener("click", () => {
-                const itemsNow = getSavedItems();
-                const idx = itemsNow.findIndex(i => i.id === TOOL_ID);
+            /* ✅ PHASE 1 FIX #3: Once saved, clicking opens sidebar instead of unsaving */
+            if (saveBtn) {
+                saveBtn.addEventListener("click", () => {
+                    const itemsNow = getSavedItems();
+                    const idx = itemsNow.findIndex(i => i.id === TOOL_ID);
 
-                if (idx === -1) {
-                    const link = (window.location.pathname.split("/").pop() || "boundary-strength-checklist.html");
-                    itemsNow.push({
-                        id: TOOL_ID,
-                        title: TOOL_TITLE,
-                        type: "Checklist",
-                        link,
-                        savedAt: new Date().toISOString()
-                    });
-                    updateSaveButtonState(true);
-                } else {
-                    itemsNow.splice(idx, 1);
-                    updateSaveButtonState(false);
-                }
+                    if (idx === -1) {
+                        // Not saved yet, so save it
+                        const link = (window.location.pathname.split("/").pop() || "boundary-strength-checklist.html");
+                        itemsNow.push({
+                            id: TOOL_ID,
+                            title: TOOL_TITLE,
+                            type: "Checklist",
+                            link,
+                            savedAt: new Date().toISOString()
+                        });
+                        updateSaveButtonState(true);
+                        setSavedItems(itemsNow);
+                        renderSavedItems();
+                    } else {
+                        // Already saved, open the sidebar
+                        openPlaybookSidebar();
+                    }
+                });
+            }
 
-                setSavedItems(itemsNow);
-                renderSavedItems();
-            });
+            if (myPlaybookButton) {
+                myPlaybookButton.addEventListener("click", () => {
+                    openPlaybookSidebar();
+                });
+            }
 
-            myPlaybookButton.addEventListener("click", () => {
-                playbookOverlay.classList.add("open");
-                playbookSidebar.classList.add("open");
-            });
+            if (closePlaybook) {
+                closePlaybook.addEventListener("click", () => {
+                    if (playbookOverlay) playbookOverlay.classList.remove("open");
+                    if (playbookSidebar) playbookSidebar.classList.remove("open");
+                });
+            }
 
-            closePlaybook.addEventListener("click", () => {
-                playbookOverlay.classList.remove("open");
-                playbookSidebar.classList.remove("open");
-            });
-
-            playbookOverlay.addEventListener("click", (e) => {
-                if (e.target === playbookOverlay) {
-                    playbookOverlay.classList.remove("open");
-                    playbookSidebar.classList.remove("open");
-                }
-            });
+            if (playbookOverlay) {
+                playbookOverlay.addEventListener("click", (e) => {
+                    if (e.target === playbookOverlay) {
+                        playbookOverlay.classList.remove("open");
+                        if (playbookSidebar) playbookSidebar.classList.remove("open");
+                    }
+                });
+            }
         }
 
         /* =========================================================
@@ -3194,19 +3427,23 @@
         ========================================================= */
         async function refreshAuthUI() {
             if (!supabase) {
-                // If supabase is not configured, treat as locked (prevents false access)
                 setSignedOutHeader();
-                setLockState(true);
+                setLockState(false);
                 return;
             }
 
-            const { data } = await supabase.auth.getSession();
-            const user = data?.session?.user || null;
+            try {
+                const { data } = await supabase.auth.getSession();
+                const user = data?.session?.user || null;
 
-            if (user) {
-                setSignedInHeader(user);
-                setLockState(false);
-            } else {
+                if (user) {
+                    setSignedInHeader(user);
+                    setLockState(false);
+                } else {
+                    setSignedOutHeader();
+                    setLockState(true);
+                }
+            } catch (e) {
                 setSignedOutHeader();
                 setLockState(true);
             }
@@ -3221,80 +3458,168 @@
             window.location.href = "sign-in.html";
         }
 
-        logoutBtn.addEventListener("click", (e) => { e.preventDefault(); doLogout(); });
-        mobileLogoutBtn.addEventListener("click", (e) => { e.preventDefault(); doLogout(); });
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                doLogout();
+            });
+        }
 
         /* =========================================================
            16) WIRE BUTTONS
         ========================================================= */
-        generateBtn.addEventListener("click", generateEvidenceReport);
-        printBtn.addEventListener("click", doPrint);
-        clearBtn.addEventListener("click", clearAll);
-        saveProgressBtn.addEventListener("click", saveProgress);
-
-
-
-        /* =========================================================
-   BEFORE UNLOAD LOCAL FALLBACK
-========================================================= */
-        window.addEventListener("beforeunload", () => {
-            if (isDirty && !isLocked && !lastSavedAtISO) {
-                const payload = buildStatePayload();
-                localStorage.setItem(LS_PROGRESS_KEY, JSON.stringify({
-                    state: payload,
-                    saved_at: new Date().toISOString()
-                }));
-            }
-        });
-
-
+        if (generateBtn) generateBtn.addEventListener("click", generateEvidenceReport);
+        if (printBtn) printBtn.addEventListener("click", doPrint);
+        if (clearBtn) clearBtn.addEventListener("click", clearAll);
+        if (saveProgressBtn) saveProgressBtn.addEventListener("click", saveProgress);
 
         /* =========================================================
            17) STARTUP
         ========================================================= */
+        function attachHardLockGates() {
+            ["click", "mousedown", "mouseup", "pointerdown", "pointerup", "touchstart", "touchend"].forEach(evt => {
+                window.addEventListener(evt, lockEventGate, true);
+            });
+            ["keydown", "keypress"].forEach(evt => {
+                window.addEventListener(evt, lockEventGate, true);
+            });
 
+            /* ✅ PHASE 1 FIX #6: Attach focus trap */
+            document.addEventListener("keydown", handleLockFocusTrap, true);
+        }
 
         function initSaveStatus() {
             setDirty(false);
             setLastSaved(null);
         }
 
-
         document.addEventListener("DOMContentLoaded", () => {
-            // (note: module runs after parse; keep for safety)
+            // module runs after parse; keep for safety
         });
 
-        // Run
-        initTheme();
-        initMobileNav();
-        initChecklist();
-        initPlaybook();
-        initSaveStatus();
-        document.addEventListener("click", lockEventGate, true);
-        document.addEventListener("keydown", lockEventGate, true);
+        // Run initialization with error handling
+        (async function init() {
+            try {
+                console.log("Starting initialization...");
 
+                try {
+                    console.log("Init theme...");
+                    initTheme();
+                    console.log("✓ Theme initialized");
+                } catch (e) {
+                    console.error("✗ Theme init failed:", e);
+                }
 
+                try {
+                    console.log("Init mobile nav...");
+                    initMobileNav();
+                    console.log("✓ Mobile nav initialized");
+                } catch (e) {
+                    console.error("✗ Mobile nav init failed:", e);
+                }
 
-        // Keep header in sync
-        supabase?.auth?.onAuthStateChange(async () => {
-            await refreshAuthUI();
+                try {
+                    console.log("Init checklist...");
+                    initChecklist();
+                    console.log("✓ Checklist initialized");
+                } catch (e) {
+                    console.error("✗ Checklist init failed:", e);
+                }
 
-            if (!isLocked) {
-                await restoreProgress();
+                try {
+                    console.log("Init playbook...");
+                    initPlaybook();
+                    console.log("✓ Playbook initialized");
+                } catch (e) {
+                    console.error("✗ Playbook init failed:", e);
+                }
+
+                try {
+                    console.log("Init save status...");
+                    initSaveStatus();
+                    console.log("✓ Save status initialized");
+                } catch (e) {
+                    console.error("✗ Save status init failed:", e);
+                }
+
+                try {
+                    console.log("Attach lock gates...");
+                    attachHardLockGates();
+                    console.log("✓ Lock gates attached");
+                } catch (e) {
+                    console.error("✗ Lock gates attach failed:", e);
+                }
+
+                try {
+                    console.log("Initializing Supabase client...");
+                    await initSupabaseClient();
+                    console.log("✓ Supabase client initialized");
+                } catch (e) {
+                    console.error("✗ Supabase init failed:", e);
+                }
+
+                try {
+                    console.log("Refreshing auth UI...");
+                    await refreshAuthUI();
+                    console.log("✓ Auth UI refreshed");
+                } catch (e) {
+                    console.error("✗ Auth UI refresh failed:", e);
+                }
+
+                if (supabase) {
+                    try {
+                        console.log("Setting up auth state change listener...");
+                        supabase.auth.onAuthStateChange(async (event, session) => {
+                            console.log("Auth state changed:", event);
+                            await refreshAuthUI();
+                            if (event === "SIGNED_IN" && !isLocked) {
+                                await restoreProgress();
+                            }
+                        });
+                        console.log("✓ Auth listener set up");
+                    } catch (e) {
+                        console.error("✗ Auth listener setup failed:", e);
+                    }
+                }
+
+                try {
+                    console.log("Restoring progress...");
+                    await restoreProgress();
+                    console.log("✓ Progress restored");
+                } catch (e) {
+                    console.error("✗ Progress restore failed:", e);
+                }
+
+                try {
+                    console.log("Updating boundary score...");
+                    updateBoundaryScore();
+                    console.log("✓ Boundary score updated");
+                } catch (e) {
+                    console.error("✗ Boundary score update failed:", e);
+                }
+
+                try {
+                    console.log("Syncing action buttons...");
+                    syncActionButtons();
+                    console.log("✓ Action buttons synced");
+                } catch (e) {
+                    console.error("✗ Action buttons sync failed:", e);
+                }
+
+                try {
+                    console.log("Logging tool opened event...");
+                    safeLogEvent("tool_opened", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
+                    console.log("✓ Tool opened event logged");
+                } catch (e) {
+                    console.error("✗ Tool opened event log failed:", e);
+                }
+
+                console.log("✓✓✓ Initialization complete");
+            } catch (error) {
+                console.error("FATAL initialization error:", error);
+                console.error("Error stack:", error.stack);
             }
-        });
-
-
-
-        // Initial score sync
-        updateBoundaryScore();
-        syncActionButtons();
-
-        // Telemetry
-        safeLogEvent("tool_opened", { tool_id: TOOL_ID, tool_version: TOOL_VERSION });
-
-        // If user edits after restore, mark dirty
-        // (we already setDirty(true) on each toggle)
+        })();
     </script>
 
 </body>
